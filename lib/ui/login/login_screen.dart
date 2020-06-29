@@ -8,6 +8,7 @@ import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/Login/LoginRequest.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
+import 'package:ngmartflutter/ui/forgotPassword/ForgotPassword.dart';
 import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
 import 'package:provider/provider.dart';
 
@@ -74,23 +75,25 @@ class _LoginState extends State<Login> {
                             TextFormField(
                               decoration: InputDecoration(
                                   contentPadding:
-                                  EdgeInsets.fromLTRB(16, 16, 16, 12),
+                                      EdgeInsets.fromLTRB(16, 16, 16, 12),
                                   border: CustomBorder.enabledBorder,
                                   labelText: "Mobile No.",
                                   focusedBorder: CustomBorder.focusBorder,
                                   errorBorder: CustomBorder.errorBorder,
                                   enabledBorder: CustomBorder.enabledBorder,
-                                  labelStyle: CustomTextStyle.textFormFieldMedium
+                                  labelStyle: CustomTextStyle
+                                      .textFormFieldMedium
                                       .copyWith(
-                                      fontSize: MediaQuery.of(context)
-                                          .textScaleFactor *
-                                          16,
-                                      color: Colors.black)),
+                                          fontSize: MediaQuery.of(context)
+                                                  .textScaleFactor *
+                                              16,
+                                          color: Colors.black)),
                               controller: _mobileNumberController,
                               focusNode: _mobileField,
                               onFieldSubmitted: (value) {
                                 _mobileField.unfocus();
-                                FocusScope.of(context).autofocus(_passwordField);
+                                FocusScope.of(context)
+                                    .autofocus(_passwordField);
                               },
                               keyboardType: TextInputType.phone,
                               textInputAction: TextInputAction.next,
@@ -102,18 +105,19 @@ class _LoginState extends State<Login> {
                             TextFormField(
                               decoration: InputDecoration(
                                   contentPadding:
-                                  EdgeInsets.fromLTRB(16, 16, 16, 12),
+                                      EdgeInsets.fromLTRB(16, 16, 16, 12),
                                   border: CustomBorder.enabledBorder,
                                   labelText: "Password",
                                   focusedBorder: CustomBorder.focusBorder,
                                   errorBorder: CustomBorder.errorBorder,
                                   enabledBorder: CustomBorder.enabledBorder,
-                                  labelStyle: CustomTextStyle.textFormFieldMedium
+                                  labelStyle: CustomTextStyle
+                                      .textFormFieldMedium
                                       .copyWith(
-                                      fontSize: MediaQuery.of(context)
-                                          .textScaleFactor *
-                                          16,
-                                      color: Colors.black)),
+                                          fontSize: MediaQuery.of(context)
+                                                  .textScaleFactor *
+                                              16,
+                                          color: Colors.black)),
                               obscureText: true,
                               controller: _passwordController,
                               focusNode: _passwordField,
@@ -134,23 +138,32 @@ class _LoginState extends State<Login> {
                                 child: Text(
                                   "LOGIN",
                                   style: CustomTextStyle.textFormFieldRegular
-                                      .copyWith(color: Colors.white, fontSize: 14),
+                                      .copyWith(
+                                          color: Colors.white, fontSize: 14),
                                 ),
                                 color: AppColors.kPrimaryBlue,
                                 textColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(4))),
+                                        BorderRadius.all(Radius.circular(4))),
                               ),
                             ),
                             getSpacer(height: 10),
                             Container(
                               alignment: Alignment.centerRight,
-                              child: GestureDetector(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      new CupertinoPageRoute(
+                                          builder: (context) =>
+                                              ForgotPassword()));
+                                },
                                 child: Text(
                                   "Forget Password?",
-                                  style: CustomTextStyle.textFormFieldBold.copyWith(
-                                      color: AppColors.kPrimaryBlue, fontSize: 14),
+                                  style: CustomTextStyle.textFormFieldBold
+                                      .copyWith(
+                                          color: AppColors.kPrimaryBlue,
+                                          fontSize: 14),
                                 ),
                               ),
                             ),
@@ -195,12 +208,14 @@ class _LoginState extends State<Login> {
                                     "Sign Up",
                                     style: CustomTextStyle.textFormFieldBold
                                         .copyWith(
-                                        fontSize: 14,
-                                        color: AppColors.kPrimaryBlue),
+                                            fontSize: 14,
+                                            color: AppColors.kPrimaryBlue),
                                   ),
                                   onTap: () {
-                              Navigator.of(context).push(new CupertinoPageRoute(
-                                  builder: (context) => SignUpScreen()));
+                                    Navigator.of(context).push(
+                                        new CupertinoPageRoute(
+                                            builder: (context) =>
+                                                SignUpScreen()));
                                   },
                                 ),
                               ],
