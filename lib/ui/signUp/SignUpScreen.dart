@@ -84,7 +84,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       } else {
         showInSnackBar("Sign Up successful.");
         Navigator.of(context).push(new CupertinoPageRoute(
-            builder: (context) => Otpverification(
+            builder: (context) =>
+                Otpverification(
                   phone: _mobileNumberController.text,
                   id: provider.userId,
                   otpType: OTPType.REGISTER,
@@ -126,8 +127,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       focusNodeCurrent: _firstNameField,
                       enablefield: true,
                       controller: _firstNameController,
-                      validators: (val) => emptyValidator(
-                          txtMsg: "Please enter first name.", value: val)),
+                      validators: (val) =>
+                          emptyValidator(
+                              txtMsg: "Please enter first name.", value: val)),
                   getSpacer(height: 20),
                   getTextField(
                       context: context,
@@ -138,8 +140,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       focusNodeCurrent: _lastNameField,
                       enablefield: true,
                       controller: _lastNameController,
-                      validators: (val) => emptyValidator(
-                          txtMsg: "Please enter last name.", value: val)),
+                      validators: (val) =>
+                          emptyValidator(
+                              txtMsg: "Please enter last name.", value: val)),
                   getSpacer(height: 20),
                   getTextField(
                       context: context,
@@ -173,8 +176,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     focusNodeCurrent: _mobileNumberField,
                     enablefield: true,
                     controller: _mobileNumberController,
-                    validators: (val) => emptyValidator(
-                        value: val, txtMsg: "Please enter mobile number."),
+                    validators: (val) =>
+                        emptyValidator(
+                            value: val, txtMsg: "Please enter mobile number."),
                   ),
                   getSpacer(height: 20),
                   getTextField(
@@ -186,8 +190,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     focusNodeCurrent: _addressField,
                     enablefield: true,
                     controller: _addressController,
-                    validators: (val) => emptyValidator(
-                        value: val, txtMsg: "Please enter address."),
+                    validators: (val) =>
+                        emptyValidator(
+                            value: val, txtMsg: "Please enter address."),
                   ),
                   getSpacer(height: 20),
                   getTextField(
@@ -199,8 +204,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     focusNodeCurrent: _cityEmailField,
                     enablefield: true,
                     controller: _cityController,
-                    validators: (val) => emptyValidator(
-                        value: val, txtMsg: "Please enter city."),
+                    validators: (val) =>
+                        emptyValidator(
+                            value: val, txtMsg: "Please enter city."),
                   ),
                   getSpacer(height: 20),
                   getTextField(
@@ -212,8 +218,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     focusNodeCurrent: _stateField,
                     enablefield: true,
                     controller: _stateController,
-                    validators: (val) => emptyValidator(
-                        value: val, txtMsg: "Please enter state."),
+                    validators: (val) =>
+                        emptyValidator(
+                            value: val, txtMsg: "Please enter state."),
                   ),
                   getSpacer(height: 20),
                   getTextField(
@@ -225,8 +232,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     focusNodeCurrent: _countryField,
                     enablefield: true,
                     controller: _countryController,
-                    validators: (val) => emptyValidator(
-                        value: val, txtMsg: "Please enter country."),
+                    validators: (val) =>
+                        emptyValidator(
+                            value: val, txtMsg: "Please enter country."),
                   ),
                   getSpacer(height: 20),
                   getTextField(
@@ -238,8 +246,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     focusNodeCurrent: _pinCodeField,
                     enablefield: true,
                     controller: _pinCodeController,
-                    validators: (val) => emptyValidator(
-                        value: val, txtMsg: "Please enter pin code."),
+                    validators: (val) =>
+                        emptyValidator(
+                            value: val, txtMsg: "Please enter pin code."),
                   ),
                   getSpacer(height: 20),
                   Container(
@@ -292,11 +301,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // From coordinates
     final coordinates = new Coordinates(position.latitude, position.longitude);
     var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    await Geocoder.local.findAddressesFromCoordinates(coordinates);
     var first = addresses.first;
 
     print(
-        ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}');
+        ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first
+            .subAdminArea},${first.addressLine}, ${first.featureName},${first
+            .thoroughfare}, ${first.countryName}');
 
     _addressController.text = first.addressLine.toString() ?? "";
 
@@ -310,6 +321,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _stateController.text = first.adminArea;
     } else {
       _stateController.text = "Haryana";
+    }
+
+    if (first.countryName != null) {
+      _countryController.text = first.countryName;
+    } else {
+      _countryController.text = "India";
+    }
+
+    if (first.postalCode != null) {
+      _pinCodeController.text = first.postalCode;
+    } else {
+      _pinCodeController.text = "";
     }
   }
 }
