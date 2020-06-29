@@ -8,12 +8,12 @@ class APIError {
   APIError({this.error,this.status,this.onAlertPop});
 
   APIError.fromJson(Map<String, dynamic> json) {
-    error = json['error'];
+    error = json['message'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['error'] = this.error;
+    data['message'] = this.error;
     return data;
   }
 }

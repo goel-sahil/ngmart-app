@@ -9,6 +9,7 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 
 import 'drawer/navigation_drawer.dart';
+import 'login/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -54,7 +55,7 @@ class FadeIn extends State<SplashScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         new CupertinoPageRoute(builder: (BuildContext context) {
-          return (!token) ? new NavigationDrawer() : new NavigationDrawer();
+          return (!token) ? new Login() : new Login();
         }),
         (route) => false,
       );

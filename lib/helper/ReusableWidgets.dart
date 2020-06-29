@@ -6,12 +6,10 @@ import 'package:flutter/services.dart';
 
 import 'AppColors.dart';
 import 'Const.dart';
+import 'CustomBorder.dart';
+import 'CustomTextStyle.dart';
 import 'UniversalFunctions.dart';
 import 'UniversalProperties.dart';
-
-
-
-
 
 Widget getItemDivider() {
   return Padding(
@@ -24,52 +22,51 @@ Widget getItemDivider() {
 
 Widget getEmptyRefreshWidget(BuildContext context, String message,
     VoidCallback onPressed, bool isEnabled) {
-  var screenSize = MediaQuery
-      .of(context)
-      .size;
+  var screenSize = MediaQuery.of(context).size;
   return new Container(
     height: screenSize.height,
     width: screenSize.width,
     child: new Center(
         child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Icon(
-              Icons.youtube_searched_for,
-              size: 50,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        new Icon(
+          Icons.youtube_searched_for,
+          size: 50,
+          color: AppColors.kAppBlack,
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        new Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
               color: AppColors.kAppBlack,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            new Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600),
+        ),
+        new FlatButton(
+            onPressed: isEnabled ? onPressed : null,
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Icon(
+                  Icons.refresh,
                   color: AppColors.kAppBlack,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600),
-            ),
-            new FlatButton(
-                onPressed: isEnabled ? onPressed : null,
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    new Icon(
-                      Icons.refresh,
-                      color: AppColors.kAppBlack,
-                    ),
-                    new Text(
-                      "Refresh",
-                      style: new TextStyle(
-                          fontSize: 18.0, color: AppColors.kAppBlack),
-                    ),
-                  ],
-                ))
-          ],
-        )),
+                ),
+                new Text(
+                  "Refresh",
+                  style:
+                      new TextStyle(fontSize: 18.0, color: AppColors.kAppBlack),
+                ),
+              ],
+            ))
+      ],
+    )),
   );
 }
+
 // Returns app bar
 Widget getAppbar(String title) {
   return new AppBar(
@@ -85,8 +82,7 @@ Widget getAppbar(String title) {
 }
 
 getProfileAndCoverPicWidget(String url, File localImage) {
-  if (url != null && url.isNotEmpty &&
-      localImage == null) {
+  if (url != null && url.isNotEmpty && localImage == null) {
 //    return CachedNetworkImageProvider(
 //        (url.contains(FB_IMAGE_URL_PREFIX))
 //            ? "$url?width=$FB_G_PHOTO_SIZE&heigth=$FB_G_PHOTO_SIZE"
@@ -96,45 +92,47 @@ getProfileAndCoverPicWidget(String url, File localImage) {
 //    );
   } else {
     return (localImage == null)
-
         ? AssetImage(NO_COVER_IMAGE_FOUND)
         : new FileImage(
-      localImage,
-    );
-
+            localImage,
+          );
   }
 }
-
 
 getChatWidget({@required int count, @required Function onClick}) {
   return Stack(
     children: <Widget>[
       Center(
-        child: InkWell(
-          onTap: (){
-            onClick();
-          },
-          child: new Icon(
-              Icons.chat, size: 25.0,
-              color: Colors.black87),
-        )
-      ),
-      Align(alignment: Alignment.topRight,
-        child: getNotificationCount(count),)
+          child: InkWell(
+        onTap: () {
+          onClick();
+        },
+        child: new Icon(Icons.chat, size: 25.0, color: Colors.black87),
+      )),
+      Align(
+        alignment: Alignment.topRight,
+        child: getNotificationCount(count),
+      )
     ],
   );
 }
 
 getNotificationCount(int count) {
-  return (count>0)?ClipOval(
-    child: Container(
-      color: Colors.red,
-      height: 22.0, // height of the button
-      width: 22.0, // width of the button
-      child: Center(child: Text((count<10)?"$count":"9+", style: TextStyle(fontSize: 10),),),
-
-    ),
-  ):Container();
+  return (count > 0)
+      ? ClipOval(
+          child: Container(
+            color: Colors.red,
+            height: 22.0, // height of the button
+            width: 22.0, // width of the button
+            child: Center(
+              child: Text(
+                (count < 10) ? "$count" : "9+",
+                style: TextStyle(fontSize: 10),
+              ),
+            ),
+          ),
+        )
+      : Container();
 }
 
 Widget getHalfScreenProviderLoader({
@@ -143,19 +141,22 @@ Widget getHalfScreenProviderLoader({
 }) {
   return status
       ? getHalfAppThemedLoader(
-    context: context,
-  ) : new Container();
+          context: context,
+        )
+      : new Container();
 }
 
-Widget backButton(BuildContext context)
-{
+Widget backButton(BuildContext context) {
   return InkWell(
     onTap: () => Navigator.pop(context),
     child: Container(
         margin: new EdgeInsets.only(top: 30.0, left: 5.0),
         padding: new EdgeInsets.all(8.0),
         child: Icon(
-          Icons.arrow_back_ios, color: AppColors.kBlack, size: 30.0,)),
+          Icons.arrow_back_ios,
+          color: AppColors.kBlack,
+          size: 30.0,
+        )),
   );
 }
 
@@ -222,7 +223,7 @@ Widget getAppThemedTextField({
                   textInputAction: inputAction ?? TextInputAction.next,
                   controller: controller,
                   textCapitalization:
-                  textCapitalization ?? TextCapitalization.none,
+                      textCapitalization ?? TextCapitalization.none,
                   obscureText: obscureText ?? false,
                   focusNode: focusNode,
                   keyboardType: keyboardType,
@@ -230,8 +231,7 @@ Widget getAppThemedTextField({
                   autovalidate: autoValidate ?? false,
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(maxLength ?? 1000),
-                  ]
-                    ..addAll(inputFormatters ?? []),
+                  ]..addAll(inputFormatters ?? []),
                   onFieldSubmitted: onFieldSubmitted,
                   style: textStyle ?? defaultTextStyle,
                   maxLines: maxLines ?? 1,
@@ -271,6 +271,7 @@ Widget getAppThemedTextField({
     ),
   );
 }
+
 //Custom app Themed Button
 Widget getAppThemedButton({@required title, onTap}) {
   return RaisedButton(
@@ -315,6 +316,7 @@ Widget appThemedFullWidthButton({@required title, onTap}) {
     onTap: onTap,
   );
 }
+
 // App Themed AppBar
 Widget getAppThemedAppBar(
     {@required context, title, needBack: true, List<Widget> actions}) {
@@ -327,13 +329,13 @@ Widget getAppThemedAppBar(
     centerTitle: true,
     leading: needBack
         ? IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        })
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            })
         : null,
     actions: actions ?? [],
   );
@@ -343,12 +345,51 @@ Widget getAppThemedAppBar(
 Widget getRetryView({context, message, onRetry}) {
   return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text("${message ?? ""}"),
-          getAppThemedButton(title: "Retry", onTap: onRetry)
-        ],
-      ));
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      Text("${message ?? ""}"),
+      getAppThemedButton(title: "Retry", onTap: onRetry)
+    ],
+  ));
 }
 
-
+Widget getTextField(
+    {BuildContext context,
+    String labelText,
+    Function validators,
+    TextEditingController controller,
+    FocusNode focusNodeCurrent,
+    FocusNode focusNodeNext,
+    bool obsectextType,
+    TextInputType textType,
+    int length,
+    bool enablefield}) {
+  return Container(
+    margin: new EdgeInsets.only(left: 10.0, right: 10.0),
+    child: new TextFormField(
+      validator: validators,
+      controller: controller,
+      maxLines: 1,
+      keyboardType: textType,
+      obscureText: obsectextType,
+      focusNode: focusNodeCurrent,
+      enabled: enablefield,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        focusNodeCurrent.unfocus();
+        FocusScope.of(context).autofocus(focusNodeNext);
+      },
+      maxLength: length,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(16, 16, 16, 12),
+          border: CustomBorder.enabledBorder,
+          labelText: labelText,
+          focusedBorder: CustomBorder.focusBorder,
+          errorBorder: CustomBorder.errorBorder,
+          enabledBorder: CustomBorder.enabledBorder,
+          labelStyle: CustomTextStyle.textFormFieldMedium.copyWith(
+              fontSize: MediaQuery.of(context).textScaleFactor * 16,
+              color: Colors.black)),
+    ),
+  );
+}

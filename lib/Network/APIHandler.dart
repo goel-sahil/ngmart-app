@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -92,13 +91,11 @@ class APIHandler {
     Map<String, String> additionalHeaders = const {},
   }) async {
     Completer<dynamic> completer = new Completer<dynamic>();
-    print("Url==> $url");
-
     try {
       Map<String, String> headers = {};
       headers.addAll(defaultHeaders);
       headers.addAll(additionalHeaders);
-
+      print("Headers==> $headers");
       var response;
       switch (methodType) {
         case MethodType.POST:
@@ -152,7 +149,7 @@ class APIHandler {
       completer.complete(response.data);
     } on DioError catch (e) {
       print("error ${e.response?.statusCode}");
-      print("messag ${e.response?.data}");
+      print("message ${e.response?.data}");
 
       if (e.response?.statusCode == 403) {
         APIError apiError = new APIError(
@@ -200,7 +197,7 @@ class APIHandler {
 
   static String parseError(dynamic response) {
     try {
-      return response["error"];
+      return response["message"];
     } catch (e) {
       return Messages.genericError;
     }
