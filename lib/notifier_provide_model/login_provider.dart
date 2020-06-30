@@ -7,7 +7,9 @@ import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/model/forgotPassword/ForgotPassword.dart';
 import 'package:ngmartflutter/model/otp/otp_request.dart';
+import 'package:ngmartflutter/model/resetPassword/ResetPasswordRequest.dart';
 import 'package:ngmartflutter/model/signUp/SignUpRequest.dart';
 
 class LoginProvider with ChangeNotifier {
@@ -35,9 +37,6 @@ class LoginProvider with ChangeNotifier {
           new LoginResponse.fromJson(jsonDecode(response));
       print("response ${loginResponseData.toJson()}");
       completer.complete(loginResponseData);
-//        MemoryManagement.init();
-//        MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
-//        MemoryManagement.setuserId(id: loginResponseData.userId);
       notifyListeners();
       return completer.future;
     }
@@ -66,14 +65,15 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-
-  Future<dynamic> verifyOtp(OtpRequest request, BuildContext context) async {
+  Future<dynamic> verifyOtp(
+      OtpRequest request, BuildContext context, String url) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {"Accept": "application/json"};
-
+    print("Url==> $url");
+    print("Request==> ${request.toJson()}");
     var response = await APIHandler.post(
         context: context,
-        url: APIs.otpVerify,
+        url: url,
         requestBody: request.toJson(),
         additionalHeaders: headers);
     hideLoader();
@@ -89,13 +89,14 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> resendOtp(OtpRequest request, BuildContext context) async {
+  Future<dynamic> resendOtp(
+      OtpRequest request, BuildContext context, String url) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {"Accept": "application/json"};
 
     var response = await APIHandler.post(
         context: context,
-        url: APIs.resendOtp,
+        url: url,
         requestBody: request.toJson(),
         additionalHeaders: headers);
     hideLoader();
@@ -105,6 +106,53 @@ class LoginProvider with ChangeNotifier {
     } else {
       CommonResponse loginResponseData = new CommonResponse.fromJson(response);
       print("response ${loginResponseData.toJson()}");
+      completer.complete(loginResponseData);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> forgotPassword(
+      LoginRequest request, BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {"Accept": "application/json"};
+
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.forgotPassword,
+        requestBody: request.toJson(),
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      ForgotPasswordResponse loginResponseData =
+          new ForgotPasswordResponse.fromJson(response);
+      print("response ${loginResponseData.toJson()}");
+      completer.complete(loginResponseData);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> resetPassword(
+      ResetPasswordRequest request, BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {"Accept": "application/json"};
+    print("Request==> ${request.toJson()}");
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.resetPassword,
+        requestBody: request.toJson(),
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse loginResponseData =
+      new CommonResponse.fromJson(response);
       completer.complete(loginResponseData);
       notifyListeners();
       return completer.future;

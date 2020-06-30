@@ -7,6 +7,11 @@ class APIs {
   static const String register = "$baseUrl/register";
   static const String otpVerify = "$baseUrl/register/verify";
   static const String resendOtp = "$baseUrl/register/otp";
+  static const String forgotPassword = "$baseUrl/forget-password";
+  static const String resetPassword = "$baseUrl/reset-password";
+  static const String forgotPasswordResendOtp = "$baseUrl/forget-password/otp";
+  static const String forgotPasswordOtpVerify =
+      "$baseUrl/forget-password/verify";
   static const String getCategories = "$baseUrl/categories";
   static const String getProducts = "$baseUrl/products";
 }

@@ -36,10 +36,6 @@ class _LoginState extends State<Login> {
     if (response is APIError) {
       showInSnackBar(response.error);
     } else {
-//      MemoryManagement.setUserLoggedIn(isUserLoggedin: true);
-//      Navigator.of(context).pushAndRemoveUntil(
-//          MaterialPageRoute(builder: (context) =>
-//              NavigationDrawer()), (Route<dynamic> route) => false);
     }
   }
 

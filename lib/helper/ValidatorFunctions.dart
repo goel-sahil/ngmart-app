@@ -12,7 +12,9 @@ bool isEmailFormatValid(String email) {
 String emailValidator({
   @required String email,
 }) {
-  if (email.trim().isEmpty) {
+  if (email
+      .trim()
+      .isEmpty) {
     return 'Please enter an email address.';
   } else if (!isEmailFormatValid(email.trim())) {
     return 'Please enter a valid email address.';
@@ -22,10 +24,12 @@ String emailValidator({
 
 // Validates phone number field
 String phoneNumberValidator({@required String phoneNumber}) {
-  if (phoneNumber.trim().isEmpty) {
+  if (phoneNumber
+      .trim()
+      .isEmpty) {
     return 'Please enter a phone number.';
   }
-  if (phoneNumber.length<7) {
+  if (phoneNumber.length < 7) {
     return 'Please enter minimum 7 digit.';
   }
   return null;
@@ -33,7 +37,9 @@ String phoneNumberValidator({@required String phoneNumber}) {
 
 // Validates status field
 String statusValidator({@required String status}) {
-  if (status.trim().isEmpty) {
+  if (status
+      .trim()
+      .isEmpty) {
     return 'Please select stauts.';
   }
   return null;
@@ -41,7 +47,9 @@ String statusValidator({@required String status}) {
 
 // Validates status field
 String activityValidator({@required String activity}) {
-  if (activity.trim().isEmpty) {
+  if (activity
+      .trim()
+      .isEmpty) {
     return 'Please select activity.';
   }
   return null;
@@ -49,7 +57,9 @@ String activityValidator({@required String activity}) {
 
 // Validates message field
 String messageValidator({@required String message}) {
-  if (message.trim().isEmpty) {
+  if (message
+      .trim()
+      .isEmpty) {
     return 'Please enter message.';
   }
   return null;
@@ -57,7 +67,9 @@ String messageValidator({@required String message}) {
 
 // Validates activityDescription field
 String activityDescriptionValidator({@required String message}) {
-  if (message.trim().isEmpty) {
+  if (message
+      .trim()
+      .isEmpty) {
     return 'Please describe the activity.';
   }
   return null;
@@ -65,7 +77,9 @@ String activityDescriptionValidator({@required String message}) {
 
 // Validates attachAFile field
 String attachAFileValidator({@required String file}) {
-  if (file.trim().isEmpty) {
+  if (file
+      .trim()
+      .isEmpty) {
     return 'Please attach a file.';
   }
   return null;
@@ -91,7 +105,6 @@ bool isPasswordLengthValid(String password) {
 bool isPasswordComplexEnough(String password) {
   String p =
       r"^(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;'\<>,./?])(?=.*[a-z])(?=(.*[A-Z]))";
-//      r"(?=(.*[A-Z]))(?=(.*)).{8,}";
   RegExp regExp = new RegExp(p);
   return regExp.hasMatch(password);
 }
@@ -102,8 +115,16 @@ String newPasswordValidator({@required String newPassword}) {
     return 'Please enter new password.';
   } else if (!isPasswordLengthValid(newPassword)) {
     return 'Please use at least 8 characters for password.';
-  } else if (!isPasswordComplexEnough(newPassword)) {
-    return 'Please add 1 digit, 1 uppercase letter and 1 special character.';
+  }
+  return null;
+}
+
+String confirmPassword(
+    {@required String newPassword, @required String password }) {
+  if (newPassword.isEmpty) {
+    return 'Please enter confirm password.';
+  } else if (newPassword!=password) {
+    return 'Confirm password and password should match.';
   }
   return null;
 }
@@ -128,7 +149,9 @@ bool isNameFormatValid(String name) {
 
 // Validates name length
 bool isNameLengthValid(String name) {
-  if (name.trim().length >= 0) {
+  if (name
+      .trim()
+      .length >= 0) {
     return true;
   }
   return false;
@@ -136,7 +159,9 @@ bool isNameLengthValid(String name) {
 
 // Validates first name
 String firstNameValidator({@required String firstName}) {
-  if (firstName.trim().isEmpty) {
+  if (firstName
+      .trim()
+      .isEmpty) {
     return 'Please enter first name.';
   } else if (!isNameLengthValid(firstName.trim())) {
     return 'Please use at least 3 characters for first name.';
@@ -148,7 +173,9 @@ String firstNameValidator({@required String firstName}) {
 
 // Validates middle name
 String middleNameValidator({@required String middleName}) {
-  if (middleName.trim().isEmpty) {
+  if (middleName
+      .trim()
+      .isEmpty) {
     return 'Please enter middle name.';
   } else if (!isNameLengthValid(middleName.trim())) {
     return 'Please use at least 3 characters for middle name.';
@@ -160,7 +187,9 @@ String middleNameValidator({@required String middleName}) {
 
 // Validates name
 String nameValidator({@required String name}) {
-  if (name.trim().isEmpty) {
+  if (name
+      .trim()
+      .isEmpty) {
     return 'Please enter name.';
   } else if (!isNameLengthValid(name.trim())) {
     return 'Please use at least 3 characters for first name.';
@@ -172,7 +201,9 @@ String nameValidator({@required String name}) {
 
 // Validates last name
 String lastNameValidator({@required String lastName}) {
-  if (lastName.trim().isEmpty) {
+  if (lastName
+      .trim()
+      .isEmpty) {
     return 'Please enter last name.';
   } else if (!isNameLengthValid(lastName.trim())) {
     return 'Please use at least 3 characters for last name.';
@@ -184,7 +215,9 @@ String lastNameValidator({@required String lastName}) {
 
 // Validates age
 String ageValidator({@required String age}) {
-  if (age.trim().isEmpty) {
+  if (age
+      .trim()
+      .isEmpty) {
     return 'Please enter age.';
   }
   return null;
