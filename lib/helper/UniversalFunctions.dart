@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'AppColors.dart';
 import 'AssetStrings.dart';
+import 'Messages.dart';
 import 'UniversalProperties.dart';
 import 'memory_management.dart';
 
@@ -331,7 +332,7 @@ Future<bool> hasInternetConnection({
   bool canShowAlert = true,
 }) async {
   try {
-    final result = await InternetAddress.lookup('google.com')
+    final result = await InternetAddress.lookup('www.google.com')
         .timeout(const Duration(seconds: 5));
     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
       onSuccess();
@@ -339,16 +340,13 @@ Future<bool> hasInternetConnection({
     } else {
       if (canShowAlert) {
         onFail();
-        /* showAlert(
+         showAlert(
           context: context,
-          titleText: Localization.of(context).trans(LocalizationValues.error),
+          titleText: "ERROR",
           message: Messages.noInternetError,
           actionCallbacks: {
-            Localization.of(context).trans(LocalizationValues.ok): () {
-              return false;
-            }
           },
-        );*/
+        );
       }
     }
   } catch (_) {

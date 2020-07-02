@@ -51,6 +51,7 @@ class User {
   String emailVerifiedAt;
   String createdAt;
   String updatedAt;
+  List<UserAddresses> userAddresses;
 
   User(
       {this.id,
@@ -62,7 +63,8 @@ class User {
         this.status,
         this.emailVerifiedAt,
         this.createdAt,
-        this.updatedAt});
+        this.updatedAt,
+        this.userAddresses});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -75,6 +77,12 @@ class User {
     emailVerifiedAt = json['email_verified_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    if (json['user_addresses'] != null) {
+      userAddresses = new List<UserAddresses>();
+      json['user_addresses'].forEach((v) {
+        userAddresses.add(new UserAddresses.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -87,6 +95,59 @@ class User {
     data['role_id'] = this.roleId;
     data['status'] = this.status;
     data['email_verified_at'] = this.emailVerifiedAt;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    if (this.userAddresses != null) {
+      data['user_addresses'] =
+          this.userAddresses.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class UserAddresses {
+  int id;
+  String address;
+  String city;
+  String state;
+  String country;
+  String pinCode;
+  int userId;
+  String createdAt;
+  String updatedAt;
+
+  UserAddresses(
+      {this.id,
+        this.address,
+        this.city,
+        this.state,
+        this.country,
+        this.pinCode,
+        this.userId,
+        this.createdAt,
+        this.updatedAt});
+
+  UserAddresses.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    address = json['address'];
+    city = json['city'];
+    state = json['state'];
+    country = json['country'];
+    pinCode = json['pin_code'];
+    userId = json['user_id'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['address'] = this.address;
+    data['city'] = this.city;
+    data['state'] = this.state;
+    data['country'] = this.country;
+    data['pin_code'] = this.pinCode;
+    data['user_id'] = this.userId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;

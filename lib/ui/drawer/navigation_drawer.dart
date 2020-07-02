@@ -6,8 +6,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/ui/cart/CartPage.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
+import 'package:ngmartflutter/ui/profile/ProfileScreen.dart';
 import 'package:ngmartflutter/ui/search/SearchPage.dart';
+import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
 
 import 'drawer_item.dart';
 import 'HomeScreen.dart';
@@ -32,8 +35,12 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         _body = HomeScreen();
       } else if (index == 1) {
         //show profile
+        _body = ProfileScreen();
       } else if (index == 2) {
         //show cart
+        _body = CartPage(
+          fromNavigationDrawer: true,
+        );
       } else if (index == 3) {
         //show purchi
       } else if (index == 4) {

@@ -101,7 +101,7 @@ class DataInner {
   String updatedAt;
   String imageUrl;
   Brand brand;
-  QuantityUnit quantityUnit;
+  Brand quantityUnit;
 
   DataInner(
       {this.id,
@@ -140,7 +140,7 @@ class DataInner {
     imageUrl = json['image_url'];
     brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
     quantityUnit = json['quantity_unit'] != null
-        ? new QuantityUnit.fromJson(json['quantity_unit'])
+        ? new Brand.fromJson(json['quantity_unit'])
         : null;
   }
 
@@ -174,32 +174,10 @@ class DataInner {
 class Brand {
   int id;
   String title;
-  String imageUrl;
 
-  Brand({this.id, this.title, this.imageUrl});
+  Brand({this.id, this.title});
 
   Brand.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    imageUrl = json['image_url'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['image_url'] = this.imageUrl;
-    return data;
-  }
-}
-
-class QuantityUnit {
-  int id;
-  String title;
-
-  QuantityUnit({this.id, this.title});
-
-  QuantityUnit.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
   }

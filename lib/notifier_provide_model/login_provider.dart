@@ -33,8 +33,7 @@ class LoginProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      LoginResponse loginResponseData =
-          new LoginResponse.fromJson(response);
+      LoginResponse loginResponseData = new LoginResponse.fromJson(response);
       print("response ${loginResponseData.toJson()}");
       MemoryManagement.init();
       MemoryManagement.setAccessToken(
@@ -64,6 +63,34 @@ class LoginProvider with ChangeNotifier {
       LoginResponse loginResponseData = new LoginResponse.fromJson(response);
       print("response ${loginResponseData.toJson()}");
       userId = loginResponseData.data.user.id;
+      completer.complete(loginResponseData);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> profileUpdate(
+      SignUpRequest request, BuildContext context) async {
+    MemoryManagement.init();
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.profileUpdate,
+        requestBody: request.toJson(),
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      LoginResponse loginResponseData = new LoginResponse.fromJson(response);
+      print("response ${loginResponseData.toJson()}");
+      MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
       completer.complete(loginResponseData);
       notifyListeners();
       return completer.future;
