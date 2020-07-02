@@ -10,7 +10,7 @@ import 'package:ngmartflutter/model/resetPassword/ResetPasswordRequest.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
 import 'package:provider/provider.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+ class ResetPasswordScreen extends StatefulWidget {
   var id;
   var code;
 

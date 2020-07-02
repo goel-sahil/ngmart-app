@@ -21,13 +21,13 @@ class LoginResponse {
 
 class Data {
   User user;
-  int otp;
+  String token;
 
-  Data({this.user, this.otp});
+  Data({this.user, this.token});
 
   Data.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    otp = json['otp'];
+    token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,7 +35,7 @@ class Data {
     if (this.user != null) {
       data['user'] = this.user.toJson();
     }
-    data['otp'] = this.otp;
+    data['token'] = this.token;
     return data;
   }
 }
@@ -48,7 +48,7 @@ class User {
   String phoneNumber;
   int roleId;
   int status;
-  Null emailVerifiedAt;
+  String emailVerifiedAt;
   String createdAt;
   String updatedAt;
 

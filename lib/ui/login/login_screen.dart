@@ -7,7 +7,9 @@ import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/Login/LoginRequest.dart';
+import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
+import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:ngmartflutter/ui/forgotPassword/ForgotPassword.dart';
 import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +37,14 @@ class _LoginState extends State<Login> {
     var response = await provider.login(request, context);
     if (response is APIError) {
       showInSnackBar(response.error);
-    } else {
+    } else if(response is LoginResponse) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        new CupertinoPageRoute(builder: (BuildContext context) {
+          return new NavigationDrawer();
+        }),
+            (route) => false,
+      );
     }
   }
 

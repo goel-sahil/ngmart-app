@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ngmartflutter/helper/styles.dart';
+import 'package:ngmartflutter/ui/drawer/HomeScreen.dart';
+import 'package:ngmartflutter/ui/splash_screen.dart';
 import 'package:progressive_image/progressive_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -72,23 +74,13 @@ void onLogoutSuccess({
 void customPushAndRemoveUntilSplash({
   @required BuildContext context,
 }) {
-/*  Navigator.pushAndRemoveUntil(
+  Navigator.pushAndRemoveUntil(
     context,
     new CupertinoPageRoute(builder: (BuildContext context) {
-      return new Splash();
+      return new SplashScreen();
     }),
-    (route) => false,
-  );*/
-
-//  Navigator.popUntil(
-//    context,
-//        (route) {
-//      return route.runtimeType == Splash();
-//    },
-//  );
-//  Navigator.push(context, new CupertinoPageRoute(builder: (BuildContext context) {
-//    return new Splash();
-//  }));
+        (route) => false,
+  );
 }
 
 // Logs out user

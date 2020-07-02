@@ -86,41 +86,19 @@ class MemoryManagement {
     prefs.setBool(SharedPrefsKeys.FILTER_DATA_STATUS, filterstatus);
   }
 
-  static bool getFilterDataStatus() {
-    return prefs.getBool(SharedPrefsKeys.FILTER_DATA_STATUS);
+
+  static void setLoggedInStatus({@required bool logInStatus}) {
+    prefs.setBool(SharedPrefsKeys.LOG_IN_STATUS, logInStatus);
   }
 
-
-  static void setTabDataStatus({@required bool filterstatus}) {
-    prefs.setBool(SharedPrefsKeys.TAB_DATA_STATUS, filterstatus);
+  static bool getLoggedInStatus() {
+    return prefs.getBool(SharedPrefsKeys.LOG_IN_STATUS);
   }
-
-  static bool getAccountFilterDataStatus() {
-    return prefs.getBool(SharedPrefsKeys.ACCCOUNT_DATA_STATUS);
-  }
-
-
-  static void setAccountFilterDataStatus({@required bool filterstatus}) {
-    prefs.setBool(SharedPrefsKeys.ACCCOUNT_DATA_STATUS, filterstatus);
-  }
-
-
-  static void setAccountFilterData({@required String filter}) {
-    prefs.setString(SharedPrefsKeys.ACCOUNT_FILTER_DATA, filter);
-  }
-
-  static String getAccountFilterData() {
-    return prefs.getString(SharedPrefsKeys.ACCOUNT_FILTER_DATA);
-  }
-
-
-
-
 
 
 
   static bool getTabDataStatus() {
-    return prefs.getBool(SharedPrefsKeys.TAB_DATA_STATUS);
+    return prefs.getBool(SharedPrefsKeys.LOG_IN_STATUS);
   }
 
 

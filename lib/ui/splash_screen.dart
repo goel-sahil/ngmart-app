@@ -55,7 +55,7 @@ class FadeIn extends State<SplashScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         new CupertinoPageRoute(builder: (BuildContext context) {
-          return (!token) ? new Login() : new Login();
+          return new NavigationDrawer();
         }),
         (route) => false,
       );
