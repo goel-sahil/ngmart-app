@@ -1,13 +1,13 @@
 class CartResponse {
-  List<Data> data;
+  List<CartData> data;
 
   CartResponse({this.data});
 
   CartResponse.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = new List<Data>();
+      data = new List<CartData>();
       json['data'].forEach((v) {
-        data.add(new Data.fromJson(v));
+        data.add(new CartData.fromJson(v));
       });
     }
   }
@@ -21,7 +21,7 @@ class CartResponse {
   }
 }
 
-class Data {
+class CartData {
   int id;
   int userId;
   int productId;
@@ -31,7 +31,7 @@ class Data {
   String updatedAt;
   Product product;
 
-  Data(
+  CartData(
       {this.id,
         this.userId,
         this.productId,
@@ -41,7 +41,7 @@ class Data {
         this.updatedAt,
         this.product});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  CartData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
     productId = json['product_id'];
@@ -76,8 +76,8 @@ class Product {
   String image;
   int categoryId;
   int brandId;
-  num price;
-  num quantity;
+  int price;
+  int quantity;
   int quantityIncrement;
   int quantityUnitId;
   int orderedTimes;
@@ -87,6 +87,7 @@ class Product {
   String imageUrl;
   Category category;
   Brand brand;
+  Brand quantityUnit;
 
   Product(
       {this.id,
@@ -105,7 +106,8 @@ class Product {
         this.updatedAt,
         this.imageUrl,
         this.category,
-        this.brand});
+        this.brand,
+        this.quantityUnit});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -127,6 +129,9 @@ class Product {
         ? new Category.fromJson(json['category'])
         : null;
     brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
+    quantityUnit = json['quantity_unit'] != null
+        ? new Brand.fromJson(json['quantity_unit'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -151,6 +156,9 @@ class Product {
     }
     if (this.brand != null) {
       data['brand'] = this.brand.toJson();
+    }
+    if (this.quantityUnit != null) {
+      data['quantity_unit'] = this.quantityUnit.toJson();
     }
     return data;
   }
@@ -204,27 +212,18 @@ class Category {
 class Brand {
   int id;
   String title;
-  int status;
-  String createdAt;
-  String updatedAt;
 
-  Brand({this.id, this.title, this.status, this.createdAt, this.updatedAt});
+  Brand({this.id, this.title});
 
   Brand.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    status = json['status'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['title'] = this.title;
-    data['status'] = this.status;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
     return data;
   }
 }

@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CartPage extends StatefulWidget {
   bool fromNavigationDrawer = false;
@@ -22,7 +26,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Data> cartList = new List();
+  List<CartData> cartList = new List();
   int _quantity = 1;
   num total = 0.0;
 
@@ -69,6 +73,32 @@ class _CartPageState extends State<CartPage> {
       showInSnackBar(response.message);
       cartList.removeAt(position);
       setState(() {});
+    }
+  }
+
+  Future<void> _hitPlaceOrderApi({int addressId}) async {
+    provider.setLoading();
+    var response = await provider.placeOrder(context, addressId);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+      //showInSnackBar(response.message);
+      Alert(
+        context: context,
+        type: AlertType.success,
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+        title: 'Order Successfully placed.',
+        desc: "Your order has been placed. We we reach out to you shortly with your order.",
+        image: Image.asset("images/tick.png"),
+      ).show();
     }
   }
 
@@ -145,8 +175,11 @@ class _CartPageState extends State<CartPage> {
           getSpacer(height: 8),
           RaisedButton(
             onPressed: () {
-//              Navigator.push(context,
-//                  new MaterialPageRoute(builder: (context) => CheckOutPage()));
+              MemoryManagement.init();
+              var info = MemoryManagement.getUserInfo();
+              var userInfo = LoginResponse.fromJson(jsonDecode(info));
+              _hitPlaceOrderApi(
+                  addressId: userInfo.data.user.userAddresses.first.id);
             },
             color: Colors.green,
             padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
@@ -209,7 +242,7 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  createCartListItem({Data listData, int pos}) {
+  createCartListItem({CartData listData, int pos}) {
     return Stack(
       children: <Widget>[
         Container(
@@ -257,7 +290,7 @@ class _CartPageState extends State<CartPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              "\₹${listData.product.price} / ${listData.product.quantity} ${listData.product.quantityUnitId}",
+                              "\₹${listData.product.price} / ${listData.product.quantity} ${listData.product.quantityUnit.title}",
                               style: CustomTextStyle.textFormFieldBlack
                                   .copyWith(color: Colors.green),
                             ),
