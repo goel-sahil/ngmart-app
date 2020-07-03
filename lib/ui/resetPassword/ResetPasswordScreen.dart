@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
@@ -8,9 +9,10 @@ import 'package:ngmartflutter/helper/ValidatorFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/resetPassword/ResetPasswordRequest.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
+import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:provider/provider.dart';
 
- class ResetPasswordScreen extends StatefulWidget {
+class ResetPasswordScreen extends StatefulWidget {
   var id;
   var code;
 
@@ -41,12 +43,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     } else {
       CommonResponse forgotPasswordResponse = response;
       showInSnackBar(forgotPasswordResponse.message);
+      Navigator.pushAndRemoveUntil(
+        context,
+        new CupertinoPageRoute(builder: (BuildContext context) {
+          return new Login();
+        }),
+        (route) => false,
+      );
     }
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKeys.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+    _scaffoldKeys.currentState.showSnackBar(new SnackBar(
+      content: new Text(value),
+      duration: Duration(seconds: 1),
+    ));
   }
 
   @override
@@ -57,6 +68,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         key: _scaffoldKeys,
         appBar: AppBar(
           title: Text("Reset Password"),
+          centerTitle: true,
         ),
         body: Stack(
           children: <Widget>[

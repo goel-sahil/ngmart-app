@@ -15,6 +15,7 @@ class APIs {
       "$baseUrl/forget-password/verify";
   static const String getCategories = "$baseUrl/categories";
   static const String getProducts = "$baseUrl/products";
+  static const String getOrders = "$baseUrl/orders";
   static const String addToCart = "$baseUrl/cart";
   static const String placeOrder = "$baseUrl/order";
 }

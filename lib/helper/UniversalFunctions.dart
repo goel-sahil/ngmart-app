@@ -80,7 +80,7 @@ void customPushAndRemoveUntilSplash({
     new CupertinoPageRoute(builder: (BuildContext context) {
       return new SplashScreen();
     }),
-        (route) => false,
+    (route) => false,
   );
 }
 
@@ -206,28 +206,6 @@ Widget getCachedNetworkImage(
     width: width,
     fit: BoxFit.contain,
   );
-
-  //return Container();
-//    new CachedNetworkImage(
-//      width: double.infinity,
-//      height: double.infinity,
-//      imageUrl: url ?? "",
-//      matchTextDirection: true,
-//      fit: fit,
-//      placeholder: (context, String val) {
-//        return new Center(
-//          child: new CupertinoActivityIndicator(),
-//        );
-//      },
-//      errorWidget: (BuildContext context, String error, Object obj) {
-//        return new Center(
-//            child: new Image.asset(
-//              AssetStrings.imageItem,
-//              fit: BoxFit.fill,
-//            )
-//        );
-//      },
-//    );
 }
 
 Widget getFullScreenLoader({
@@ -279,7 +257,6 @@ Widget getHalfAppThemedLoader({
   double strokeWidth,
 }) {
   return new Container(
-    // color: bgColor ?? const Color.fromRGBO(1, 1, 1, 0.6),
     height: 50,
     width: getScreenSize(context: context).width,
     child: getChildLoader(
@@ -340,26 +317,22 @@ Future<bool> hasInternetConnection({
     } else {
       if (canShowAlert) {
         onFail();
-         showAlert(
+        showAlert(
           context: context,
           titleText: "ERROR",
           message: Messages.noInternetError,
-          actionCallbacks: {
-          },
+          actionCallbacks: {},
         );
       }
     }
   } catch (_) {
     onFail();
-    /*  showAlert(
-        context: context,
-        titleText: Localization.of(context).trans(LocalizationValues.error),
-        message: Messages.noInternetError,
-        actionCallbacks: {
-          Localization.of(context).trans(LocalizationValues.ok): () {
-            return false;
-          }
-        });*/
+    showAlert(
+      context: context,
+      titleText: "ERROR",
+      message: Messages.noInternetError,
+      actionCallbacks: {},
+    );
   }
   return false;
 }

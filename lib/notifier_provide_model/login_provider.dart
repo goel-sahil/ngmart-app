@@ -12,6 +12,7 @@ import 'package:ngmartflutter/model/forgotPassword/ForgotPassword.dart';
 import 'package:ngmartflutter/model/otp/otp_request.dart';
 import 'package:ngmartflutter/model/resetPassword/ResetPasswordRequest.dart';
 import 'package:ngmartflutter/model/signUp/SignUpRequest.dart';
+import 'package:ngmartflutter/ui/otp/otp_verification.dart';
 
 class LoginProvider with ChangeNotifier {
   var _isLoading = false;
@@ -98,7 +99,7 @@ class LoginProvider with ChangeNotifier {
   }
 
   Future<dynamic> verifyOtp(
-      OtpRequest request, BuildContext context, String url) async {
+      OtpRequest request, BuildContext context, String url, OTPType otpType) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {"Accept": "application/json"};
     print("Url==> $url");
@@ -115,10 +116,12 @@ class LoginProvider with ChangeNotifier {
     } else {
       LoginResponse loginResponseData = new LoginResponse.fromJson(response);
       print("response ${loginResponseData.toJson()}");
-      MemoryManagement.setAccessToken(
-          accessToken: loginResponseData.data.token ?? "");
-      MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
-      MemoryManagement.setLoggedInStatus(logInStatus: true);
+      if(otpType==OTPType.REGISTER){
+        MemoryManagement.setAccessToken(
+            accessToken: loginResponseData.data.token ?? "");
+        MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
+        MemoryManagement.setLoggedInStatus(logInStatus: true);
+      }
       completer.complete(loginResponseData);
       notifyListeners();
       return completer.future;

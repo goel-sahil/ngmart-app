@@ -12,6 +12,7 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/cart/AddToCartRequest.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
+import 'package:ngmartflutter/model/orderHistory/orderHistory.dart';
 import 'package:ngmartflutter/model/placeOrder/PlaceOrderRequest.dart';
 import 'package:ngmartflutter/model/product_request.dart';
 import 'package:ngmartflutter/model/product_response.dart';
@@ -161,6 +162,29 @@ class DashboardProvider with ChangeNotifier {
       print("Response==> $response");
       CommonResponse categoriesResponse = new CommonResponse.fromJson(response);
       completer.complete(categoriesResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> getOrderHistory(BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.get(
+        context: context, url: APIs.getOrders, additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      OrderHistoryResponse productResponse =
+          new OrderHistoryResponse.fromJson(response);
+      completer.complete(productResponse);
       notifyListeners();
       return completer.future;
     }

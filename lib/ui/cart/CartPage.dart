@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
@@ -59,9 +61,7 @@ class _CartPageState extends State<CartPage> {
     var response = await provider.addToCart(context, quantity, productId);
     if (response is APIError) {
       showInSnackBar(response.error);
-    } else if (response is CommonResponse) {
-//      showInSnackBar(response.message);
-    }
+    } else if (response is CommonResponse) {}
   }
 
   Future<void> _hitRemoveItemFromCart({int cartId, int position}) async {
@@ -96,15 +96,18 @@ class _CartPageState extends State<CartPage> {
           )
         ],
         title: 'Order Successfully placed.',
-        desc: "Your order has been placed. We we reach out to you shortly with your order.",
+        desc:
+            "Your order has been placed. We we reach out to you shortly with your order.",
         image: Image.asset("images/tick.png"),
       ).show();
     }
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: new Text(value),
+      duration: Duration(seconds: 2),
+    ));
   }
 
   @override
@@ -119,21 +122,29 @@ class _CartPageState extends State<CartPage> {
           ? null
           : AppBar(
               title: Text("Shopping Cart"),
+              centerTitle: true,
             ),
       body: Stack(
         children: <Widget>[
-          Builder(
-            builder: (context) {
-              return ListView(
-                children: <Widget>[
-                  createHeader(),
-                  createSubTitle(),
-                  createCartList(),
-                  footer(context)
-                ],
-              );
-            },
-          ),
+          cartList.isNotEmpty
+              ? Builder(
+                  builder: (context) {
+                    return ListView(
+                      children: <Widget>[
+                        createHeader(),
+                        createSubTitle(),
+                        createCartList(),
+                        footer(context)
+                      ],
+                    );
+                  },
+                )
+              : Center(
+                  child: Text(
+                    "No Product found.",
+                    style: h5,
+                  ),
+                ),
           new Center(
             child: getHalfScreenProviderLoader(
               status: provider.getLoading(),
@@ -186,7 +197,7 @@ class _CartPageState extends State<CartPage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(24))),
             child: Text(
-              "Checkout",
+              "Place order",
               style: CustomTextStyle.textFormFieldSemiBold
                   .copyWith(color: Colors.white),
             ),
@@ -243,161 +254,174 @@ class _CartPageState extends State<CartPage> {
   }
 
   createCartListItem({CartData listData, int pos}) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(16))),
-          child: Row(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(14)),
-                    color: Colors.blue.shade50,
-                    image: DecorationImage(
-                        image: NetworkImage(listData.product.imageUrl))),
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(right: 8, top: 4),
-                        child: Text(
-                          listData.product.title ?? "",
-                          maxLines: 2,
-                          softWrap: true,
-                          style: CustomTextStyle.textFormFieldSemiBold
-                              .copyWith(fontSize: 14),
+    return GestureDetector(
+      onTap: () {
+//        Navigator.push(
+//            context,
+//            CupertinoPageRoute(
+//                builder: (context) => ProductDetailPage(
+//                  productData: listData,
+//                )));
+      },
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(16))),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(14)),
+                      color: Colors.blue.shade50,
+                      image: DecorationImage(
+                          image: NetworkImage(listData.product.imageUrl))),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(right: 8, top: 4),
+                          child: Text(
+                            listData.product.title ?? "",
+                            maxLines: 2,
+                            softWrap: true,
+                            style: CustomTextStyle.textFormFieldSemiBold
+                                .copyWith(fontSize: 14),
+                          ),
                         ),
-                      ),
-                      getSpacer(height: 6),
-                      Text(
-                        listData.product.brand.title ?? "",
-                        style: CustomTextStyle.textFormFieldRegular
-                            .copyWith(color: Colors.grey, fontSize: 14),
-                      ),
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "\₹${listData.product.price} / ${listData.product.quantity} ${listData.product.quantityUnit.title}",
-                              style: CustomTextStyle.textFormFieldBlack
-                                  .copyWith(color: Colors.green),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  InkWell(
-                                    onTap: () {
-                                      print("_quantity==>$_quantity");
-                                      print(
-                                          "listData.product.quantityIncrement==>${listData.product.quantityIncrement}");
-                                      if (listData.product.quantity !=
-                                              listData
-                                                  .product.quantityIncrement ||
-                                          _quantity == 0) {
-                                        _quantity -=
-                                            listData.product.quantityIncrement;
-                                        listData.product.quantity = (listData
-                                                .product.quantity -
-                                            listData.product.quantityIncrement);
-                                        //hit APi
+                        getSpacer(height: 6),
+                        Text(
+                          listData.product.brand.title ?? "",
+                          style: CustomTextStyle.textFormFieldRegular
+                              .copyWith(color: Colors.grey, fontSize: 14),
+                        ),
+                        Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "\₹${listData.product.price} / ${listData.product.quantity} ${listData.product.quantityUnit.title}",
+                                style: CustomTextStyle.textFormFieldBlack
+                                    .copyWith(color: Colors.green),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    InkWell(
+                                      onTap: () {
+                                        print("_quantity==>$_quantity");
+                                        print(
+                                            "listData.product.quantityIncrement==>${listData.product.quantityIncrement}");
+                                        if (listData.product.quantity !=
+                                                listData.product
+                                                    .quantityIncrement ||
+                                            _quantity == 0) {
+                                          _quantity -= listData
+                                              .product.quantityIncrement;
+                                          listData.product.quantity =
+                                              (listData.product.quantity -
+                                                  listData.product
+                                                      .quantityIncrement);
+                                          //hit APi
+                                          _hitUpdateQuantity(
+                                              quantity:
+                                                  listData.product.quantity,
+                                              productId: listData.productId);
+
+                                          print("=====NOt equals=====");
+                                        } else {
+                                          print("=====Inequals=====");
+                                          return;
+                                        }
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        Icons.remove,
+                                        size: 24,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                    Container(
+                                      color: Colors.grey.shade200,
+                                      padding: const EdgeInsets.only(
+                                          bottom: 2, right: 12, left: 12),
+                                      child: Text(
+                                        _quantity.toString() ?? "1",
+                                        style: CustomTextStyle
+                                            .textFormFieldSemiBold,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _quantity += listData
+                                              .product.quantityIncrement;
+                                          listData.product.quantity =
+                                              (listData.product.quantity +
+                                                  listData.product
+                                                      .quantityIncrement);
+                                        });
                                         _hitUpdateQuantity(
                                             quantity: listData.product.quantity,
                                             productId: listData.productId);
-
-                                        print("=====NOt equals=====");
-                                      } else {
-                                        print("=====Inequals=====");
-                                        return;
-                                      }
-                                      setState(() {});
-                                    },
-                                    child: Icon(
-                                      Icons.remove,
-                                      size: 24,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                  Container(
-                                    color: Colors.grey.shade200,
-                                    padding: const EdgeInsets.only(
-                                        bottom: 2, right: 12, left: 12),
-                                    child: Text(
-                                      _quantity.toString() ?? "1",
-                                      style:
-                                          CustomTextStyle.textFormFieldSemiBold,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _quantity +=
-                                            listData.product.quantityIncrement;
-                                        listData.product.quantity = (listData
-                                                .product.quantity +
-                                            listData.product.quantityIncrement);
-                                      });
-                                      _hitUpdateQuantity(
-                                          quantity: listData.product.quantity,
-                                          productId: listData.productId);
-                                    },
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 24,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
+                                      },
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 24,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                flex: 100,
-              )
-            ],
-          ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: InkWell(
-            onTap: () {
-              _hitRemoveItemFromCart(position: pos, cartId: listData.id);
-            },
-            child: Container(
-              width: 24,
-              height: 24,
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(right: 10, top: 8),
-              child: Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 20,
-              ),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  color: Colors.green),
+                  flex: 100,
+                )
+              ],
             ),
           ),
-        )
-      ],
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                _hitRemoveItemFromCart(position: pos, cartId: listData.id);
+              },
+              child: Container(
+                width: 24,
+                height: 24,
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(right: 10, top: 8),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                    color: Colors.green),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

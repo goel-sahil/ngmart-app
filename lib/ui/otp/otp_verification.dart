@@ -11,8 +11,10 @@ import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/otp/otp_request.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
+import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:ngmartflutter/ui/resetPassword/ResetPasswordScreen.dart';
 import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
 import 'package:pin_view/pin_view.dart';
@@ -128,6 +130,7 @@ class _OtpverificationState extends State<Otpverification> {
             title: Text(
               "OTP Verification",
             ),
+            centerTitle: true,
           ),
           body: SingleChildScrollView(
             child: new Container(
@@ -235,15 +238,7 @@ class _OtpverificationState extends State<Otpverification> {
                           FontAwesomeIcons.replyAll,
                           size: 30,
                           color: colorResend,
-                        )
-
-                        /*new Image.asset(
-                        'images/resend.png',
-                        width: 40.0,
-                        height: 40.0,
-                        color: colorResend,
-                      ),*/
-                        ),
+                        )),
                   ),
                   Offstage(
                     offstage: offstageResend,
@@ -251,6 +246,11 @@ class _OtpverificationState extends State<Otpverification> {
                         onTap: () {
                           if (offstage == 0.0) {
                             startTimer();
+                            if (widget.otpType == OTPType.REGISTER) {
+                              _hitResendApi(url: APIs.resendOtp);
+                            } else {
+                              _hitResendApi(url: APIs.forgotPasswordResendOtp);
+                            }
                           }
                         },
                         child: new Text(
@@ -284,9 +284,10 @@ class _OtpverificationState extends State<Otpverification> {
         child: RaisedButton(
           onPressed: () async {
             if (widget.otpType == OTPType.REGISTER) {
-              _hitApi(url: APIs.otpVerify);
+              _hitApi(url: APIs.otpVerify, otpType: widget.otpType);
             } else {
-              _hitApi(url: APIs.forgotPasswordOtpVerify);
+              _hitApi(
+                  url: APIs.forgotPasswordOtpVerify, otpType: widget.otpType);
             }
           },
           child: Text(
@@ -303,7 +304,7 @@ class _OtpverificationState extends State<Otpverification> {
     );
   }
 
-  Future<void> _hitApi({String url}) async {
+  Future<void> _hitApi({String url, OTPType otpType}) async {
     bool gotInternetConnection = await hasInternetConnection(
       context: context,
       mounted: mounted,
@@ -316,14 +317,25 @@ class _OtpverificationState extends State<Otpverification> {
 
     if (gotInternetConnection) {
       provider.setLoading();
-      var request = OtpRequest(userId: widget.id, code: pinText);
-      var response = await provider.verifyOtp(request, context, url);
+      var request = OtpRequest(
+        userId: widget.id,
+        code: pinText,
+      );
+      var response =
+          await provider.verifyOtp(request, context, url,otpType);
       if (response is APIError) {
         showInSnackBar(response.error);
       } else {
-        CommonResponse commonResponse = response;
+        LoginResponse commonResponse = response;
         showInSnackBar(commonResponse.message);
         if (widget.otpType == OTPType.REGISTER) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            new CupertinoPageRoute(builder: (BuildContext context) {
+              return new NavigationDrawer();
+            }),
+            (route) => false,
+          );
         } else {
           Navigator.of(context).push(new CupertinoPageRoute(
               builder: (context) => ResetPasswordScreen(

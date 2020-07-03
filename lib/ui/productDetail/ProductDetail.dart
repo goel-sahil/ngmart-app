@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +9,16 @@ import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/buttons.dart';
 import 'package:ngmartflutter/helper/colors.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
+import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String pageTitle;
@@ -30,26 +35,65 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int _quantity = 1;
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
+  var _userLoggedIn = false;
 
-  Future<void> _hitApi({num quantity, int productId}) async {
+  Future<void> _hitApi(
+      {num quantity, int productId, bool fromBuyNow = false}) async {
     provider.setLoading();
     var response = await provider.addToCart(context, quantity, productId);
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
-      showInSnackBar(response.message);
+      if (fromBuyNow) {
+        var info = MemoryManagement.getUserInfo();
+        var userInfo = LoginResponse.fromJson(jsonDecode(info));
+        _hitPlaceOrderApi(addressId: userInfo.data.user.userAddresses.first.id);
+      }else{
+        showInSnackBar(response.message);
+      }
+    }
+  }
+
+  Future<void> _hitPlaceOrderApi({int addressId}) async {
+    provider.setLoading();
+    var response = await provider.placeOrder(context, addressId);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+      //showInSnackBar(response.message);
+      Alert(
+        context: context,
+        type: AlertType.success,
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+        title: 'Order Successfully placed.',
+        desc:
+            "Your order has been placed. We we reach out to you shortly with your order.",
+        image: Image.asset("images/tick.png"),
+      ).show();
     }
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKeys.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+    _scaffoldKeys.currentState.showSnackBar(new SnackBar(
+      content: new Text(value),
+      duration: Duration(seconds: 1),
+    ));
   }
 
   @override
   void initState() {
     _quantity = widget.productData.quantity;
     // TODO: implement initState
+    MemoryManagement.init();
+    _userLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
     super.initState();
   }
 
@@ -72,12 +116,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => CartPage(
-                                fromNavigationDrawer: false,
-                              )));
+                  if (_userLoggedIn) {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => CartPage(
+                                  fromNavigationDrawer: false,
+                                )));
+                  } else {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) => Login()));
+                  }
                 },
                 icon: Icon(
                   FontAwesomeIcons.shoppingCart,
@@ -160,7 +209,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               onPressed: () {
                                                 setState(() {
                                                   _quantity += widget
-                                                      .productData.quantityIncrement;
+                                                      .productData
+                                                      .quantityIncrement;
                                                 });
                                               },
                                               child: Icon(Icons.add),
@@ -178,10 +228,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             child: OutlineButton(
                                               onPressed: () {
                                                 print("_quantity==>$_quantity");
-                                                print("widget.productData.quantityIncrement==>${widget.productData.quantityIncrement}");
+                                                print(
+                                                    "widget.productData.quantityIncrement==>${widget.productData.quantityIncrement}");
                                                 setState(() {
-                                                  if (_quantity ==widget.productData.quantityIncrement) return;
-                                                  _quantity -= widget.productData.quantityIncrement;
+                                                  if (_quantity ==
+                                                      widget.productData
+                                                          .quantityIncrement)
+                                                    return;
+                                                  _quantity -= widget
+                                                      .productData
+                                                      .quantityIncrement;
                                                 });
                                               },
                                               child: Icon(Icons.remove),
@@ -194,17 +250,32 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 ),
                                 Container(
                                   width: 180,
-                                  child: froyoOutlineBtn('Buy Now', () {}),
+                                  child: froyoOutlineBtn('Buy Now', () {
+                                    if (_userLoggedIn) {
+                                      _hitApi(
+                                          productId: widget.productData.id,
+                                          quantity: _quantity,
+                                          fromBuyNow: true);
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                              builder: (context) => Login()));
+                                    }
+                                  }),
                                 ),
                                 Container(
                                   width: 180,
                                   child: froyoFlatBtn('Add to Cart', () {
-                                    if(_quantity>0) {
+                                    if (_userLoggedIn) {
                                       _hitApi(
                                           productId: widget.productData.id,
                                           quantity: _quantity);
-                                    }else{
-                                      showInSnackBar("Quantity should be greater than zero.");
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                              builder: (context) => Login()));
                                     }
                                   }),
                                 )

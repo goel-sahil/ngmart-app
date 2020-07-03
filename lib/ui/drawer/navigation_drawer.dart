@@ -8,10 +8,14 @@ import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
+import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
 import 'package:ngmartflutter/ui/profile/ProfileScreen.dart';
 import 'package:ngmartflutter/ui/search/SearchPage.dart';
+import 'package:ngmartflutter/ui/settings/setting.dart';
 import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
+import 'package:share/share.dart';
 
+import '../CommingSoonScreen.dart';
 import 'drawer_item.dart';
 import 'HomeScreen.dart';
 
@@ -26,6 +30,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   var drawerItems = new List();
   LoginResponse userInfo;
   Widget _body;
+  String _title = "NGMart";
 
   _onSelectItem(int index) {
     Navigator.pop(context);
@@ -33,40 +38,58 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     if (_isLoggedIn) {
       if (index == 0) {
         _body = HomeScreen();
+        _title = "Shop Now";
       } else if (index == 1) {
         //show profile
         _body = ProfileScreen();
+        _title = "My Profile";
       } else if (index == 2) {
         //show cart
         _body = CartPage(
           fromNavigationDrawer: true,
         );
+        _title = "My Cart";
       } else if (index == 3) {
         //show purchi
+        _title = "Buy with Purchi";
+        _body = CommingSoonScreen();
       } else if (index == 4) {
-        //show setting
+        //show order history
+        _body = OrderHistory();
+        _title = "Order History";
       } else if (index == 5) {
-        //show contact us
+        //show setting
+        _body = Setting();
+        _title = "Settings";
       } else if (index == 6) {
-        //show share
+        //show contact us
+        _title = "Contact us";
+        _body = CommingSoonScreen();
       } else if (index == 7) {
         onLogoutSuccess(context: context);
       }
     } else {
       if (index == 0) {
         _body = HomeScreen();
+        _title = "Shop Now";
       } else if (index == 1) {
         //Show Settings
+        _title = "Settings";
+        _body = Setting();
       } else if (index == 2) {
         // Contact us
-      } else if (index == 3) {
-        //share with friend
+        _title = "Contact us";
+        _body = CommingSoonScreen();
       }
     }
 
     setState(() {
       _selectionIndex = index;
     });
+  }
+
+  _shareApp() {
+    Share.share('check out my website https://example.com');
   }
 
   @override
@@ -85,14 +108,12 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       drawerItems.add(DrawerItem("My Cart", FontAwesomeIcons.shoppingCart));
       drawerItems
           .add(DrawerItem("Buy with Parchi", FontAwesomeIcons.buysellads));
+      drawerItems.add(DrawerItem("Order History", FontAwesomeIcons.history));
     }
     drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
-//    drawerItems.add(DrawerItem("About us", FontAwesomeIcons.userAlt));
-//    drawerItems.add(DrawerItem("Terms & policy", FontAwesomeIcons.terminal));
     drawerItems.add(DrawerItem("Contact us", FontAwesomeIcons.searchLocation));
-//    drawerItems.add(DrawerItem("Review us", FontAwesomeIcons.snapchat));
-    drawerItems
-        .add(DrawerItem("Share with friends", FontAwesomeIcons.shareAlt));
+//    drawerItems
+//        .add(DrawerItem("Share with friends", FontAwesomeIcons.shareAlt));
     if (_isLoggedIn) {
       drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     }
@@ -117,7 +138,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("NGMart"),
+        title: Text(_title ?? "NGMart"),
         centerTitle: true,
         actions: <Widget>[
           Padding(

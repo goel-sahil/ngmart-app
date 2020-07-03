@@ -50,50 +50,61 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       key: _scaffoldKeys,
       appBar: AppBar(
         title: Text("Forgot Password"),
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Form(
-          key: _fieldKey,
-          child: Column(
-            children: <Widget>[
-              getSpacer(height: 80),
-              getTextField(
-                context: context,
-                labelText: "Mobile Number",
-                obsectextType: false,
-                textType: TextInputType.number,
-                focusNodeNext: _mobileNumberField,
-                focusNodeCurrent: _mobileNumberField,
-                enablefield: true,
-                controller: _mobileNumberController,
-                validators: (val) => emptyValidator(
-                    value: val, txtMsg: "Please enter mobile number."),
-              ),
-              getSpacer(height: 20),
-              Container(
-                width: getScreenSize(context: context).width,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: RaisedButton(
-                  onPressed: () {
-                    if (_fieldKey.currentState.validate()) {
-                      _hitApi();
-                    }
-                  },
-                  child: Text(
-                    "SUBMIT",
-                    style: CustomTextStyle.textFormFieldRegular
-                        .copyWith(color: Colors.white, fontSize: 14),
+      body: Stack(
+        children: <Widget>[
+          SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Form(
+              key: _fieldKey,
+              child: Column(
+                children: <Widget>[
+                  getSpacer(height: 80),
+                  getTextField(
+                    context: context,
+                    labelText: "Mobile Number",
+                    obsectextType: false,
+                    textType: TextInputType.number,
+                    focusNodeNext: _mobileNumberField,
+                    focusNodeCurrent: _mobileNumberField,
+                    enablefield: true,
+                    controller: _mobileNumberController,
+                    validators: (val) => emptyValidator(
+                        value: val, txtMsg: "Please enter mobile number."),
                   ),
-                  color: AppColors.kPrimaryBlue,
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4))),
-                ),
+                  getSpacer(height: 20),
+                  Container(
+                    width: getScreenSize(context: context).width,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: RaisedButton(
+                      onPressed: () {
+                        if (_fieldKey.currentState.validate()) {
+                          _hitApi();
+                        }
+                      },
+                      child: Text(
+                        "SUBMIT",
+                        style: CustomTextStyle.textFormFieldRegular
+                            .copyWith(color: Colors.white, fontSize: 14),
+                      ),
+                      color: AppColors.kPrimaryBlue,
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          new Center(
+            child: getHalfScreenProviderLoader(
+              status: provider.getLoading(),
+              context: context,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -110,8 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _getCarousel(enlargeCenterPage: true),
                       getSpacer(height: 20),
                       Container(
-                        width: getScreenSize(context: context).width-30,
-
+                        width: getScreenSize(context: context).width - 30,
                         child: new FlatButton(
                             child: new Text(
                               "Order By Parchi",
