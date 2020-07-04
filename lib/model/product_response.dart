@@ -101,6 +101,7 @@ class DataInner {
   String updatedAt;
   String imageUrl;
   Brand brand;
+  Category category;
   Brand quantityUnit;
 
   DataInner(
@@ -120,6 +121,7 @@ class DataInner {
         this.updatedAt,
         this.imageUrl,
         this.brand,
+        this.category,
         this.quantityUnit});
 
   DataInner.fromJson(Map<String, dynamic> json) {
@@ -139,6 +141,9 @@ class DataInner {
     updatedAt = json['updated_at'];
     imageUrl = json['image_url'];
     brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
+    category = json['category'] != null
+        ? new Category.fromJson(json['category'])
+        : null;
     quantityUnit = json['quantity_unit'] != null
         ? new Brand.fromJson(json['quantity_unit'])
         : null;
@@ -164,6 +169,9 @@ class DataInner {
     if (this.brand != null) {
       data['brand'] = this.brand.toJson();
     }
+    if (this.category != null) {
+      data['category'] = this.category.toJson();
+    }
     if (this.quantityUnit != null) {
       data['quantity_unit'] = this.quantityUnit.toJson();
     }
@@ -186,6 +194,51 @@ class Brand {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['title'] = this.title;
+    return data;
+  }
+}
+
+class Category {
+  int id;
+  String title;
+  String image;
+  int categoryId;
+  int status;
+  String createdAt;
+  String updatedAt;
+  String imageUrl;
+
+  Category(
+      {this.id,
+        this.title,
+        this.image,
+        this.categoryId,
+        this.status,
+        this.createdAt,
+        this.updatedAt,
+        this.imageUrl});
+
+  Category.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    image = json['image'];
+    categoryId = json['category_id'];
+    status = json['status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    imageUrl = json['image_url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['image'] = this.image;
+    data['category_id'] = this.categoryId;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['image_url'] = this.imageUrl;
     return data;
   }
 }

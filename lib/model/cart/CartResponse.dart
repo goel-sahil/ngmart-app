@@ -86,8 +86,8 @@ class Product {
   String updatedAt;
   String imageUrl;
   Category category;
-  Brand brand;
-  Brand quantityUnit;
+  CartBrand brand;
+  CartBrand quantityUnit;
 
   Product(
       {this.id,
@@ -128,9 +128,9 @@ class Product {
     category = json['category'] != null
         ? new Category.fromJson(json['category'])
         : null;
-    brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
+    brand = json['brand'] != null ? new CartBrand.fromJson(json['brand']) : null;
     quantityUnit = json['quantity_unit'] != null
-        ? new Brand.fromJson(json['quantity_unit'])
+        ? new CartBrand.fromJson(json['quantity_unit'])
         : null;
   }
 
@@ -209,13 +209,13 @@ class Category {
   }
 }
 
-class Brand {
+class CartBrand {
   int id;
   String title;
 
-  Brand({this.id, this.title});
+  CartBrand({this.id, this.title});
 
-  Brand.fromJson(Map<String, dynamic> json) {
+  CartBrand.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
   }

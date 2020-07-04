@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
+import 'package:ngmartflutter/ui/cart/CartPage.dart';
+import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:ngmartflutter/ui/productList/ProductList.dart';
 import 'HomeScreen.dart';
 
@@ -17,6 +21,15 @@ class SubCategoryScreen extends StatefulWidget {
 }
 
 class _SubCategoryScreenState extends State<SubCategoryScreen> {
+  var _userLoggedIn = false;
+
+  @override
+  void initState() {
+    MemoryManagement.init();
+    _userLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,6 +38,27 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
           appBar: AppBar(
             title: Text(widget.catName ?? "SubCategory"),
             centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.shoppingCart,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  if (_userLoggedIn) {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => CartPage(
+                                  fromNavigationDrawer: false,
+                                )));
+                  } else {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) => Login()));
+                  }
+                },
+              ),
+            ],
           ),
           body: _buildGridItem(),
         ),
@@ -41,7 +75,10 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
         return prepareList(index, widget.categories[index]);
       },
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, childAspectRatio: 1.0 / 1.03),
+        crossAxisCount: 3,
+        childAspectRatio: getScreenSize(context: context).width /
+            (getScreenSize(context: context).height / 1.5),
+      ),
       itemCount: widget.categories.length,
     );
   }

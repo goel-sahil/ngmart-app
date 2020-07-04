@@ -13,9 +13,11 @@ import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
+import 'package:ngmartflutter/ui/checkout/CheckOutPage.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -45,16 +47,30 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
       if (fromBuyNow) {
-        var info = MemoryManagement.getUserInfo();
-        var userInfo = LoginResponse.fromJson(jsonDecode(info));
-        _hitPlaceOrderApi(addressId: userInfo.data.user.userAddresses.first.id);
-      }else{
+        var brand = CartBrand(title: widget.productData.brand.title);
+        var product = Product(
+            title: widget.productData.title,
+            brand: brand,
+            quantity: _quantity,
+            imageUrl: widget.productData.imageUrl);
+        var cartData =
+            CartData(productId: widget.productData.id, product: product);
+        var list = List<CartData>();
+        list.add(cartData);
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => CheckOutPage(
+                      cartList: list,
+                      total: widget.productData.price,
+                    )));
+      } else {
         showInSnackBar(response.message);
       }
     }
   }
 
-  Future<void> _hitPlaceOrderApi({int addressId}) async {
+/*  Future<void> _hitPlaceOrderApi({int addressId}) async {
     provider.setLoading();
     var response = await provider.placeOrder(context, addressId);
     if (response is APIError) {
@@ -79,7 +95,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         image: Image.asset("images/tick.png"),
       ).show();
     }
-  }
+  }*/
 
   void showInSnackBar(String value) {
     _scaffoldKeys.currentState.showSnackBar(new SnackBar(
@@ -155,14 +171,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                    "Brand : ${widget.productData.brand.title}",
+                                Text("${widget.productData.brand.title}",
                                     style: h3),
                                 getSpacer(height: 6),
                                 Text(widget.productData.title, style: h4),
                                 getSpacer(height: 6),
                                 Text(
-                                    "\₹${widget.productData.price} / ${widget.productData.quantity} ${widget.productData.quantityUnit.title}",
+                                    "${getFormattedCurrency(widget.productData.price.toDouble())} / ${widget.productData.quantity} ${widget.productData.quantityUnit.title}",
                                     style: h5),
                                 Container(
                                   margin: EdgeInsets.only(top: 5, bottom: 20),
@@ -174,7 +189,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         SizedBox(
                                           height: 4,
                                         ),
-                                        Text('Description:', style: h5),
+                                        Text(
+                                            '${widget.productData.category.title}',
+                                            style: h5),
                                         SizedBox(
                                           height: 2,
                                         ),

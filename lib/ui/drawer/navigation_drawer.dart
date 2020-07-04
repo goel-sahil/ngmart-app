@@ -38,7 +38,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     if (_isLoggedIn) {
       if (index == 0) {
         _body = HomeScreen();
-        _title = "Shop Now";
+        _title = "NGMart";
       } else if (index == 1) {
         //show profile
         _body = ProfileScreen();

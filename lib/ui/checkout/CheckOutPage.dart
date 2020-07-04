@@ -1,74 +1,113 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+import 'package:ngmartflutter/helper/ReusableWidgets.dart';
+import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/model/cart/CartResponse.dart';
+import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
+import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
+import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CheckOutPage extends StatefulWidget {
+  List<CartData> cartList;
+  num total;
+
+  CheckOutPage({this.cartList, this.total});
+
   @override
   _CheckOutPageState createState() => _CheckOutPageState();
 }
 
 class _CheckOutPageState extends State<CheckOutPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  DashboardProvider provider;
+  LoginResponse userInfo;
+
+  @override
+  void initState() {
+    MemoryManagement.init();
+    var info = MemoryManagement.getUserInfo();
+    userInfo = LoginResponse.fromJson(jsonDecode(info));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    provider = Provider.of<DashboardProvider>(context);
+    return SafeArea(
+      child: Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
           title: Text(
-            "ADDRESS",
-            style: TextStyle(color: Colors.white, fontSize: 14),
+            "Address",
           ),
+          centerTitle: true,
         ),
-        body: Builder(builder: (context) {
-          return Column(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  child: ListView(
-                    children: <Widget>[
-                      selectedAddressSection(),
-                      standardDelivery(),
-                      checkoutItem(),
-                      priceSection()
-                    ],
-                  ),
-                ),
-                flex: 90,
-              ),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: RaisedButton(
-                    onPressed: () {
-                      /*Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (context) => OrderPlacePage()));*/
-                      showThankYouBottomSheet(context);
-                    },
-                    child: Text(
-                      "Place Order",
-                      style: CustomTextStyle.textFormFieldMedium.copyWith(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
+        body: Stack(
+          children: <Widget>[
+            Builder(builder: (context) {
+              return Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: ListView(
+                        children: <Widget>[
+                          selectedAddressSection(),
+                          standardDelivery(),
+                          checkoutItem(),
+                          priceSection()
+                        ],
+                      ),
                     ),
-                    color: Colors.pink,
-                    textColor: Colors.white,
+                    flex: 90,
                   ),
-                ),
-                flex: 10,
-              )
-            ],
-          );
-        }),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      child: RaisedButton(
+                        onPressed: () {
+                          /*Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (context) => OrderPlacePage()));*/
+                          //showThankYouBottomSheet(context);
+                          _hitPlaceOrderApi(
+                              addressId:
+                                  userInfo.data.user.userAddresses.first.id);
+                        },
+                        child: Text(
+                          "Place Order",
+                          style: CustomTextStyle.textFormFieldMedium.copyWith(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        color: AppColors.kPrimaryBlue,
+                        textColor: Colors.white,
+                      ),
+                    ),
+                    flex: 10,
+                  )
+                ],
+              );
+            }),
+            new Center(
+              child: getHalfScreenProviderLoader(
+                status: provider.getLoading(),
+                context: context,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -96,6 +135,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               ),
               flex: 5,
             ),
+            //Your order has been placed. We we reach out to you shortly with your order.
             Expanded(
               child: Container(
                 margin: EdgeInsets.only(left: 16, right: 16),
@@ -106,7 +146,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         text: TextSpan(children: [
                           TextSpan(
                             text:
-                                "\n\nThank you for your purchase. Our company values each and every customer. We strive to provide state-of-the-art devices that respond to our clients’ individual needs. If you have any questions or feedback, please don’t hesitate to reach out.",
+                                "\n\nThank you for your purchase. Our company values each and every customer."
+                                    " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
+                                    "If you have any questions or feedback, please don’t hesitate to reach out.",
                             style: CustomTextStyle.textFormFieldMedium.copyWith(
                                 fontSize: 14, color: Colors.grey.shade800),
                           )
@@ -115,14 +157,24 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       height: 24,
                     ),
                     RaisedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          new CupertinoPageRoute(
+                              builder: (BuildContext context) {
+                            return new NavigationDrawer();
+                          }),
+                          (route) => false,
+                        );
+                      },
                       padding: EdgeInsets.only(left: 48, right: 48),
                       child: Text(
-                        "Track Order",
+                        "Close",
                         style: CustomTextStyle.textFormFieldMedium
                             .copyWith(color: Colors.white),
                       ),
-                      color: Colors.pink,
+                      color: AppColors.kPrimaryBlue,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(24))),
                     )
@@ -167,7 +219,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "James Francois (Default)",
+                    "${userInfo.data.user.firstName ?? ""} ${userInfo.data.user.lastName ?? ""}(Default)",
                     style: CustomTextStyle.textFormFieldSemiBold
                         .copyWith(fontSize: 14),
                   ),
@@ -180,16 +232,20 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         borderRadius: BorderRadius.all(Radius.circular(16))),
                     child: Text(
                       "HOME",
-                      style: CustomTextStyle.textFormFieldBlack.copyWith(
-                          color: Colors.indigoAccent.shade200, fontSize: 8),
+                      style: CustomTextStyle.textFormFieldBlack
+                          .copyWith(color: Colors.green, fontSize: 8),
                     ),
                   )
                 ],
               ),
               createAddressText(
-                  "431, Commerce House, Nagindas Master, Fort", 16),
-              createAddressText("Mumbai - 400023", 6),
-              createAddressText("Maharashtra", 6),
+                  "${userInfo.data.user.userAddresses.first.address ?? ""}",
+                  16),
+              createAddressText(
+                  "${userInfo.data.user.userAddresses.first.city ?? ""} - ${userInfo.data.user.userAddresses.first.pinCode ?? ""}",
+                  6),
+              createAddressText(
+                  "${userInfo.data.user.userAddresses.first.state ?? ""}", 6),
               SizedBox(
                 height: 6,
               ),
@@ -200,7 +256,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       style: CustomTextStyle.textFormFieldMedium
                           .copyWith(fontSize: 12, color: Colors.grey.shade800)),
                   TextSpan(
-                      text: "02222673745",
+                      text: "${userInfo.data.user.phoneNumber ?? ""}",
                       style: CustomTextStyle.textFormFieldBold
                           .copyWith(color: Colors.black, fontSize: 12)),
                 ]),
@@ -208,12 +264,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
               SizedBox(
                 height: 16,
               ),
-              Container(
-                color: Colors.grey.shade300,
-                height: 1,
-                width: double.infinity,
-              ),
-              addressAction()
+//              Container(
+//                color: Colors.grey.shade300,
+//                height: 1,
+//                width: double.infinity,
+//              ),
+              //addressAction()
             ],
           ),
         ),
@@ -308,7 +364,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 height: 5,
               ),
               Text(
-                "Get it by 20 jul - 27 jul | Free Delivery",
+                "Free Delivery",
                 style: CustomTextStyle.textFormFieldMedium.copyWith(
                   color: Colors.black,
                   fontSize: 12,
@@ -338,9 +394,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
           padding: EdgeInsets.only(left: 12, top: 8, right: 12, bottom: 8),
           child: ListView.builder(
             itemBuilder: (context, position) {
-              return checkoutListItem();
+              return checkoutListItem(widget.cartList[position]);
             },
-            itemCount: 3,
+            itemCount: widget.cartList.length,
             shrinkWrap: true,
             primary: false,
             scrollDirection: Axis.vertical,
@@ -350,20 +406,17 @@ class _CheckOutPageState extends State<CheckOutPage> {
     );
   }
 
-  checkoutListItem() {
+  checkoutListItem(CartData cartList) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: <Widget>[
           Container(
-            child: Image(
-              image: AssetImage(
-                "images/details_shoes_image.webp",
-              ),
-              width: 35,
-              height: 45,
-              fit: BoxFit.fitHeight,
-            ),
+            child: getCachedNetworkImage(
+                url: cartList.product.imageUrl ?? "",
+                height: 35,
+                width: 35,
+                fit: BoxFit.fitHeight),
             decoration:
                 BoxDecoration(border: Border.all(color: Colors.grey, width: 1)),
           ),
@@ -373,11 +426,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
           RichText(
             text: TextSpan(children: [
               TextSpan(
-                  text: "Estimated Delivery : ",
+                  text:
+                      "${cartList.product.title} | ${cartList.product?.brand?.title??""}   ",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12)),
               TextSpan(
-                  text: "21 Jul 2019 ",
+                  text: "  Qty:${cartList.product.quantity}",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12, fontWeight: FontWeight.w600))
             ]),
@@ -427,13 +481,15 @@ class _CheckOutPageState extends State<CheckOutPage> {
               SizedBox(
                 height: 8,
               ),
-              createPriceItem("Total MRP", getFormattedCurrency(5197),
-                  Colors.grey.shade700),
-              createPriceItem("Bag discount", getFormattedCurrency(3280),
-                  Colors.teal.shade300),
+//              createPriceItem("Total MRP", getFormattedCurrency(5197),
+//                  Colors.grey.shade700),
+//              createPriceItem("Bag discount", getFormattedCurrency(3280),
+//                  Colors.teal.shade300),
+//              createPriceItem(
+//                  "Tax", getFormattedCurrency(96), Colors.grey.shade700),
               createPriceItem(
-                  "Tax", getFormattedCurrency(96), Colors.grey.shade700),
-              createPriceItem("Order Total", getFormattedCurrency(2013),
+                  "Order Total",
+                  getFormattedCurrency(widget.total.toDouble()),
                   Colors.grey.shade700),
               createPriceItem(
                   "Delievery Charges", "FREE", Colors.teal.shade300),
@@ -459,7 +515,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         .copyWith(color: Colors.black, fontSize: 12),
                   ),
                   Text(
-                    getFormattedCurrency(2013),
+                    getFormattedCurrency(widget.total.toDouble()),
                     style: CustomTextStyle.textFormFieldMedium
                         .copyWith(color: Colors.black, fontSize: 12),
                   )
@@ -470,20 +526,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ),
       ),
     );
-  }
-
-  String getFormattedCurrency(double amount) {
-    FlutterMoneyFormatter fmf = new FlutterMoneyFormatter(
-        amount: amount,
-        settings: MoneyFormatterSettings(
-          symbol: '₹',
-          thousandSeparator: ',',
-          decimalSeparator: '.',
-          symbolAndNumberSeparator: ' ',
-          fractionDigits: 3,
-        ));
-
-    return fmf.output.symbolOnLeft;
   }
 
   createPriceItem(String key, String value, Color color) {
@@ -505,5 +547,49 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ],
       ),
     );
+  }
+
+  Future<void> _hitPlaceOrderApi({int addressId}) async {
+    provider.setLoading();
+    var response = await provider.placeOrder(context, addressId);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+      //showInSnackBar(response.message);
+      showThankYouBottomSheet(context);
+      /* Alert(
+        context: context,
+        type: AlertType.success,
+        buttons: [
+          DialogButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushAndRemoveUntil(
+                context,
+                new CupertinoPageRoute(builder: (BuildContext context) {
+                  return new NavigationDrawer();
+                }),
+                (route) => false,
+              );
+            },
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+        title: 'Order Successfully placed.',
+        desc:
+            "Your order has been placed. We we reach out to you shortly with your order.",
+        image: Image.asset("images/tick.png"),
+      ).show();*/
+    }
+  }
+
+  void showInSnackBar(String value) {
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: new Text(value),
+      duration: Duration(seconds: 2),
+    ));
   }
 }

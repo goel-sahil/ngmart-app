@@ -13,6 +13,7 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
+import 'package:ngmartflutter/ui/checkout/CheckOutPage.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -73,33 +74,6 @@ class _CartPageState extends State<CartPage> {
       showInSnackBar(response.message);
       cartList.removeAt(position);
       setState(() {});
-    }
-  }
-
-  Future<void> _hitPlaceOrderApi({int addressId}) async {
-    provider.setLoading();
-    var response = await provider.placeOrder(context, addressId);
-    if (response is APIError) {
-      showInSnackBar(response.error);
-    } else if (response is CommonResponse) {
-      //showInSnackBar(response.message);
-      Alert(
-        context: context,
-        type: AlertType.success,
-        buttons: [
-          DialogButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ],
-        title: 'Order Successfully placed.',
-        desc:
-            "Your order has been placed. We we reach out to you shortly with your order.",
-        image: Image.asset("images/tick.png"),
-      ).show();
     }
   }
 
@@ -176,7 +150,7 @@ class _CartPageState extends State<CartPage> {
               Container(
                 margin: EdgeInsets.only(right: 30),
                 child: Text(
-                  "\$$total",
+                  "${getFormattedCurrency(total.toDouble())}",
                   style: CustomTextStyle.textFormFieldBlack.copyWith(
                       color: Colors.greenAccent.shade700, fontSize: 14),
                 ),
@@ -186,11 +160,13 @@ class _CartPageState extends State<CartPage> {
           getSpacer(height: 8),
           RaisedButton(
             onPressed: () {
-              MemoryManagement.init();
-              var info = MemoryManagement.getUserInfo();
-              var userInfo = LoginResponse.fromJson(jsonDecode(info));
-              _hitPlaceOrderApi(
-                  addressId: userInfo.data.user.userAddresses.first.id);
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => CheckOutPage(
+                            cartList: cartList,
+                            total: total,
+                          )));
             },
             color: Colors.green,
             padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
@@ -255,14 +231,7 @@ class _CartPageState extends State<CartPage> {
 
   createCartListItem({CartData listData, int pos}) {
     return GestureDetector(
-      onTap: () {
-//        Navigator.push(
-//            context,
-//            CupertinoPageRoute(
-//                builder: (context) => ProductDetailPage(
-//                  productData: listData,
-//                )));
-      },
+      onTap: () {},
       child: Stack(
         children: <Widget>[
           Container(
@@ -310,7 +279,7 @@ class _CartPageState extends State<CartPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "\₹${listData.product.price} / ${listData.product.quantity} ${listData.product.quantityUnit.title}",
+                                "${getFormattedCurrency(listData.product.price.toDouble())} / ${listData.product.quantity} ${listData.product.quantityUnit.title}",
                                 style: CustomTextStyle.textFormFieldBlack
                                     .copyWith(color: Colors.green),
                               ),

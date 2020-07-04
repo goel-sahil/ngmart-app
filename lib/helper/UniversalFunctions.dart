@@ -16,6 +16,7 @@ import 'AssetStrings.dart';
 import 'Messages.dart';
 import 'UniversalProperties.dart';
 import 'memory_management.dart';
+import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
 // Todo: actual
 
@@ -60,12 +61,6 @@ void onLogoutSuccess({
   @required BuildContext context,
 }) {
   MemoryManagement.clearMemory();
-
-/*
-  if (isAndroid()) {
-    Fluttertoast.clearAllNotifications();
-  }
-  isUserSignedIn = false;*/
   customPushAndRemoveUntilSplash(
     context: context,
   );
@@ -524,7 +519,6 @@ void closeKeyboard({
 }
 
 void launchUrl(String url) async {
-//
   print("launch url $url");
   if (await canLaunch(url)) {
     await launch(url);
@@ -573,7 +567,6 @@ String getFormattedDateString({
 }) {
   return dateTime != null
       ? new DateFormat(format ?? "MMMM dd, y").format(dateTime)
-      //.replaceAll(".", "")
       : "-";
 }
 
@@ -584,4 +577,18 @@ String formatAmount(String amount) {
   } catch (e) {
     return "";
   }
+}
+
+
+String getFormattedCurrency(double amount) {
+  FlutterMoneyFormatter fmf = new FlutterMoneyFormatter(
+      amount: amount,
+      settings: MoneyFormatterSettings(
+        symbol: '₹',
+        thousandSeparator: ',',
+        decimalSeparator: '.',
+        symbolAndNumberSeparator: ' ',
+      ));
+
+  return fmf.output.symbolOnLeft;
 }

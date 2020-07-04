@@ -158,17 +158,6 @@ class APIHandler {
           onAlertPop: () {},
         );
         completer.complete(apiError);
-      } else if (e.response?.statusCode == 400) {
-        APIError apiError = new APIError(
-          error: parseError(e.response.data),
-          status: 400,
-          onAlertPop: () {
-            onLogoutSuccess(
-              context: context,
-            );
-          },
-        );
-        completer.complete(apiError);
       } else if (e.response?.statusCode == 401) {
         APIError apiError = new APIError(
           error: Messages.unAuthorizedError,

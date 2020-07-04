@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
@@ -10,36 +7,19 @@ import 'package:ngmartflutter/model/orderHistory/orderHistory.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'OrderHistoryItems.dart';
+class OrderItemsScreen extends StatefulWidget {
+  List<OrderItems> dataList;
+  var orderId;
 
-class OrderHistory extends StatefulWidget {
+  OrderItemsScreen({this.dataList, this.orderId});
+
   @override
-  _OrderHistoryState createState() => _OrderHistoryState();
+  _OrderItemsScreenState createState() => _OrderItemsScreenState();
 }
 
-class _OrderHistoryState extends State<OrderHistory> {
+class _OrderItemsScreenState extends State<OrderItemsScreen> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  List<DataOrderHistory> dataList = new List();
-
-  @override
-  void initState() {
-    Timer(Duration(milliseconds: 500), () {
-      _hitApi();
-    });
-    super.initState();
-  }
-
-  Future<void> _hitApi() async {
-    provider.setLoading();
-    var response = await provider.getOrderHistory(context);
-    if (response is APIError) {
-      showInSnackBar(response.error);
-    } else if (response is OrderHistoryResponse) {
-      dataList = response.data.dataInner;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +27,17 @@ class _OrderHistoryState extends State<OrderHistory> {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.grey.shade100,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Order ID : ${widget.orderId}"),
+        ),
         body: Stack(
           children: <Widget>[
             ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                return createCartListItem(dataList[index]);
+                return createCartListItem(widget.dataList[index]);
               },
-              itemCount: dataList.length ?? 0,
+              itemCount: widget.dataList.length ?? 0,
             ),
             new Center(
               child: getHalfScreenProviderLoader(
@@ -61,7 +45,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                 context: context,
               ),
             ),
-            (dataList.length == 0) && (provider.getLoading() == false)
+            (widget.dataList.length == 0)
                 ? Center(
                     child:
                         getNoDataView(msg: "No Orders found.", onRetry: null))
@@ -70,17 +54,9 @@ class _OrderHistoryState extends State<OrderHistory> {
         ));
   }
 
-  createCartListItem(DataOrderHistory productList) {
+  createCartListItem(OrderItems productList) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => OrderItemsScreen(
-                      dataList: productList.orderItems,
-                      orderId: productList.id,
-                    )));
-      },
+      onTap: () {},
       child: Stack(
         children: <Widget>[
           Container(
@@ -98,8 +74,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                       borderRadius: BorderRadius.all(Radius.circular(14)),
                       color: Colors.blue.shade50,
                       image: DecorationImage(
-                          image: NetworkImage(
-                              productList.orderItems.first.product.imageUrl))),
+                          image: NetworkImage(productList.product.imageUrl))),
                 ),
                 Expanded(
                   child: Container(
@@ -111,7 +86,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                         Container(
                           padding: EdgeInsets.only(right: 8, top: 4),
                           child: Text(
-                            "Order ID: ${productList.orderItems.first.orderId}",
+                            "${productList.product.title}",
                             maxLines: 2,
                             softWrap: true,
                             style: CustomTextStyle.textFormFieldSemiBold
@@ -120,7 +95,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                         ),
                         getSpacer(height: 6),
                         Text(
-                          "Price: ${getFormattedCurrency(productList.totalPrice.toDouble())}",
+                          "${productList.product.brand.title}",
                           style: CustomTextStyle.textFormFieldRegular.copyWith(
                             color: Colors.grey,
                             fontSize: 14,
@@ -131,7 +106,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "Date: ${getFormattedDateString(dateTime: getDateFromString(dateString: productList.createdAt))}",
+                                "${getFormattedCurrency(productList.product.price.toDouble())} / ${productList.product.quantity} ${productList.product.quantityUnit.title}",
                                 style: CustomTextStyle.textFormFieldBlack
                                     .copyWith(color: Colors.green),
                               ),

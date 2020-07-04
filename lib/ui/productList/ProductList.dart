@@ -2,12 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/colors.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
+import 'package:ngmartflutter/ui/cart/CartPage.dart';
+import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:ngmartflutter/ui/productDetail/ProductDetail.dart';
 import 'package:provider/provider.dart';
 
@@ -24,12 +29,15 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var _userLoggedIn = false;
 
   @override
   void initState() {
     Timer(Duration(milliseconds: 500), () {
       _hitApi();
     });
+    MemoryManagement.init();
+    _userLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
     super.initState();
   }
 
@@ -51,6 +59,27 @@ class _ProductScreenState extends State<ProductScreen> {
         appBar: AppBar(
           title: Text(widget.title ?? "Products"),
           centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                FontAwesomeIcons.shoppingCart,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                if (_userLoggedIn) {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => CartPage(
+                                fromNavigationDrawer: false,
+                              )));
+                } else {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => Login()));
+                }
+              },
+            ),
+          ],
         ),
         backgroundColor: Colors.grey.shade100,
         body: Stack(
@@ -226,7 +255,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "\₹${productList.price} / ${productList.quantity} ${productList.quantityUnit.title}",
+                                "${getFormattedCurrency(productList.price.toDouble())} / ${productList.quantity} ${productList.quantityUnit.title}",
                                 style: CustomTextStyle.textFormFieldBlack
                                     .copyWith(color: Colors.green),
                               ),
