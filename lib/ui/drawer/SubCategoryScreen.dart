@@ -77,7 +77,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: getScreenSize(context: context).width /
-            (getScreenSize(context: context).height / 1.5),
+            (getScreenSize(context: context).height / 1.56),
       ),
       itemCount: widget.categories.length,
     );

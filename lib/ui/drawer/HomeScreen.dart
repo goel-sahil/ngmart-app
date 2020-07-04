@@ -134,11 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           return prepareList(index, categoryList[index]);
                         },
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: getScreenSize(context: context)
-                                  .width /
-                              (getScreenSize(context: context).height / 1.5),
-                        ),
+                            crossAxisCount: 3, childAspectRatio: getScreenSize(context: context).width /
+                            (getScreenSize(context: context).height / 1.56),),
                         itemCount: categoryList.length,
                       ),
                       getSpacer(height: 10),

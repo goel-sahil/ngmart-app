@@ -14,11 +14,13 @@ import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
 import 'package:ngmartflutter/model/orderHistory/orderHistory.dart';
 import 'package:ngmartflutter/model/placeOrder/PlaceOrderRequest.dart';
+import 'package:ngmartflutter/model/product/search_product_request.dart';
 import 'package:ngmartflutter/model/product_request.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 
 class DashboardProvider with ChangeNotifier {
   List<DataInner> productList = new List();
+  List<DataInner> searchProductList = new List();
 
   var _isLoading = false;
 
@@ -61,6 +63,25 @@ class DashboardProvider with ChangeNotifier {
       print("Response==> $response");
       ProductResponse productResponse = new ProductResponse.fromJson(response);
       productList.addAll(productResponse.data.dataInner);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> getSearchedProducts(BuildContext context, String txt) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    var request = SearchProductRequest(searchTxt: txt);
+    var response = await APIHandler.post(
+        context: context, url: APIs.getProducts, requestBody: request);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      ProductResponse productResponse = new ProductResponse.fromJson(response);
+      searchProductList.clear();
+      searchProductList.addAll(productResponse.data.dataInner);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;
