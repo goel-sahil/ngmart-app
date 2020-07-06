@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ngmartflutter/Network/APIHandler.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
@@ -19,8 +16,7 @@ import 'package:ngmartflutter/model/product_request.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 
 class DashboardProvider with ChangeNotifier {
-  List<DataInner> productList = new List();
-  List<DataInner> searchProductList = new List();
+  List<CategoryData> categoryList = new List();
 
   var _isLoading = false;
 
@@ -42,16 +38,17 @@ class DashboardProvider with ChangeNotifier {
       print("Response==> $response");
       CategoriesResponse categoriesResponse =
           new CategoriesResponse.fromJson(response);
+      categoryList.addAll(categoriesResponse.data);
       completer.complete(categoriesResponse);
       notifyListeners();
       return completer.future;
     }
   }
 
-  Future<dynamic> getProducts(BuildContext context, int catId) async {
+  Future<dynamic> getProducts(
+      BuildContext context, int catId, int currentPageNumber) async {
     Completer<dynamic> completer = new Completer<dynamic>();
-    productList.clear();
-    var request = ProductRequest(categoryId: [catId]);
+    var request = ProductRequest(categoryId: [catId], page: currentPageNumber);
     var response = await APIHandler.post(
         context: context, url: APIs.getProducts, requestBody: request);
 
@@ -62,16 +59,16 @@ class DashboardProvider with ChangeNotifier {
     } else {
       print("Response==> $response");
       ProductResponse productResponse = new ProductResponse.fromJson(response);
-      productList.addAll(productResponse.data.dataInner);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;
     }
   }
 
-  Future<dynamic> getSearchedProducts(BuildContext context, String txt) async {
+  Future<dynamic> getSearchedProducts(
+      BuildContext context, String txt, int currentPageNumber) async {
     Completer<dynamic> completer = new Completer<dynamic>();
-    var request = SearchProductRequest(searchTxt: txt);
+    var request = SearchProductRequest(searchTxt: txt, page: currentPageNumber);
     var response = await APIHandler.post(
         context: context, url: APIs.getProducts, requestBody: request);
     hideLoader();
@@ -80,8 +77,6 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     } else {
       ProductResponse productResponse = new ProductResponse.fromJson(response);
-      searchProductList.clear();
-      searchProductList.addAll(productResponse.data.dataInner);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;

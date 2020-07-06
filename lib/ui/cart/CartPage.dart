@@ -26,7 +26,7 @@ class CartPage extends StatefulWidget {
   _CartPageState createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage> {
+class _CartPageState extends State<CartPage> with AutomaticKeepAliveClientMixin<CartPage> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<CartData> cartList = new List();
@@ -40,6 +40,9 @@ class _CartPageState extends State<CartPage> {
     });
     super.initState();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Future<void> _hitApi() async {
     provider.setLoading();

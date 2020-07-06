@@ -98,9 +98,8 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            getNetworkImage(
-                url: categories.imageUrl ??
-                    "https://www.festivalclaca.cat/imgfv/m/248-2486181_red-kashmir-apple-png-free-download-apple-fruit.png"),
+            getCachedNetworkImage(
+                url: categories.imageUrl, height: 100, width: 100),
             getSpacer(height: 10),
             Container(
               color: Colors.black26,

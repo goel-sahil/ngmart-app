@@ -23,7 +23,7 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin<ProfileScreen>{
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
   TextEditingController _firstNameController = new TextEditingController();
   TextEditingController _lastNameController = new TextEditingController();
@@ -52,7 +52,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   FocusNode _stateField = new FocusNode();
   FocusNode _countryField = new FocusNode();
   LoginProvider provider;
-
+  @override
+  bool get wantKeepAlive => true;
   Future<void> _hitApi() async {
     bool gotInternetConnection = await hasInternetConnection(
       context: context,

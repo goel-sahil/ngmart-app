@@ -17,11 +17,14 @@ class OrderHistory extends StatefulWidget {
   _OrderHistoryState createState() => _OrderHistoryState();
 }
 
-class _OrderHistoryState extends State<OrderHistory> {
+class _OrderHistoryState extends State<OrderHistory> with AutomaticKeepAliveClientMixin<OrderHistory>{
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<DataOrderHistory> dataList = new List();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {

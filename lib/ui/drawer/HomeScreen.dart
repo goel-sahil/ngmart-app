@@ -21,13 +21,13 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>  with AutomaticKeepAliveClientMixin<HomeScreen>{
   List<Container> listData = new List();
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Data> categoryList = new List();
+  List<CategoryData> categoryList = new List();
 
-  Widget prepareList(int k, Data categoryList) {
+  Widget prepareList(int k, CategoryData categoryList) {
     return Card(
       child: InkWell(
         onTap: () {
@@ -52,9 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            getNetworkImage(
-                url: categoryList.imageUrl ??
-                    "https://www.festivalclaca.cat/imgfv/m/248-2486181_red-kashmir-apple-png-free-download-apple-fruit.png"),
+            getCachedNetworkImage(
+                url: categoryList.imageUrl, height: 100, width: 100),
             getSpacer(height: 10),
             Container(
               color: Colors.black26,
@@ -75,9 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    Timer(Duration(milliseconds: 500), () {
-      _hitApi();
-    });
+      Timer(Duration(milliseconds: 500), () {
+        _hitApi();
+      });
     super.initState();
   }
 
@@ -90,6 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
       categoryList.addAll(response.data);
     }
   }
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -134,8 +135,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           return prepareList(index, categoryList[index]);
                         },
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3, childAspectRatio: getScreenSize(context: context).width /
-                            (getScreenSize(context: context).height / 1.56),),
+                          crossAxisCount: 3,
+                          childAspectRatio: getScreenSize(context: context)
+                                  .width /
+                              (getScreenSize(context: context).height / 1.6),
+                        ),
                         itemCount: categoryList.length,
                       ),
                       getSpacer(height: 10),

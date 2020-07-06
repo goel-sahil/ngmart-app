@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
-import 'package:ngmartflutter/helper/AppColors.dart';
+import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/product_response.dart';
@@ -20,9 +20,16 @@ class _SearchPageState extends State<SearchPage> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController _searchController = new TextEditingController();
+  int _currentPageNumber = 1;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+  bool _loadMore = false;
+  ScrollController scrollController = new ScrollController();
+  List<DataInner> searchProductList = new List();
 
   @override
   void initState() {
+    _setScrollListener();
     super.initState();
   }
 
@@ -31,13 +38,44 @@ class _SearchPageState extends State<SearchPage> {
         .showSnackBar(new SnackBar(content: new Text(value)));
   }
 
+  void _setScrollListener() {
+    scrollController = new ScrollController();
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        if (searchProductList.length >=
+                (PAGINATION_SIZE * _currentPageNumber) &&
+            _loadMore) {
+          _hitApi(_searchController.text);
+          showInSnackBar("Loading data...");
+        }
+      }
+    });
+  }
+
   Future<void> _hitApi(String txt) async {
     provider.setLoading();
-    var response = await provider.getSearchedProducts(context, txt);
+    if (_loadMore) {
+      _currentPageNumber++;
+    } else {
+      _currentPageNumber = 1;
+    }
+    var response =
+        await provider.getSearchedProducts(context, txt, _currentPageNumber);
     if (response is APIError) {
+      searchProductList.clear();
       showInSnackBar(response.error);
-      provider.searchProductList.clear();
-    } else if (response is ProductResponse) {}
+    } else if (response is ProductResponse) {
+      if (_currentPageNumber == 1) {
+        searchProductList.clear();
+      }
+      searchProductList.addAll(response.data.dataInner);
+      if (response.data.dataInner.length < response.data.perPage) {
+        _loadMore = false;
+      } else {
+        _loadMore = true;
+      }
+    }
   }
 
   @override
@@ -85,15 +123,30 @@ class _SearchPageState extends State<SearchPage> {
                     labelStyle: CustomTextStyle.textFormFieldRegular
                         .copyWith(color: Colors.black, fontSize: 12),
                     border: textFieldBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.clear,
-                        color: Colors.grey.shade700,
+                    suffixIcon: Container(
+                      width: 80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          provider.getLoading()
+                              ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator())
+                              : Container(),
+                          IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.grey.shade700,
+                            ),
+                            onPressed: () {
+                              _currentPageNumber = 1;
+                              _searchController.clear();
+                              searchProductList.clear();
+                            },
+                          ),
+                        ],
                       ),
-                      onPressed: () {
-                        _searchController.clear();
-                        provider.searchProductList.clear();
-                      },
                     ),
                     enabledBorder: textFieldBorder(),
                     focusedBorder: textFieldBorder()),
@@ -114,53 +167,6 @@ class _SearchPageState extends State<SearchPage> {
       width: double.infinity,
     );
   }
-
-/*
-  categoryList() {
-    return Container(
-      padding: EdgeInsets.only(top: 16, bottom: 16),
-      color: Colors.white,
-      width: double.infinity,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: 30, minWidth: double.infinity),
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            return createCartListItem(provider.productList[index]);
-          },
-          primary: false,
-          itemCount:provider.searchProductList.length,
-          scrollDirection: Axis.horizontal,
-        ),
-      ),
-    );
-  }
-*/
-
-/*
-  categoryListItem(String strCategory, int index) {
-    double leftMargin = 8;
-    double rightMargin = 8;
-    if (index == 0) {
-      leftMargin = 12;
-    }
-    if (index == listCategory.length - 1) {
-      rightMargin = 12;
-    }
-    return Container(
-      child: Text(
-        strCategory,
-        style: CustomTextStyle.textFormFieldBold
-            .copyWith(color: Colors.grey.shade800, fontSize: 12),
-      ),
-      margin: EdgeInsets.only(left: leftMargin, right: rightMargin),
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(18)),
-          border: Border.all(color: Colors.grey.shade300, width: 1),
-          color: Colors.white),
-    );
-  }
-*/
 
   recentSearchListView() {
     return Container(
@@ -187,10 +193,11 @@ class _SearchPageState extends State<SearchPage> {
                 maxHeight: getScreenSize(context: context).height - 60),
             child: ListView.builder(
               itemBuilder: (context, index) {
-                return createCartListItem(provider.searchProductList[index]);
+                return createCartListItem(searchProductList[index]);
               },
-              itemCount: provider.searchProductList.length,
+              itemCount: searchProductList.length,
               primary: false,
+              controller: scrollController,
               scrollDirection: Axis.vertical,
             ),
           )

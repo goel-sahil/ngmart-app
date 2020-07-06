@@ -25,6 +25,7 @@ class NavigationDrawer extends StatefulWidget {
 
 class _NavigationDrawerState extends State<NavigationDrawer>
     with TickerProviderStateMixin {
+  final _pageController = PageController();
   int _selectionIndex = 0;
   bool _isLoggedIn = false;
   var drawerItems = new List();
@@ -37,49 +38,48 @@ class _NavigationDrawerState extends State<NavigationDrawer>
 
     if (_isLoggedIn) {
       if (index == 0) {
-        _body = HomeScreen();
         _title = "NGMart";
+        _pageController.jumpToPage(0);
       } else if (index == 1) {
         //show profile
-        _body = ProfileScreen();
+        _pageController.jumpToPage(1);
         _title = "My Profile";
       } else if (index == 2) {
         //show cart
-        _body = CartPage(
-          fromNavigationDrawer: true,
-        );
+        _pageController.jumpToPage(2);
         _title = "My Cart";
       } else if (index == 3) {
         //show purchi
         _title = "Buy with Purchi";
-        _body = CommingSoonScreen();
+        _pageController.jumpToPage(3);
       } else if (index == 4) {
         //show order history
-        _body = OrderHistory();
         _title = "Order History";
+        _pageController.jumpToPage(4);
       } else if (index == 5) {
         //show setting
-        _body = Setting();
         _title = "Settings";
+        _pageController.jumpToPage(5);
       } else if (index == 6) {
         //show contact us
         _title = "Contact us";
-        _body = CommingSoonScreen();
+        _pageController.jumpToPage(6);
       } else if (index == 7) {
         onLogoutSuccess(context: context);
+        _pageController.jumpToPage(7);
       }
     } else {
       if (index == 0) {
-        _body = HomeScreen();
-        _title = "Shop Now";
+        _pageController.jumpToPage(0);
+        _title = "NGMart";
       } else if (index == 1) {
         //Show Settings
         _title = "Settings";
-        _body = Setting();
+        _pageController.jumpToPage(5);
       } else if (index == 2) {
         // Contact us
         _title = "Contact us";
-        _body = CommingSoonScreen();
+        _pageController.jumpToPage(6);
       }
     }
 
@@ -112,8 +112,6 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     }
     drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
     drawerItems.add(DrawerItem("Contact us", FontAwesomeIcons.searchLocation));
-//    drawerItems
-//        .add(DrawerItem("Share with friends", FontAwesomeIcons.shareAlt));
     if (_isLoggedIn) {
       drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     }
@@ -201,7 +199,20 @@ class _NavigationDrawerState extends State<NavigationDrawer>
           ),
         ),
       ),
-      body: _body,
+      body: PageView(
+          controller: _pageController,
+          children: <Widget>[
+            HomeScreen(),
+            ProfileScreen(),
+            CartPage(
+              fromNavigationDrawer: true,
+            ),
+            CommingSoonScreen(),
+            OrderHistory(),
+            Setting(),
+            CommingSoonScreen(),
+          ],
+          physics: NeverScrollableScrollPhysics()),
     );
   }
 }

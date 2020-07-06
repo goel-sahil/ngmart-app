@@ -31,7 +31,7 @@ const String FB_IMAGE_URL_PREFIX="graph.facebook.com";
 
 //const double PIC_IMAGE_WIDTH_HEIGHT = 1200;
 const double LOAD_MORE_OFFSET = 1200;
-const int PAGINATION_SIZE = 5;
+const int PAGINATION_SIZE = 10;
 
 //image size
 const double maxWidth = 400;

@@ -192,8 +192,7 @@ Widget getCachedNetworkImage(
     double width = 500,
     double height = 300}) {
   return ProgressiveImage(
-    placeholder: AssetImage(AssetStrings.signup_logo),
-    // size: 1.87KB
+    placeholder: AssetImage(AssetStrings.logoImage),
     thumbnail: NetworkImage(url),
     // size: 1.29MB
     image: NetworkImage(url),

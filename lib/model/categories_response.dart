@@ -1,13 +1,13 @@
 class CategoriesResponse {
-  List<Data> data;
+  List<CategoryData> data;
 
   CategoriesResponse({this.data});
 
   CategoriesResponse.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = new List<Data>();
+      data = new List<CategoryData>();
       json['data'].forEach((v) {
-        data.add(new Data.fromJson(v));
+        data.add(new CategoryData.fromJson(v));
       });
     }
   }
@@ -21,7 +21,7 @@ class CategoriesResponse {
   }
 }
 
-class Data {
+class CategoryData {
   int id;
   String title;
   String image;
@@ -32,7 +32,7 @@ class Data {
   String imageUrl;
   List<Categories> categories;
 
-  Data(
+  CategoryData(
       {this.id,
         this.title,
         this.image,
@@ -43,7 +43,7 @@ class Data {
         this.imageUrl,
         this.categories});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  CategoryData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     image = json['image'];

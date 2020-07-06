@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
@@ -29,10 +30,19 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  ScrollController scrollController = new ScrollController();
   var _userLoggedIn = false;
+  bool _loadMore = false;
+  bool isPullToRefresh = false;
+  int _currentPageNumber = 1;
+  List<DataInner> productList = new List();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
+    _setScrollListener();
+    _currentPageNumber = 1;
     Timer(Duration(milliseconds: 500), () {
       _hitApi();
     });
@@ -41,13 +51,49 @@ class _ProductScreenState extends State<ProductScreen> {
     super.initState();
   }
 
+  void _setScrollListener() {
+    scrollController = new ScrollController();
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        if (productList.length >= (PAGINATION_SIZE * _currentPageNumber) &&
+            _loadMore) {
+          isPullToRefresh = true;
+          _hitApi();
+          showInSnackBar("Loading data...");
+        }
+      }
+    });
+  }
+
   Future<void> _hitApi() async {
-    provider.setLoading();
-    var response = await provider.getProducts(context, widget.id);
+    if (!isPullToRefresh) {
+      provider.setLoading(); //show loader
+    }
+    isPullToRefresh = false;
+
+    if (_loadMore) {
+      _currentPageNumber++;
+    } else {
+      _currentPageNumber = 1;
+    }
+
+    var response =
+        await provider.getProducts(context, widget.id, _currentPageNumber);
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is ProductResponse) {
-//      productList = response.data.dataInner;
+      if (_currentPageNumber == 1) {
+        productList.clear();
+      }
+
+      productList.addAll(response.data.dataInner);
+
+      if (response.data.dataInner.length < response.data.perPage) {
+        _loadMore = false;
+      } else {
+        _loadMore = true;
+      }
     }
   }
 
@@ -84,11 +130,20 @@ class _ProductScreenState extends State<ProductScreen> {
         backgroundColor: Colors.grey.shade100,
         body: Stack(
           children: <Widget>[
-            ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return createCartListItem(provider.productList[index]);
+            RefreshIndicator(
+              key: _refreshIndicatorKey,
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return createCartListItem(productList[index]);
+                },
+                itemCount: productList.length ?? 0,
+                controller: scrollController,
+              ),
+              onRefresh: () async {
+                isPullToRefresh = true;
+                _loadMore = false;
+                await _hitApi();
               },
-              itemCount: provider.productList.length ?? 0,
             ),
             new Center(
               child: getHalfScreenProviderLoader(
@@ -96,8 +151,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 context: context,
               ),
             ),
-            (provider.productList.length == 0) &&
-                    (provider.getLoading() == false)
+            (productList.length == 0) && (provider.getLoading() == false)
                 ? Center(
                     child:
                         getNoDataView(msg: "No Product found.", onRetry: null))
@@ -105,91 +159,6 @@ class _ProductScreenState extends State<ProductScreen> {
           ],
         ));
   }
-
-/*  footer(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 30),
-                child: Text(
-                  "Total",
-                  style: CustomTextStyle.textFormFieldMedium
-                      .copyWith(color: Colors.grey, fontSize: 12),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(right: 30),
-                child: Text(
-                  "\$299.00",
-                  style: CustomTextStyle.textFormFieldBlack.copyWith(
-                      color: Colors.greenAccent.shade700, fontSize: 14),
-                ),
-              ),
-            ],
-          ),
-          getSpacer(height: 8),
-          RaisedButton(
-            onPressed: () {
-//              Navigator.push(context,
-//                  new MaterialPageRoute(builder: (context) => CheckOutPage()));
-            },
-            color: Colors.green,
-            padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(24))),
-            child: Text(
-              "Checkout",
-              style: CustomTextStyle.textFormFieldSemiBold
-                  .copyWith(color: Colors.white),
-            ),
-          ),
-          getSpacer(height: 8),
-        ],
-      ),
-      margin: EdgeInsets.only(top: 16),
-    );
-  }*/
-
-  /* createHeader() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Text(
-        "SHOPPING CART",
-        style: CustomTextStyle.textFormFieldBold
-            .copyWith(fontSize: 16, color: Colors.black),
-      ),
-      margin: EdgeInsets.only(left: 12, top: 12),
-    );
-  }*/
-
-/*  createSubTitle() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Text(
-        "Total(3) Items",
-        style: CustomTextStyle.textFormFieldBold
-            .copyWith(fontSize: 12, color: Colors.grey),
-      ),
-      margin: EdgeInsets.only(left: 12, top: 4),
-    );
-  }*/
-
-/*  createCartList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      primary: false,
-      itemBuilder: (context, position) {
-        return createCartListItem();
-      },
-      itemCount: 5,
-    );
-  }*/
 
   createCartListItem(DataInner productList) {
     return InkWell(
