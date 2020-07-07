@@ -309,24 +309,24 @@ Future<bool> hasInternetConnection({
       onSuccess();
       return true;
     } else {
-      if (canShowAlert) {
-        onFail();
-        showAlert(
-          context: context,
-          titleText: "ERROR",
-          message: Messages.noInternetError,
-          actionCallbacks: {},
-        );
-      }
+//      if (canShowAlert) {
+//        onFail();
+//        showAlert(
+//          context: context,
+//          titleText: "ERROR",
+//          message: Messages.noInternetError,
+//          actionCallbacks: {},
+//        );
+//      }
     }
   } catch (_) {
-    onFail();
-    showAlert(
-      context: context,
-      titleText: "ERROR",
-      message: Messages.noInternetError,
-      actionCallbacks: {},
-    );
+//    onFail();
+//    showAlert(
+//      context: context,
+//      titleText: "ERROR",
+//      message: Messages.noInternetError,
+//      actionCallbacks: {},
+//    );
   }
   return false;
 }

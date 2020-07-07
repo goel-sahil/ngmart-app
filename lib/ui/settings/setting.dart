@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
+import 'package:ngmartflutter/ui/changePhone/ChangePhone.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,7 +13,6 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-
   @override
   void initState() {
     super.initState();
@@ -28,12 +29,10 @@ class _SettingState extends State<Setting> {
                 children: <Widget>[
                   getView("Review us", 1),
                   getView("Rate Our App", 2),
-                  getView("Change Password", 3),
+                  getView("Change Mobile Number", 3),
                   getView("Terms & Conditions", 4),
-                  getView("FAQ", 5),
-                  getView("About US", 6),
-                  getView("Contact Us", 7),
-                  getView("Share App", 7),
+                  getView("About US", 5),
+                  getView("Share App", 6),
                   //getView("Support With New Ticket",7)
                 ],
               ),
@@ -66,6 +65,15 @@ class _SettingState extends State<Setting> {
       onTap: () {
         print(pos);
         switch (pos) {
+          case 3:
+            {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => ChangePhoneScreen()));
+            }
+            break;
+
           case 7:
             {
               Share.share('check out my website https://example.com');
@@ -83,20 +91,20 @@ class _SettingState extends State<Setting> {
                 new Text(
                   title,
                   style: new TextStyle(
-                      color: Colors.black,
+                      color: AppColors.kAppBlack,
                       fontWeight: FontWeight.bold,
                       fontSize: 17.0),
                 ),
                 new Icon(
                   Icons.arrow_forward_ios,
                   size: 16.0,
-                  color: Colors.black87,
+                  color: Colors.black45,
                 )
               ],
             ),
             new Container(
               height: 1.0,
-              color: Colors.black,
+              color: Colors.black45,
               margin: new EdgeInsets.only(top: 20.0),
             )
           ],

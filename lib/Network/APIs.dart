@@ -9,6 +9,8 @@ class APIs {
   static const String otpVerify = "$baseUrl/register/verify";
   static const String resendOtp = "$baseUrl/register/otp";
   static const String forgotPassword = "$baseUrl/forget-password";
+  static const String changePhone = "$baseUrl/change-phone";
+  static const String changePhoneVerify = "$baseUrl/change-phone/verify";
   static const String resetPassword = "$baseUrl/reset-password";
   static const String forgotPasswordResendOtp = "$baseUrl/forget-password/otp";
   static const String forgotPasswordOtpVerify =

@@ -151,6 +151,35 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
+
+  Future<dynamic> changePhoneVerify(
+      OtpRequest request, BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    MemoryManagement.init();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.changePhoneVerify,
+        requestBody: request.toJson(),
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse loginResponseData = new CommonResponse.fromJson(response);
+      print("response ${loginResponseData.toJson()}");
+      completer.complete(loginResponseData);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+
   Future<dynamic> forgotPassword(
       LoginRequest request, BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
@@ -196,6 +225,35 @@ class LoginProvider with ChangeNotifier {
       return completer.future;
     }
   }
+
+
+  Future<dynamic> changePhoneNumber(
+      LoginRequest request, BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    MemoryManagement.init();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.changePhone,
+        requestBody: request.toJson(),
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      ForgotPasswordResponse loginResponseData =
+      new ForgotPasswordResponse.fromJson(response);
+      print("response ${loginResponseData.toJson()}");
+      completer.complete(loginResponseData);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
 
   void hideLoader() {
     _isLoading = false;

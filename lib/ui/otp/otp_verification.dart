@@ -8,20 +8,23 @@ import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
+import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/otp/otp_request.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
 import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
+import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:ngmartflutter/ui/resetPassword/ResetPasswordScreen.dart';
 import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
 import 'package:pin_view/pin_view.dart';
 import 'package:provider/provider.dart';
 import 'package:quiver/async.dart';
 
-enum OTPType { RESET, REGISTER, CHANGE_PHONE_EMAIL, LOGIN, CHNAGE_EMAIL }
+enum OTPType { RESET, REGISTER, CHANGE_PHONE, LOGIN, CHNAGE_EMAIL }
 
 class Otpverification extends StatefulWidget {
   final OTPType otpType;
@@ -50,28 +53,6 @@ class _OtpverificationState extends State<Otpverification> {
   String emails = "";
   LoginProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
-
-  _verifyOtp() {
-    switch (widget.otpType) {
-      case OTPType.REGISTER:
-        // verifySignUpOtp();
-        break;
-      case OTPType.RESET:
-        //  verifyForgotOtp();
-        break;
-      case OTPType.CHANGE_PHONE_EMAIL:
-        // verifyChangePhoneEmailOtp();
-        break;
-      case OTPType.LOGIN:
-        // verifySignUpOtp();
-        // verifyChangePhoneEmailOtp();
-        break;
-      case OTPType.CHNAGE_EMAIL:
-        //  changeEmailPhone();
-        // verifyChangePhoneEmailOtp();
-        break;
-    }
-  }
 
   void startTimer() {
     offstage = 1.0;
@@ -102,7 +83,6 @@ class _OtpverificationState extends State<Otpverification> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     countDownTimer.cancel();
     super.dispose();
   }
@@ -115,6 +95,7 @@ class _OtpverificationState extends State<Otpverification> {
 
   @override
   void initState() {
+    MemoryManagement.init();
     startTimer();
     super.initState();
   }
@@ -285,6 +266,8 @@ class _OtpverificationState extends State<Otpverification> {
           onPressed: () async {
             if (widget.otpType == OTPType.REGISTER) {
               _hitApi(url: APIs.otpVerify, otpType: widget.otpType);
+            } else if (widget.otpType == OTPType.CHANGE_PHONE) {
+              _hitChangePhoneVerify();
             } else {
               _hitApi(
                   url: APIs.forgotPasswordOtpVerify, otpType: widget.otpType);
@@ -311,6 +294,7 @@ class _OtpverificationState extends State<Otpverification> {
       canShowAlert: true,
       onFail: () {
         provider.hideLoader(); //hide loader
+        showInSnackBar(Messages.noInternetError);
       },
       onSuccess: () {},
     );
@@ -321,8 +305,7 @@ class _OtpverificationState extends State<Otpverification> {
         userId: widget.id,
         code: pinText,
       );
-      var response =
-          await provider.verifyOtp(request, context, url,otpType);
+      var response = await provider.verifyOtp(request, context, url, otpType);
       if (response is APIError) {
         showInSnackBar(response.error);
       } else {
@@ -354,6 +337,7 @@ class _OtpverificationState extends State<Otpverification> {
       canShowAlert: true,
       onFail: () {
         provider.hideLoader(); //hide loader
+        showInSnackBar(Messages.noInternetError);
       },
       onSuccess: () {},
     );
@@ -367,6 +351,39 @@ class _OtpverificationState extends State<Otpverification> {
       } else {
         CommonResponse commonResponse = response;
         showInSnackBar(commonResponse.message);
+      }
+    }
+  }
+
+  Future<void> _hitChangePhoneVerify() async {
+    bool gotInternetConnection = await hasInternetConnection(
+      context: context,
+      mounted: mounted,
+      canShowAlert: true,
+      onFail: () {
+        provider.hideLoader(); //hide loader
+        showInSnackBar(Messages.noInternetError);
+      },
+      onSuccess: () {},
+    );
+
+    if (gotInternetConnection) {
+      provider.setLoading();
+      var request = OtpRequest(code: pinText);
+      var response = await provider.changePhoneVerify(request, context);
+      if (response is APIError) {
+        showInSnackBar(response.error);
+      } else {
+        CommonResponse commonResponse = response;
+        showInSnackBar(commonResponse.message);
+        MemoryManagement.clearMemory();
+        Navigator.pushAndRemoveUntil(
+          context,
+          new CupertinoPageRoute(builder: (BuildContext context) {
+            return new Login();
+          }),
+          (route) => false,
+        );
       }
     }
   }
