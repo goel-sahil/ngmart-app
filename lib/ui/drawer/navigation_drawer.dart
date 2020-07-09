@@ -7,7 +7,9 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
+import 'package:ngmartflutter/ui/contactUs/Contact_us.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
+import 'package:ngmartflutter/ui/orderByParchi/OrderByParchiScreen.dart';
 import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
 import 'package:ngmartflutter/ui/profile/ProfileScreen.dart';
 import 'package:ngmartflutter/ui/search/SearchPage.dart';
@@ -207,10 +209,10 @@ class _NavigationDrawerState extends State<NavigationDrawer>
             CartPage(
               fromNavigationDrawer: true,
             ),
-            CommingSoonScreen(),
+            OrderByParchiScreen(fromNavigation: true,),
             OrderHistory(),
             Setting(),
-            CommingSoonScreen(),
+            ContactUs(),
           ],
           physics: NeverScrollableScrollPhysics()),
     );

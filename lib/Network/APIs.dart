@@ -20,4 +20,9 @@ class APIs {
   static const String getOrders = "$baseUrl/orders";
   static const String addToCart = "$baseUrl/cart";
   static const String placeOrder = "$baseUrl/order";
+  static const String contactUs = "$baseUrl/contact-us";
+  static const String termsCondition = "$baseUrl/cms-page/terms-conditions";
+  static const String privacyPolicy = "$baseUrl/cms-page/privacy";
+  static const String aboutUs = "$baseUrl/cms-page/about-us";
+  static const String orderByParchi = "$baseUrl/order-by-parchi";
 }

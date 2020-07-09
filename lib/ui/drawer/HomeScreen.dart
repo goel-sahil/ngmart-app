@@ -12,6 +12,7 @@ import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/drawer/SubCategoryScreen.dart';
+import 'package:ngmartflutter/ui/orderByParchi/OrderByParchiScreen.dart';
 import 'package:ngmartflutter/ui/productList/ProductList.dart';
 import 'package:progressive_image/progressive_image.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>  with AutomaticKeepAliveClientMixin<HomeScreen>{
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin<HomeScreen> {
   List<Container> listData = new List();
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -74,9 +76,9 @@ class _HomeScreenState extends State<HomeScreen>  with AutomaticKeepAliveClientM
 
   @override
   void initState() {
-      Timer(Duration(milliseconds: 500), () {
-        _hitApi();
-      });
+    Timer(Duration(milliseconds: 500), () {
+      _hitApi();
+    });
     super.initState();
   }
 
@@ -89,6 +91,7 @@ class _HomeScreenState extends State<HomeScreen>  with AutomaticKeepAliveClientM
       categoryList.addAll(response.data);
     }
   }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -119,7 +122,14 @@ class _HomeScreenState extends State<HomeScreen>  with AutomaticKeepAliveClientM
                                   color: AppColors.kWhite,
                                   fontWeight: FontWeight.bold),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => OrderByParchiScreen(
+                                            fromNavigation: false,
+                                          )));
+                            },
                             color: AppColors.kPrimaryBlue,
                             shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(4.0))),

@@ -21,4 +21,11 @@ class CustomTextStyle {
 
   static var textFormFieldBlack =
       textFormFieldRegular.copyWith(fontWeight: FontWeight.w900);
+
+  static var robotoMediumStyle5 = const TextStyle(
+      color: Colors.black, fontSize: 16, fontFamily: "RobotoMedium");
+
+  static var amountStyle = const TextStyle(
+      color: Colors.blue,
+      fontSize: 16, fontFamily: "RobotoBold");
 }

@@ -9,6 +9,8 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/cart/AddToCartRequest.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
+import 'package:ngmartflutter/model/cms/CmsResponse.dart';
+import 'package:ngmartflutter/model/contactUs/ContactUsRequest.dart';
 import 'package:ngmartflutter/model/orderHistory/orderHistory.dart';
 import 'package:ngmartflutter/model/placeOrder/PlaceOrderRequest.dart';
 import 'package:ngmartflutter/model/product/search_product_request.dart';
@@ -200,6 +202,53 @@ class DashboardProvider with ChangeNotifier {
       print("Response==> $response");
       OrderHistoryResponse productResponse =
           new OrderHistoryResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> contactUs(ContactUsRequest request, BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };    print("Request==> ${request.toJson()}");
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.contactUs,
+        requestBody: request.toJson(),
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse loginResponseData = new CommonResponse.fromJson(response);
+      print("response ${loginResponseData.toJson()}");
+      completer.complete(loginResponseData);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> cmsData(BuildContext context, String url) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.get(
+        context: context, url: url, additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CmsResponse productResponse =
+      new CmsResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;
