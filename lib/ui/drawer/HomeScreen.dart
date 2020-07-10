@@ -9,6 +9,7 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/styles.dart';
+import 'package:ngmartflutter/model/bannerResponse/bannerResponse.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/drawer/SubCategoryScreen.dart';
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen>
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<CategoryData> categoryList = new List();
+  List<DataBanner> bannerList = new List();
 
   Widget prepareList(int k, CategoryData categoryList) {
     return Card(
@@ -78,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     Timer(Duration(milliseconds: 500), () {
       _hitApi();
+      _hitBannerApi();
     });
     super.initState();
   }
@@ -89,6 +92,17 @@ class _HomeScreenState extends State<HomeScreen>
       showInSnackBar(response.error);
     } else if (response is CategoriesResponse) {
       categoryList.addAll(response.data);
+    }
+  }
+
+  Future<void> _hitBannerApi() async {
+    provider.setLoading();
+    var response = await provider.getBanners(context);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is BannerResponse) {
+      bannerList?.clear();
+      bannerList.addAll(response.data.dataInner);
     }
   }
 
@@ -111,7 +125,15 @@ class _HomeScreenState extends State<HomeScreen>
                           Widget child) =>
                       Column(
                     children: <Widget>[
-                      _getCarousel(enlargeCenterPage: true),
+                      (bannerList.isNotEmpty && !provider.getLoading())
+                          ? _getCarousel(enlargeCenterPage: true)
+                          : SizedBox(
+                              height: 170,
+                              width: getScreenSize(context: context).width,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
                       getSpacer(height: 20),
                       Container(
                         width: getScreenSize(context: context).width - 30,
@@ -154,7 +176,15 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       getSpacer(height: 10),
                       Divider(),
-                      _getCarousel(enlargeCenterPage: false),
+                      (bannerList.isNotEmpty && !provider.getLoading())
+                          ? _getCarousel(enlargeCenterPage: true)
+                          : SizedBox(
+                              height: 170,
+                              width: getScreenSize(context: context).width,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
                       getSpacer(height: 10),
                     ],
                   ),
@@ -176,6 +206,39 @@ class _HomeScreenState extends State<HomeScreen>
   void showInSnackBar(String value) {
     _scaffoldKey.currentState
         .showSnackBar(new SnackBar(content: new Text(value)));
+  }
+
+  Widget _getCarousel({bool enlargeCenterPage = false}) {
+    return CarouselSlider.builder(
+        itemCount: bannerList.length ?? 0,
+        itemBuilder: (BuildContext context, int itemIndex) => Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            decoration: BoxDecoration(color: Colors.white),
+            child: getNetworkImage(
+                url: bannerList[itemIndex].imageUrl,
+                height: 170,
+                width: getScreenSize(context: context)
+                    .width) /*Image.network(
+              bannerList[itemIndex].imageUrl ??
+                  "https://img.freepik.com/free-vector/local-business-marketing-banner-template_107791-2219.jpg?size=626&ext=jpg&uid=A",
+              fit: BoxFit.fill,
+            )*/
+            ),
+        options: CarouselOptions(
+          height: 170,
+          aspectRatio: 16 / 9,
+          viewportFraction: 0.8,
+          initialPage: 0,
+          enableInfiniteScroll: true,
+          reverse: false,
+          autoPlay: true,
+          autoPlayInterval: Duration(seconds: 2),
+          autoPlayAnimationDuration: Duration(milliseconds: 800),
+          autoPlayCurve: Curves.fastOutSlowIn,
+          enlargeCenterPage: enlargeCenterPage,
+          scrollDirection: Axis.horizontal,
+        ));
   }
 }
 
@@ -205,33 +268,6 @@ Widget getNetworkImage(
     image: NetworkImage(url),
     height: height,
     width: width,
-    fit: BoxFit.contain,
+    fit: BoxFit.fill,
   );
-}
-
-Widget _getCarousel({bool enlargeCenterPage = false}) {
-  return CarouselSlider.builder(
-      itemCount: 15,
-      itemBuilder: (BuildContext context, int itemIndex) => Container(
-          width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.symmetric(horizontal: 5.0),
-          decoration: BoxDecoration(color: Colors.white),
-          child: Image.network(
-            "https://img.freepik.com/free-vector/local-business-marketing-banner-template_107791-2219.jpg?size=626&ext=jpg&uid=A",
-            fit: BoxFit.fill,
-          )),
-      options: CarouselOptions(
-        height: 170,
-        aspectRatio: 16 / 9,
-        viewportFraction: 0.8,
-        initialPage: 0,
-        enableInfiniteScroll: true,
-        reverse: false,
-        autoPlay: true,
-        autoPlayInterval: Duration(seconds: 2),
-        autoPlayAnimationDuration: Duration(milliseconds: 800),
-        autoPlayCurve: Curves.fastOutSlowIn,
-        enlargeCenterPage: enlargeCenterPage,
-        scrollDirection: Axis.horizontal,
-      ));
 }

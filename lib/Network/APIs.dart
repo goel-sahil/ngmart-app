@@ -25,4 +25,5 @@ class APIs {
   static const String privacyPolicy = "$baseUrl/cms-page/privacy";
   static const String aboutUs = "$baseUrl/cms-page/about-us";
   static const String orderByParchi = "$baseUrl/order-by-parchi";
+  static const String banners = "$baseUrl/banners";
 }

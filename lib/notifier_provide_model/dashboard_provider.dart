@@ -6,6 +6,7 @@ import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/bannerResponse/bannerResponse.dart';
 import 'package:ngmartflutter/model/cart/AddToCartRequest.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
@@ -112,6 +113,35 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     }
   }
+
+
+  Future<dynamic> getBanners(
+      BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    MemoryManagement.init();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.get(
+        context: context,
+        url: APIs.banners,
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      BannerResponse bannerResponse = new BannerResponse.fromJson(response);
+      print("Banner Response==> ${bannerResponse.toJson()}");
+      completer.complete(bannerResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+
 
   Future<dynamic> getCart(BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
