@@ -7,6 +7,7 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/ValidatorFunctions.dart';
 import 'package:ngmartflutter/model/ChangePasswordRequest.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
@@ -22,8 +23,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   GlobalKey<FormState> _fieldKey = new GlobalKey<FormState>();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _newPasswordController = new TextEditingController();
+  TextEditingController _confirmPasswordController =
+      new TextEditingController();
   FocusNode _passwordField = new FocusNode();
   FocusNode _newPasswordField = new FocusNode();
+  FocusNode _confirmPassword = new FocusNode();
   LoginProvider provider;
 
   Future<void> _hitApi() async {
@@ -88,7 +92,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       labelText: "New Password",
                       obsectextType: true,
                       textType: TextInputType.text,
-                      focusNodeNext: _newPasswordField,
+                      focusNodeNext: _confirmPassword,
                       focusNodeCurrent: _newPasswordField,
                       enablefield: true,
                       controller: _newPasswordController,
@@ -96,6 +100,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           newPasswordValidator(newPassword: val),
                     ),
                     getSpacer(height: 20),
+                    getTextField(
+                      context: context,
+                      labelText: "Confirm Password",
+                      obsectextType: true,
+                      textType: TextInputType.text,
+                      focusNodeNext: _confirmPassword,
+                      focusNodeCurrent: _confirmPassword,
+                      enablefield: true,
+                      controller: _confirmPasswordController,
+                      validators: (val) => confirmPassword(
+                          newPassword: val,
+                          password: _newPasswordController.text),
+                    ),
                     Container(
                       width: getScreenSize(context: context).width,
                       padding: EdgeInsets.symmetric(horizontal: 10),
