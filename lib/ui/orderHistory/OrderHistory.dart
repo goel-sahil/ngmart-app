@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
@@ -17,30 +18,79 @@ class OrderHistory extends StatefulWidget {
   _OrderHistoryState createState() => _OrderHistoryState();
 }
 
-class _OrderHistoryState extends State<OrderHistory> with AutomaticKeepAliveClientMixin<OrderHistory>{
+class _OrderHistoryState extends State<OrderHistory> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   List<DataOrderHistory> dataList = new List();
-
-  @override
-  bool get wantKeepAlive => true;
+  bool _loadMore = false;
+  bool isPullToRefresh = false;
+  int _currentPageNumber = 1;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+  ScrollController scrollController = new ScrollController();
 
   @override
   void initState() {
+    _setScrollListener();
+    _currentPageNumber = 1;
     Timer(Duration(milliseconds: 500), () {
       _hitApi();
     });
     super.initState();
   }
 
+  void _setScrollListener() {
+    scrollController = new ScrollController();
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        if (dataList.length >= (PAGINATION_SIZE * _currentPageNumber) &&
+            _loadMore) {
+          isPullToRefresh = true;
+          _hitApi();
+          showInSnackBar("Loading data...");
+        }
+      }
+    });
+  }
+
   Future<void> _hitApi() async {
-    provider.setLoading();
-    var response = await provider.getOrderHistory(context);
+    if (!isPullToRefresh) {
+      provider.setLoading(); //show loader
+    }
+    isPullToRefresh = false;
+
+    if (_loadMore) {
+      _currentPageNumber++;
+    } else {
+      _currentPageNumber = 1;
+    }
+    var response = await provider.getOrderHistory(context,_currentPageNumber);
     if (response is APIError) {
-      showInSnackBar(response.error);
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      } else {
+        showInSnackBar(response.error);
+      }
     } else if (response is OrderHistoryResponse) {
-      dataList = response.data.dataInner;
+      if (_currentPageNumber == 1) {
+        dataList.clear();
+      }
+      dataList.addAll(response.data.dataInner);
+      if (response.data.dataInner.length < response.data.perPage) {
+        _loadMore = false;
+      } else {
+        _loadMore = true;
+      }
     }
   }
 
@@ -52,11 +102,21 @@ class _OrderHistoryState extends State<OrderHistory> with AutomaticKeepAliveClie
         backgroundColor: Colors.grey.shade100,
         body: Stack(
           children: <Widget>[
-            ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return createCartListItem(dataList[index]);
+            RefreshIndicator(
+              key: _refreshIndicatorKey,
+              onRefresh: () async {
+                isPullToRefresh = true;
+                _loadMore = false;
+                await _hitApi();
               },
-              itemCount: dataList.length ?? 0,
+              child: ListView.builder(
+                controller: scrollController,
+                itemBuilder: (BuildContext context, int index) {
+                  return createCartListItem(
+                      dataList[index], dataList[index].type);
+                },
+                itemCount: dataList.length ?? 0,
+              ),
             ),
             new Center(
               child: getHalfScreenProviderLoader(
@@ -73,7 +133,7 @@ class _OrderHistoryState extends State<OrderHistory> with AutomaticKeepAliveClie
         ));
   }
 
-  createCartListItem(DataOrderHistory productList) {
+  createCartListItem(DataOrderHistory productList, int type) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -102,7 +162,13 @@ class _OrderHistoryState extends State<OrderHistory> with AutomaticKeepAliveClie
                       color: Colors.blue.shade50,
                       image: DecorationImage(
                           image: NetworkImage(
-                              productList.orderItems.first.product.imageUrl))),
+                            type == 0
+                                ? productList
+                                        .orderItems?.first?.product?.imageUrl ??
+                                    ""
+                                : productList.imageUrl,
+                          ),
+                          fit: BoxFit.fill)),
                 ),
                 Expanded(
                   child: Container(
@@ -114,7 +180,7 @@ class _OrderHistoryState extends State<OrderHistory> with AutomaticKeepAliveClie
                         Container(
                           padding: EdgeInsets.only(right: 8, top: 4),
                           child: Text(
-                            "Order ID: ${productList.orderItems.first.orderId}",
+                            "Order ID: ${type == 0 ? productList.orderItems.first.orderId : productList.id}",
                             maxLines: 2,
                             softWrap: true,
                             style: CustomTextStyle.textFormFieldSemiBold

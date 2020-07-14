@@ -19,7 +19,7 @@ void main() =>
       child: NotifierProvider(
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Grocery App',
+          title: 'NGMArt',
           theme: ThemeData(
             // Define the default brightness and colors.
             primarySwatch: Colors.green,

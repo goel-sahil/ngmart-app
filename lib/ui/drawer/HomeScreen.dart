@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
+import 'package:ngmartflutter/helper/AssetStrings.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/styles.dart';
@@ -14,6 +15,7 @@ import 'package:ngmartflutter/model/categories_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/drawer/SubCategoryScreen.dart';
 import 'package:ngmartflutter/ui/orderByParchi/OrderByParchiScreen.dart';
+import 'package:ngmartflutter/ui/productList/BannerProductList.dart';
 import 'package:ngmartflutter/ui/productList/ProductList.dart';
 import 'package:progressive_image/progressive_image.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +101,20 @@ class _HomeScreenState extends State<HomeScreen>
     provider.setLoading();
     var response = await provider.getBanners(context);
     if (response is APIError) {
-      showInSnackBar(response.error);
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      }else{
+        showInSnackBar(response.error);
+      }
     } else if (response is BannerResponse) {
       bannerList?.clear();
       bannerList.addAll(response.data.dataInner);
@@ -215,16 +230,21 @@ class _HomeScreenState extends State<HomeScreen>
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.symmetric(horizontal: 5.0),
             decoration: BoxDecoration(color: Colors.white),
-            child: getNetworkImage(
-                url: bannerList[itemIndex].imageUrl,
-                height: 170,
-                width: getScreenSize(context: context)
-                    .width) /*Image.network(
-              bannerList[itemIndex].imageUrl ??
-                  "https://img.freepik.com/free-vector/local-business-marketing-banner-template_107791-2219.jpg?size=626&ext=jpg&uid=A",
-              fit: BoxFit.fill,
-            )*/
-            ),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => BannerProductScreen(
+                              title: bannerList[itemIndex].title,
+                              products: bannerList[itemIndex].products,
+                            )));
+              },
+              child: getNetworkImage(
+                  url: bannerList[itemIndex].imageUrl,
+                  height: 170,
+                  width: getScreenSize(context: context).width),
+            )),
         options: CarouselOptions(
           height: 170,
           aspectRatio: 16 / 9,
@@ -261,7 +281,7 @@ Widget getNetworkImage(
     double width = 100,
     double height = 100}) {
   return ProgressiveImage(
-    placeholder: NetworkImage(url),
+    placeholder: AssetImage(AssetStrings.placeHolder),
     // size: 1.87KB
     thumbnail: NetworkImage(url),
     // size: 1.29MB

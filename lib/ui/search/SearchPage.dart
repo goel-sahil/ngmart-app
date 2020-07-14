@@ -70,7 +70,7 @@ class _SearchPageState extends State<SearchPage> {
         searchProductList.clear();
       }
       searchProductList.addAll(response.data.dataInner);
-      if (response.data.dataInner.length < response.data.perPage) {
+      if (response.data.dataInner.length < PAGINATION_SIZE) {
         _loadMore = false;
       } else {
         _loadMore = true;
@@ -113,6 +113,7 @@ class _SearchPageState extends State<SearchPage> {
             Expanded(
               child: TextField(
                 onChanged: (val) {
+                  _loadMore=false;
                   _hitApi(val);
                 },
                 controller: _searchController,

@@ -119,6 +119,9 @@ String newPasswordValidator({@required String newPassword}) {
   return null;
 }
 
+
+
+
 String confirmPassword(
     {@required String newPassword, @required String password }) {
   if (newPassword.isEmpty) {

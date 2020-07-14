@@ -171,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                         textType: TextInputType.number,
                         focusNodeNext: _addressField,
                         focusNodeCurrent: _mobileNumberField,
-                        enablefield: true,
+                        enablefield: false,
                         controller: _mobileNumberController,
                         validators: (val) => emptyValidator(
                             value: val, txtMsg: "Please enter mobile number."),

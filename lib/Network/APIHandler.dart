@@ -145,11 +145,13 @@ class APIHandler {
       print("url: ${url}");
       print("Request==>: ${json.encode(requestBody)}");
       print("Response==>: ${response.data}");
+      print("Status code ${response?.statusCode}");
 
       completer.complete(response.data);
     } on DioError catch (e) {
       print("error ${e.response?.statusCode}");
       print("message ${e.response?.data}");
+      print("Status code ${e.response?.statusCode}");
 
       if (e.response?.statusCode == 403) {
         APIError apiError = new APIError(

@@ -1,21 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
-import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
-import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/checkout/CheckOutPage.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CartPage extends StatefulWidget {
   bool fromNavigationDrawer = false;
@@ -26,7 +23,8 @@ class CartPage extends StatefulWidget {
   _CartPageState createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage> with AutomaticKeepAliveClientMixin<CartPage> {
+class _CartPageState extends State<CartPage>
+    with AutomaticKeepAliveClientMixin<CartPage> {
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<CartData> cartList = new List();
@@ -38,6 +36,7 @@ class _CartPageState extends State<CartPage> with AutomaticKeepAliveClientMixin<
     Timer(Duration(milliseconds: 500), () {
       _hitApi();
     });
+//    closeKeyboard(context: context, onClose: (){});
     super.initState();
   }
 
@@ -48,7 +47,20 @@ class _CartPageState extends State<CartPage> with AutomaticKeepAliveClientMixin<
     provider.setLoading();
     var response = await provider.getCart(context);
     if (response is APIError) {
-      showInSnackBar(response.error);
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      } else {
+        showInSnackBar(response.error);
+      }
     } else if (response is CartResponse) {
       cartList.addAll(response.data);
       for (var data in cartList) {
@@ -61,18 +73,42 @@ class _CartPageState extends State<CartPage> with AutomaticKeepAliveClientMixin<
   }
 
   Future<void> _hitUpdateQuantity({num quantity, int productId}) async {
-    provider.setLoading();
+    provider?.setLoading();
     var response = await provider.addToCart(context, quantity, productId);
     if (response is APIError) {
-      showInSnackBar(response.error);
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      }
     } else if (response is CommonResponse) {}
   }
 
   Future<void> _hitRemoveItemFromCart({int cartId, int position}) async {
-    provider.setLoading();
+    provider?.setLoading();
     var response = await provider.removeFromCart(context, cartId);
     if (response is APIError) {
-      showInSnackBar(response.error);
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      } else {
+        showInSnackBar(response.error);
+      }
     } else if (response is CommonResponse) {
       showInSnackBar(response.message);
       cartList.removeAt(position);
@@ -116,10 +152,30 @@ class _CartPageState extends State<CartPage> with AutomaticKeepAliveClientMixin<
                     );
                   },
                 )
-              : Center(
-                  child: Text(
-                    "No Product found.",
-                    style: h5,
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.shopping_cart,
+                        color: AppColors.kPrimaryBlue,
+                        size: 60,
+                      ),
+                      getSpacer(height: 4),
+                      Text(
+                        "Your cart empty.",
+                        style: h4,
+                      ),
+                      getSpacer(height: 4),
+                      Text(
+                        "Looks like you have not added anything to your cart yet.",
+                        style: h6.copyWith(
+                            color: AppColors.kBlackGrey, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
           new Center(

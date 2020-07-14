@@ -13,6 +13,9 @@ import 'package:http/http.dart' as http;
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
+import 'package:ngmartflutter/ui/login/login_screen.dart';
+import 'package:ngmartflutter/ui/search/SearchPage.dart';
 
 class OrderByParchiScreen extends StatefulWidget {
   bool fromNavigation;
@@ -29,12 +32,16 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
   LoginResponse userInfo;
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   @override
   void initState() {
     MemoryManagement.init();
-    var info = MemoryManagement.getUserInfo();
-    userInfo = LoginResponse.fromJson(jsonDecode(info));
+    if (MemoryManagement.getLoggedInStatus() != null &&
+        MemoryManagement.getLoggedInStatus() == true) {
+      var info = MemoryManagement.getUserInfo();
+      userInfo = LoginResponse.fromJson(jsonDecode(info));
+    }
     super.initState();
   }
 
@@ -44,10 +51,24 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
       child: Stack(
         children: <Widget>[
           Scaffold(
+            key: _scaffoldKey,
             appBar: !widget.fromNavigation
                 ? AppBar(
                     title: Text("Order By Parchi"),
                     centerTitle: true,
+                    actions: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => SearchPage()));
+                            }),
+                      )
+                    ],
                   )
                 : null,
             body: SingleChildScrollView(
@@ -64,13 +85,47 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                       width: 120,
                       color: AppColors.kPrimaryBlue,
                     ),
-                    Center(child: Text("You need to upload your", style: h5,)),
-                    Center(child: Text("Parchi here.", style: h4,)),
+                    Center(
+                        child: Text(
+                      "You need to upload your",
+                      style: h5,
+                    )),
+                    Center(
+                        child: Text(
+                      "Parchi here.",
+                      style: h4,
+                    )),
                     getSpacer(height: 40),
                     new OutlineButton(
                         child: new Text("Upload Image"),
                         onPressed: () {
-                          _openActionSheet();
+                          if (userInfo != null) {
+                            _openActionSheet();
+                          } else {
+                            showDialog(
+                                context: context,
+                                // return object of type AlertDialog
+                                child: new CupertinoAlertDialog(
+                                  title: new Text(
+                                    "Error",
+                                    style: h4,
+                                  ),
+                                  content: new Text(
+                                      "Please login first to place order."),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          Navigator.push(
+                                              context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      Login()));
+                                        },
+                                        child: new Text("OK"))
+                                  ],
+                                ));
+                          }
                         },
                         borderSide: BorderSide(
                           color: AppColors.kPrimaryBlue, //Color of the border
@@ -188,13 +243,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
     if (response.statusCode == 200) {
       final respStr = await response.stream.bytesToString();
       Map data = jsonDecode(respStr); // Parse data from JSON string
-
-      showAlert(
-        context: context,
-        titleText: "SUCCESS",
-        message: data["message"],
-        actionCallbacks: {"OK": () {}},
-      );
+      showThankYouBottomSheet(context);
     } else {
       final respStr = await response.stream.bytesToString();
       Map data = jsonDecode(respStr); // Parse data from JSON string
@@ -221,5 +270,87 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
       stream: _loaderStreamController.stream,
       context: context,
     );
+  }
+
+  showThankYouBottomSheet(BuildContext context) {
+    return _scaffoldKey.currentState.showBottomSheet((context) {
+      return Container(
+        height: 400,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade200, width: 2),
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Image(
+                    image: AssetImage("images/ic_thank_you.png"),
+                    width: 300,
+                  ),
+                ),
+              ),
+              flex: 5,
+            ),
+            //Your order has been placed. We we reach out to you shortly with your order.
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 16, right: 16),
+                child: Column(
+                  children: <Widget>[
+                    RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(children: [
+                          TextSpan(
+                            text:
+                                "\n\nThank you for your purchase. Our company values each and every customer."
+                                " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
+                                "If you have any questions or feedback, please don’t hesitate to reach out.",
+                            style: CustomTextStyle.textFormFieldMedium.copyWith(
+                                fontSize: 14, color: Colors.grey.shade800),
+                          )
+                        ])),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          new CupertinoPageRoute(
+                              builder: (BuildContext context) {
+                            return new NavigationDrawer();
+                          }),
+                          (route) => false,
+                        );
+                      },
+                      padding: EdgeInsets.only(left: 48, right: 48),
+                      child: Text(
+                        "Close",
+                        style: CustomTextStyle.textFormFieldMedium
+                            .copyWith(color: Colors.white),
+                      ),
+                      color: AppColors.kPrimaryBlue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(24))),
+                    )
+                  ],
+                ),
+              ),
+              flex: 5,
+            )
+          ],
+        ),
+      );
+    },
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+        backgroundColor: Colors.white,
+        elevation: 2);
   }
 }

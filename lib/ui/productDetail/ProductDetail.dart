@@ -171,10 +171,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text("${widget.productData.brand.title}",
+                                Text("${widget.productData.title}",
                                     style: h3),
                                 getSpacer(height: 6),
-                                Text(widget.productData.title, style: h4),
+                                Text(widget.productData.brand.title, style: h4),
                                 getSpacer(height: 6),
                                 Text(
                                     "${getFormattedCurrency(widget.productData.price.toDouble())} / ${widget.productData.quantity} ${widget.productData.quantityUnit.title}",

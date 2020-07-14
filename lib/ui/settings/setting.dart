@@ -5,8 +5,11 @@ import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
+import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/cms/CmsResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
+import 'package:ngmartflutter/ui/changePassword/ChangePasswordScreen.dart';
 import 'package:ngmartflutter/ui/changePhone/ChangePhone.dart';
 import 'package:ngmartflutter/ui/cmsPage/CmsPageScreen.dart';
 import 'package:provider/provider.dart';
@@ -20,9 +23,12 @@ class Setting extends StatefulWidget {
 
 class _SettingState extends State<Setting> {
   DashboardProvider provider;
+  bool isLoggedIn = false;
 
   @override
   void initState() {
+    MemoryManagement.init();
+    isLoggedIn = MemoryManagement.getLoggedInStatus()??false;
     super.initState();
   }
 
@@ -30,6 +36,18 @@ class _SettingState extends State<Setting> {
     provider.setLoading();
     var response = await provider.cmsData(context, url);
     if (response is APIError) {
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      }
     } else if (response is CmsResponse) {
       Navigator.push(
           context,
@@ -51,11 +69,12 @@ class _SettingState extends State<Setting> {
             child: Container(
               child: new Column(
                 children: <Widget>[
-                  getView("Review us", 1),
+                  getView("Review Us", 1),
                   getView("Rate Our App", 2),
-                  getView("Change Mobile Number", 3),
+                  isLoggedIn ? getView("Change Mobile Number", 3) : Container(),
+                  isLoggedIn ? getView("Change Password", 8) : Container(),
                   getView("Terms & Conditions", 4),
-                  getView("About US", 5),
+                  getView("About Us", 5),
                   getView("Privacy Policy", 6),
                   getView("Share App", 7),
                 ],
@@ -104,6 +123,14 @@ class _SettingState extends State<Setting> {
           case 7:
             {
               Share.share('check out my website https://example.com');
+            }
+            break;
+          case 8:
+            {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => ChangePasswordScreen()));
             }
             break;
         }

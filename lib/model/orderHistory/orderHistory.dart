@@ -26,7 +26,7 @@ class Data {
   String nextPageUrl;
   String path;
   int perPage;
-  Null prevPageUrl;
+  String prevPageUrl;
   int to;
   int total;
 
@@ -89,7 +89,8 @@ class DataOrderHistory {
   int userId;
   int userAddressId;
   int totalPrice;
-  Null image;
+  String image;
+  String imageUrl;
   int type;
   int status;
   String createdAt;
@@ -103,6 +104,7 @@ class DataOrderHistory {
         this.userAddressId,
         this.totalPrice,
         this.image,
+        this.imageUrl,
         this.type,
         this.status,
         this.createdAt,
@@ -116,6 +118,7 @@ class DataOrderHistory {
     userAddressId = json['user_address_id'];
     totalPrice = json['total_price'];
     image = json['image'];
+    imageUrl = json['image_url'];
     type = json['type'];
     status = json['status'];
     createdAt = json['created_at'];
@@ -138,6 +141,7 @@ class DataOrderHistory {
     data['user_address_id'] = this.userAddressId;
     data['total_price'] = this.totalPrice;
     data['image'] = this.image;
+    data['image_url'] = this.imageUrl;
     data['type'] = this.type;
     data['status'] = this.status;
     data['created_at'] = this.createdAt;

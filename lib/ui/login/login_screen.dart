@@ -37,13 +37,13 @@ class _LoginState extends State<Login> {
     var response = await provider.login(request, context);
     if (response is APIError) {
       showInSnackBar(response.error);
-    } else if(response is LoginResponse) {
+    } else if (response is LoginResponse) {
       Navigator.pushAndRemoveUntil(
         context,
         new CupertinoPageRoute(builder: (BuildContext context) {
           return new NavigationDrawer();
         }),
-            (route) => false,
+        (route) => false,
       );
     }
   }
@@ -54,187 +54,178 @@ class _LoginState extends State<Login> {
     return Scaffold(
       key: _scaffoldKeys,
       backgroundColor: Colors.white,
-      resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
-          Builder(builder: (context) {
-            return Form(
+          SingleChildScrollView(
+            child: Form(
               key: _fieldKey,
               child: Container(
                 width: double.infinity,
                 child: Column(
                   children: <Widget>[
-                    Expanded(
-                      child: Image(
-                          image: AssetImage("images/app_logo.jpeg"),
-                          height: 100,
-                          alignment: Alignment.center,
-                          width: 180),
-                      flex: 40,
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.all(16),
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(16, 16, 16, 12),
-                                  border: CustomBorder.enabledBorder,
-                                  labelText: "Mobile No.",
-                                  focusedBorder: CustomBorder.focusBorder,
-                                  errorBorder: CustomBorder.errorBorder,
-                                  enabledBorder: CustomBorder.enabledBorder,
-                                  labelStyle: CustomTextStyle
-                                      .textFormFieldMedium
-                                      .copyWith(
-                                          fontSize: MediaQuery.of(context)
-                                                  .textScaleFactor *
-                                              16,
-                                          color: Colors.black)),
-                              controller: _mobileNumberController,
-                              focusNode: _mobileField,
-                              onFieldSubmitted: (value) {
-                                _mobileField.unfocus();
-                                FocusScope.of(context)
-                                    .autofocus(_passwordField);
+                    getSpacer(height: 60),
+                    Image(
+                        image: AssetImage("images/app_logo.jpeg"),
+                        height: 200,
+                        alignment: Alignment.center,
+                        width: 280),
+                    Container(
+                      margin: EdgeInsets.all(16),
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(16, 16, 16, 12),
+                                border: CustomBorder.enabledBorder,
+                                labelText: "Mobile No.",
+                                focusedBorder: CustomBorder.focusBorder,
+                                errorBorder: CustomBorder.errorBorder,
+                                enabledBorder: CustomBorder.enabledBorder,
+                                labelStyle: CustomTextStyle.textFormFieldMedium
+                                    .copyWith(
+                                        fontSize: MediaQuery.of(context)
+                                                .textScaleFactor *
+                                            16,
+                                        color: Colors.black)),
+                            controller: _mobileNumberController,
+                            focusNode: _mobileField,
+                            onFieldSubmitted: (value) {
+                              _mobileField.unfocus();
+                              FocusScope.of(context).autofocus(_passwordField);
+                            },
+                            keyboardType: TextInputType.phone,
+                            textInputAction: TextInputAction.next,
+                            validator: (val) => emptyValidator(
+                                value: val,
+                                txtMsg: "Please enter mobile number."),
+                          ),
+                          getSpacer(height: 20),
+                          TextFormField(
+                            decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(16, 16, 16, 12),
+                                border: CustomBorder.enabledBorder,
+                                labelText: "Password",
+                                focusedBorder: CustomBorder.focusBorder,
+                                errorBorder: CustomBorder.errorBorder,
+                                enabledBorder: CustomBorder.enabledBorder,
+                                labelStyle: CustomTextStyle.textFormFieldMedium
+                                    .copyWith(
+                                        fontSize: MediaQuery.of(context)
+                                                .textScaleFactor *
+                                            16,
+                                        color: Colors.black)),
+                            obscureText: true,
+                            controller: _passwordController,
+                            focusNode: _passwordField,
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.done,
+                            validator: (val) => emptyValidator(
+                                value: val, txtMsg: "Please enter password."),
+                          ),
+                          getSpacer(height: 20),
+                          Container(
+                            width: double.infinity,
+                            child: RaisedButton(
+                              onPressed: () {
+                                if (_fieldKey.currentState.validate()) {
+                                  _hitApi();
+                                }
                               },
-                              keyboardType: TextInputType.phone,
-                              textInputAction: TextInputAction.next,
-                              validator: (val) => emptyValidator(
-                                  value: val,
-                                  txtMsg: "Please enter mobile number."),
+                              child: Text(
+                                "LOGIN",
+                                style: CustomTextStyle.textFormFieldRegular
+                                    .copyWith(
+                                        color: Colors.white, fontSize: 14),
+                              ),
+                              color: AppColors.kPrimaryBlue,
+                              textColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4))),
                             ),
-                            getSpacer(height: 20),
-                            TextFormField(
-                              decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(16, 16, 16, 12),
-                                  border: CustomBorder.enabledBorder,
-                                  labelText: "Password",
-                                  focusedBorder: CustomBorder.focusBorder,
-                                  errorBorder: CustomBorder.errorBorder,
-                                  enabledBorder: CustomBorder.enabledBorder,
-                                  labelStyle: CustomTextStyle
-                                      .textFormFieldMedium
-                                      .copyWith(
-                                          fontSize: MediaQuery.of(context)
-                                                  .textScaleFactor *
-                                              16,
-                                          color: Colors.black)),
-                              obscureText: true,
-                              controller: _passwordController,
-                              focusNode: _passwordField,
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.done,
-                              validator: (val) => emptyValidator(
-                                  value: val, txtMsg: "Please enter password."),
-                            ),
-                            getSpacer(height: 20),
-                            Container(
-                              width: double.infinity,
-                              child: RaisedButton(
-                                onPressed: () {
-                                  if (_fieldKey.currentState.validate()) {
-                                    _hitApi();
-                                  }
-                                },
-                                child: Text(
-                                  "LOGIN",
-                                  style: CustomTextStyle.textFormFieldRegular
-                                      .copyWith(
-                                          color: Colors.white, fontSize: 14),
-                                ),
-                                color: AppColors.kPrimaryBlue,
-                                textColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4))),
+                          ),
+                          getSpacer(height: 10),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    new CupertinoPageRoute(
+                                        builder: (context) =>
+                                            ForgotPassword()));
+                              },
+                              child: Text(
+                                "Forget Password?",
+                                style: CustomTextStyle.textFormFieldBold
+                                    .copyWith(
+                                        color: AppColors.kPrimaryBlue,
+                                        fontSize: 14),
                               ),
                             ),
-                            getSpacer(height: 10),
-                            Container(
-                              alignment: Alignment.centerRight,
-                              child: InkWell(
+                          ),
+                          getSpacer(height: 10),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  color: Colors.grey.shade200,
+                                  margin: EdgeInsets.only(right: 16),
+                                  height: 1,
+                                ),
+                                flex: 40,
+                              ),
+                              Text(
+                                "Or",
+                                style: CustomTextStyle.textFormFieldMedium
+                                    .copyWith(fontSize: 14),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  color: Colors.grey.shade200,
+                                  margin: EdgeInsets.only(left: 16),
+                                  height: 1,
+                                ),
+                                flex: 40,
+                              )
+                            ],
+                          ),
+                          getSpacer(height: 14),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Don't have an account?",
+                                style: CustomTextStyle.textFormFieldMedium
+                                    .copyWith(fontSize: 14),
+                              ),
+                              getSpacer(width: 4),
+                              GestureDetector(
+                                child: Text(
+                                  "Sign Up",
+                                  style: CustomTextStyle.textFormFieldBold
+                                      .copyWith(
+                                          fontSize: 14,
+                                          color: AppColors.kPrimaryBlue),
+                                ),
                                 onTap: () {
                                   Navigator.of(context).push(
                                       new CupertinoPageRoute(
                                           builder: (context) =>
-                                              ForgotPassword()));
+                                              SignUpScreen()));
                                 },
-                                child: Text(
-                                  "Forget Password?",
-                                  style: CustomTextStyle.textFormFieldBold
-                                      .copyWith(
-                                          color: AppColors.kPrimaryBlue,
-                                          fontSize: 14),
-                                ),
                               ),
-                            ),
-                            getSpacer(height: 10),
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                    color: Colors.grey.shade200,
-                                    margin: EdgeInsets.only(right: 16),
-                                    height: 1,
-                                  ),
-                                  flex: 40,
-                                ),
-                                Text(
-                                  "Or",
-                                  style: CustomTextStyle.textFormFieldMedium
-                                      .copyWith(fontSize: 14),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    color: Colors.grey.shade200,
-                                    margin: EdgeInsets.only(left: 16),
-                                    height: 1,
-                                  ),
-                                  flex: 40,
-                                )
-                              ],
-                            ),
-                            getSpacer(height: 14),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "Don't have an account?",
-                                  style: CustomTextStyle.textFormFieldMedium
-                                      .copyWith(fontSize: 14),
-                                ),
-                                getSpacer(width: 4),
-                                GestureDetector(
-                                  child: Text(
-                                    "Sign Up",
-                                    style: CustomTextStyle.textFormFieldBold
-                                        .copyWith(
-                                            fontSize: 14,
-                                            color: AppColors.kPrimaryBlue),
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        new CupertinoPageRoute(
-                                            builder: (context) =>
-                                                SignUpScreen()));
-                                  },
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                            ],
+                          )
+                        ],
                       ),
-                      flex: 60,
                     )
                   ],
                 ),
               ),
-            );
-          }),
+            ),
+          ),
           new Center(
             child: getHalfScreenProviderLoader(
               status: provider.getLoading(),

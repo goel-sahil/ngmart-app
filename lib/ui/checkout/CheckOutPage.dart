@@ -112,86 +112,88 @@ class _CheckOutPageState extends State<CheckOutPage> {
     );
   }
 
-  showThankYouBottomSheet(BuildContext context) {
-    return _scaffoldKey.currentState.showBottomSheet((context) {
-      return Container(
-        height: 400,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey.shade200, width: 2),
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16), topLeft: Radius.circular(16))),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Image(
-                    image: AssetImage("images/ic_thank_you.png"),
-                    width: 300,
+  void showThankYouBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: false,
+        builder: (builder) {
+          return Container(
+            height: 400,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey.shade200, width: 2),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16))),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Image(
+                        image: AssetImage("images/ic_thank_you.png"),
+                        width: 300,
+                      ),
+                    ),
                   ),
+                  flex: 5,
                 ),
-              ),
-              flex: 5,
-            ),
-            //Your order has been placed. We we reach out to you shortly with your order.
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Column(
-                  children: <Widget>[
-                    RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(children: [
-                          TextSpan(
-                            text:
-                                "\n\nThank you for your purchase. Our company values each and every customer."
+                //Your order has been placed. We we reach out to you shortly with your order.
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 16, right: 16),
+                    child: Column(
+                      children: <Widget>[
+                        RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(children: [
+                              TextSpan(
+                                text:
+                                    "\n\nThank you for your purchase. Our company values each and every customer."
                                     " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
                                     "If you have any questions or feedback, please don’t hesitate to reach out.",
-                            style: CustomTextStyle.textFormFieldMedium.copyWith(
-                                fontSize: 14, color: Colors.grey.shade800),
-                          )
-                        ])),
-                    SizedBox(
-                      height: 24,
+                                style: CustomTextStyle.textFormFieldMedium
+                                    .copyWith(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade800),
+                              )
+                            ])),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        RaisedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              new CupertinoPageRoute(
+                                  builder: (BuildContext context) {
+                                return new NavigationDrawer();
+                              }),
+                              (route) => false,
+                            );
+                          },
+                          padding: EdgeInsets.only(left: 48, right: 48),
+                          child: Text(
+                            "Close",
+                            style: CustomTextStyle.textFormFieldMedium
+                                .copyWith(color: Colors.white),
+                          ),
+                          color: AppColors.kPrimaryBlue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(24))),
+                        )
+                      ],
                     ),
-                    RaisedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          new CupertinoPageRoute(
-                              builder: (BuildContext context) {
-                            return new NavigationDrawer();
-                          }),
-                          (route) => false,
-                        );
-                      },
-                      padding: EdgeInsets.only(left: 48, right: 48),
-                      child: Text(
-                        "Close",
-                        style: CustomTextStyle.textFormFieldMedium
-                            .copyWith(color: Colors.white),
-                      ),
-                      color: AppColors.kPrimaryBlue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(24))),
-                    )
-                  ],
-                ),
-              ),
-              flex: 5,
-            )
-          ],
-        ),
-      );
-    },
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16), topRight: Radius.circular(16))),
-        backgroundColor: Colors.white,
-        elevation: 2);
+                  ),
+                  flex: 5,
+                )
+              ],
+            ),
+          );
+        });
   }
 
   selectedAddressSection() {
@@ -427,7 +429,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             text: TextSpan(children: [
               TextSpan(
                   text:
-                      "${cartList.product.title} | ${cartList.product?.brand?.title??""}   ",
+                      "${cartList.product.title} | ${cartList.product?.brand?.title ?? ""}   ",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12)),
               TextSpan(
@@ -553,36 +555,22 @@ class _CheckOutPageState extends State<CheckOutPage> {
     provider.setLoading();
     var response = await provider.placeOrder(context, addressId);
     if (response is APIError) {
-      showInSnackBar(response.error);
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      } else {
+        showInSnackBar(response.error);
+      }
     } else if (response is CommonResponse) {
-      //showInSnackBar(response.message);
-      showThankYouBottomSheet(context);
-      /* Alert(
-        context: context,
-        type: AlertType.success,
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushAndRemoveUntil(
-                context,
-                new CupertinoPageRoute(builder: (BuildContext context) {
-                  return new NavigationDrawer();
-                }),
-                (route) => false,
-              );
-            },
-            child: Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ],
-        title: 'Order Successfully placed.',
-        desc:
-            "Your order has been placed. We we reach out to you shortly with your order.",
-        image: Image.asset("images/tick.png"),
-      ).show();*/
+      showThankYouBottomSheet();
     }
   }
 

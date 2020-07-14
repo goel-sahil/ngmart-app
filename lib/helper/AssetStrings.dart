@@ -10,6 +10,7 @@ class AssetStrings {
       "Assets/images/landscape_image.jpeg";
  // static const String logoImage = "Assets/images/splash.png";
   static const String logoImage = "images/app_logo.jpeg";
+  static const String placeHolder = "images/placeholder.png";
   static const String splashBGImage = "Assets/images/splash_bg.png";
   static const String splashBackground = "Assets/images/splash_background.webp";
   static const String splashLogoImage = "Assets/images/splash_logo.png";

@@ -52,7 +52,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         _title = "My Cart";
       } else if (index == 3) {
         //show purchi
-        _title = "Buy with Purchi";
+        _title = "Buy with Parchi";
         _pageController.jumpToPage(3);
       } else if (index == 4) {
         //show order history
@@ -75,10 +75,14 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         _pageController.jumpToPage(0);
         _title = "NGMart";
       } else if (index == 1) {
+        //Show parchi screen
+        _title = "Buy with Parchi";
+        _pageController.jumpToPage(3);
+      }  else if (index == 2) {
         //Show Settings
         _title = "Settings";
         _pageController.jumpToPage(5);
-      } else if (index == 2) {
+      }else if (index == 3) {
         // Contact us
         _title = "Contact us";
         _pageController.jumpToPage(6);
@@ -108,12 +112,13 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     if (_isLoggedIn) {
       drawerItems.add(DrawerItem("My Profile", FontAwesomeIcons.userCircle));
       drawerItems.add(DrawerItem("My Cart", FontAwesomeIcons.shoppingCart));
-      drawerItems
-          .add(DrawerItem("Buy with Parchi", FontAwesomeIcons.buysellads));
+    }
+    drawerItems.add(DrawerItem("Order by Parchi", FontAwesomeIcons.luggageCart));
+    if (_isLoggedIn) {
       drawerItems.add(DrawerItem("Order History", FontAwesomeIcons.history));
     }
     drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
-    drawerItems.add(DrawerItem("Contact us", FontAwesomeIcons.searchLocation));
+    drawerItems.add(DrawerItem("Contact us", FontAwesomeIcons.mailBulk));
     if (_isLoggedIn) {
       drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     }
@@ -209,7 +214,9 @@ class _NavigationDrawerState extends State<NavigationDrawer>
             CartPage(
               fromNavigationDrawer: true,
             ),
-            OrderByParchiScreen(fromNavigation: true,),
+            OrderByParchiScreen(
+              fromNavigation: true,
+            ),
             OrderHistory(),
             Setting(),
             ContactUs(),

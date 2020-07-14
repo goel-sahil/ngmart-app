@@ -1,3 +1,5 @@
+import 'package:ngmartflutter/model/product_response.dart';
+
 class BannerResponse {
   String message;
   Data data;
@@ -96,7 +98,7 @@ class DataBanner {
   String createdAt;
   String updatedAt;
   String imageUrl;
-  List<Products> products;
+  List<DataInner> products;
 
   DataBanner(
       {this.id,
@@ -119,9 +121,9 @@ class DataBanner {
     updatedAt = json['updated_at'];
     imageUrl = json['image_url'];
     if (json['products'] != null) {
-      products = new List<Products>();
+      products = new List<DataInner>();
       json['products'].forEach((v) {
-        products.add(new Products.fromJson(v));
+        products.add(new DataInner.fromJson(v));
       });
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
@@ -5,7 +7,9 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginRequest.dart';
+import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/forgotPassword/ForgotPassword.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
 import 'package:ngmartflutter/ui/otp/otp_verification.dart';
@@ -20,7 +24,9 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
   GlobalKey<FormState> _fieldKey = new GlobalKey<FormState>();
   TextEditingController _mobileNumberController = new TextEditingController();
+  TextEditingController _currentNumberController = new TextEditingController();
   FocusNode _mobileNumberField = new FocusNode();
+  FocusNode _currentNumberField = new FocusNode();
   LoginProvider provider;
 
   Future<void> _hitApi() async {
@@ -44,6 +50,15 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
   }
 
   @override
+  void initState() {
+    MemoryManagement.init();
+    var info = MemoryManagement.getUserInfo();
+    var userInfo = LoginResponse.fromJson(jsonDecode(info));
+    _currentNumberController.text = userInfo.data.user.phoneNumber;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     provider = Provider.of<LoginProvider>(context);
     return Scaffold(
@@ -63,7 +78,20 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
                   getSpacer(height: 80),
                   getTextField(
                     context: context,
-                    labelText: "Mobile Number",
+                    labelText: "Current Number",
+                    obsectextType: false,
+                    textType: TextInputType.number,
+                    focusNodeNext: _mobileNumberField,
+                    focusNodeCurrent: _currentNumberField,
+                    enablefield: false,
+                    controller: _currentNumberController,
+                    validators: (val) => emptyValidator(
+                        value: val, txtMsg: "Please enter mobile number."),
+                  ),
+                  getSpacer(height: 20),
+                  getTextField(
+                    context: context,
+                    labelText: "New Number",
                     obsectextType: false,
                     textType: TextInputType.number,
                     focusNodeNext: _mobileNumberField,
@@ -71,7 +99,7 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
                     enablefield: true,
                     controller: _mobileNumberController,
                     validators: (val) => emptyValidator(
-                        value: val, txtMsg: "Please enter mobile number."),
+                        value: val, txtMsg: "Please enter new mobile number."),
                   ),
                   getSpacer(height: 20),
                   Container(

@@ -5,6 +5,7 @@ import 'package:ngmartflutter/Network/APIHandler.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/model/ChangePasswordRequest.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
@@ -254,6 +255,31 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> changePassword(
+      ChangePasswordRequest request, BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    print("Request==> ${request.toJson()}");
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.changePassword,
+        requestBody: request.toJson(),
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse loginResponseData = new CommonResponse.fromJson(response);
+      completer.complete(loginResponseData);
+      notifyListeners();
+      return completer.future;
+    }
+  }
 
   void hideLoader() {
     _isLoading = false;

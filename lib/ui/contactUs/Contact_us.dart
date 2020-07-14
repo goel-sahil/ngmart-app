@@ -39,7 +39,20 @@ class _ContactUsState extends State<ContactUs> {
 
     var response = await provider.contactUs(request, context);
     if (response is APIError) {
-      showInSnackBar(response.error);
+      if (response.status == 401) {
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: response.error,
+          actionCallbacks: {
+            "OK": () {
+              onLogoutSuccess(context: context);
+            }
+          },
+        );
+      } else {
+        showInSnackBar(response.error);
+      }
     } else if (response is CommonResponse) {
       showInSnackBar(response.message);
       _descriptionController.clear();

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:ngmartflutter/Network/APIHandler.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/bannerResponse/bannerResponse.dart';
@@ -100,7 +101,6 @@ class DashboardProvider with ChangeNotifier {
         url: APIs.addToCart,
         requestBody: request,
         additionalHeaders: headers);
-
     hideLoader();
     if (response is APIError) {
       completer.complete(response);
@@ -114,9 +114,7 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
-
-  Future<dynamic> getBanners(
-      BuildContext context) async {
+  Future<dynamic> getBanners(BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     MemoryManagement.init();
     Map<String, String> headers = {
@@ -124,9 +122,7 @@ class DashboardProvider with ChangeNotifier {
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
     var response = await APIHandler.get(
-        context: context,
-        url: APIs.banners,
-        additionalHeaders: headers);
+        context: context, url: APIs.banners, additionalHeaders: headers);
 
     hideLoader();
     if (response is APIError) {
@@ -140,8 +136,6 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     }
   }
-
-
 
   Future<dynamic> getCart(BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
@@ -215,14 +209,17 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> getOrderHistory(BuildContext context) async {
+  Future<dynamic> getOrderHistory(
+      BuildContext context, int currentPageNumber) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
     var response = await APIHandler.get(
-        context: context, url: APIs.getOrders, additionalHeaders: headers);
+        context: context,
+        url: "${APIs.getOrders}?page=$currentPageNumber",
+        additionalHeaders: headers);
 
     hideLoader();
     if (response is APIError) {
@@ -238,12 +235,14 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> contactUs(ContactUsRequest request, BuildContext context) async {
+  Future<dynamic> contactUs(
+      ContactUsRequest request, BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
-    };    print("Request==> ${request.toJson()}");
+    };
+    print("Request==> ${request.toJson()}");
     var response = await APIHandler.post(
         context: context,
         url: APIs.contactUs,
@@ -277,8 +276,7 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     } else {
       print("Response==> $response");
-      CmsResponse productResponse =
-      new CmsResponse.fromJson(response);
+      CmsResponse productResponse = new CmsResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;
