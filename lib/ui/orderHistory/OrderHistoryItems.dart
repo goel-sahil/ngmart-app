@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
@@ -106,9 +107,9 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "${getFormattedCurrency(productList.product.price.toDouble())} / ${productList.product.quantity} ${productList.product.quantityUnit.title}",
+                                "${getFormattedCurrency(productList.totalPrice.toDouble())} / ${productList.quantity} ${productList.product.quantityUnit.title}",
                                 style: CustomTextStyle.textFormFieldBlack
-                                    .copyWith(color: Colors.green),
+                                    .copyWith(color: AppColors.kPrimaryBlue),
                               ),
                             ],
                           ),

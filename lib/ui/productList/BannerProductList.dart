@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
@@ -156,7 +157,7 @@ class _BannerProductScreenState extends State<BannerProductScreen> {
                               Text(
                                 "${getFormattedCurrency(productList.price.toDouble())} / ${productList.quantity} ${productList.quantityUnit.title}",
                                 style: CustomTextStyle.textFormFieldBlack
-                                    .copyWith(color: Colors.green),
+                                    .copyWith(color: AppColors.kPrimaryBlue),
                               ),
                             ],
                           ),

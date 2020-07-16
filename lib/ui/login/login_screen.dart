@@ -9,6 +9,7 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/Login/LoginRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
+import 'package:ngmartflutter/ui/admin/admin_navigation_drawer.dart';
 import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:ngmartflutter/ui/forgotPassword/ForgotPassword.dart';
 import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
@@ -38,13 +39,23 @@ class _LoginState extends State<Login> {
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is LoginResponse) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        new CupertinoPageRoute(builder: (BuildContext context) {
-          return new NavigationDrawer();
-        }),
-        (route) => false,
-      );
+      if (response.data.user.roleId == 1){
+        Navigator.pushAndRemoveUntil(
+          context,
+          new CupertinoPageRoute(builder: (BuildContext context) {
+            return new AdminNavigationDrawer();
+          }),
+              (route) => false,
+        );
+      }else{
+        Navigator.pushAndRemoveUntil(
+          context,
+          new CupertinoPageRoute(builder: (BuildContext context) {
+            return new NavigationDrawer();
+          }),
+              (route) => false,
+        );
+      }
     }
   }
 

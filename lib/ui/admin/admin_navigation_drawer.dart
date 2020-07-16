@@ -8,24 +8,19 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
-import 'package:ngmartflutter/ui/cart/CartPage.dart';
-import 'package:ngmartflutter/ui/contactUs/Contact_us.dart';
+import 'package:ngmartflutter/ui/drawer/drawer_item.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
-import 'package:ngmartflutter/ui/orderByParchi/OrderByParchiScreen.dart';
-import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
-import 'package:ngmartflutter/ui/profile/ProfileScreen.dart';
 import 'package:ngmartflutter/ui/search/SearchPage.dart';
-import 'package:ngmartflutter/ui/settings/setting.dart';
 import 'package:share/share.dart';
 
-import 'drawer_item.dart';
-import 'HomeScreen.dart';
+import '../CommingSoonScreen.dart';
+import 'brand/BrandScreen.dart';
 
-class NavigationDrawer extends StatefulWidget {
-  _NavigationDrawerState createState() => _NavigationDrawerState();
+class AdminNavigationDrawer extends StatefulWidget {
+  _AdminNavigationDrawerState createState() => _AdminNavigationDrawerState();
 }
 
-class _NavigationDrawerState extends State<NavigationDrawer>
+class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     with TickerProviderStateMixin {
   final _pageController = PageController();
   int _selectionIndex = 0;
@@ -38,6 +33,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   DateTime currentBackPressTime;
 
   _onSelectItem(int index) {
+    FocusScope.of(context).unfocus();
     Navigator.pop(context);
     if (_isLoggedIn) {
       if (index == 0) {
@@ -47,26 +43,26 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       } else if (index == 1) {
         //show profile
         _pageController.jumpToPage(1);
-        _title = "My Profile";
+        _title = "Brands";
         showSearch = false;
       } else if (index == 2) {
         //show cart
         _pageController.jumpToPage(2);
-        _title = "My Cart";
+        _title = "Category";
         showSearch = false;
       } else if (index == 3) {
         //show purchi
-        _title = "Order by Parchi";
+        _title = "Product";
         _pageController.jumpToPage(3);
         showSearch = false;
       } else if (index == 4) {
         //show order history
-        _title = "Order History";
+        _title = "Orders";
         _pageController.jumpToPage(4);
         showSearch = false;
       } else if (index == 5) {
         //show setting
-        _title = "Settings";
+        _title = "Cms Pages";
         _pageController.jumpToPage(5);
         showSearch = false;
       } else if (index == 6) {
@@ -78,27 +74,6 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         onLogoutSuccess(context: context);
         _pageController.jumpToPage(7);
       }
-    } else {
-      if (index == 0) {
-        _pageController.jumpToPage(0);
-        _title = "NGMart";
-        showSearch = true;
-      } else if (index == 1) {
-        //Show parchi screen
-        _title = "Order by Parchi";
-        _pageController.jumpToPage(3);
-        showSearch = false;
-      } else if (index == 2) {
-        //Show Settings
-        _title = "Settings";
-        _pageController.jumpToPage(5);
-        showSearch = false;
-      } else if (index == 3) {
-        // Contact us
-        _title = "Contact us";
-        _pageController.jumpToPage(6);
-        showSearch = false;
-      }
     }
 
     setState(() {
@@ -108,7 +83,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
 
   @override
   void initState() {
-    _body = HomeScreen();
+    _body = CommingSoonScreen();
     MemoryManagement.init();
     _isLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
     print("Logged In===> $_isLoggedIn");
@@ -116,17 +91,16 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       var infoData = jsonDecode(MemoryManagement.getUserInfo());
       userInfo = LoginResponse.fromJson(infoData);
     }
-    drawerItems.add(DrawerItem("Shop Now", FontAwesomeIcons.cartPlus));
+    drawerItems.add(DrawerItem("Dashboard", FontAwesomeIcons.tachometerAlt));
     if (_isLoggedIn) {
-      drawerItems.add(DrawerItem("My Profile", FontAwesomeIcons.userCircle));
-      drawerItems.add(DrawerItem("My Cart", FontAwesomeIcons.shoppingCart));
+      drawerItems.add(DrawerItem("Brands", FontAwesomeIcons.meetup));
+      drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
     }
-    drawerItems
-        .add(DrawerItem("Order by Parchi", FontAwesomeIcons.luggageCart));
+    drawerItems.add(DrawerItem("Products", FontAwesomeIcons.th));
     if (_isLoggedIn) {
-      drawerItems.add(DrawerItem("Order History", FontAwesomeIcons.history));
+      drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.history));
     }
-    drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
+    drawerItems.add(DrawerItem("Cms Pages", FontAwesomeIcons.userSecret));
     drawerItems.add(DrawerItem("Contact us", FontAwesomeIcons.mailBulk));
     if (_isLoggedIn) {
       drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
@@ -156,18 +130,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         centerTitle: true,
         actions: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: showSearch
-                ? IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => SearchPage()));
-                    })
-                : Container(),
-          )
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: IconButton(icon: Icon(Icons.add), onPressed: () {}))
         ],
       ),
       drawer: Drawer(
@@ -175,43 +139,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
           physics: ScrollPhysics(),
           child: Column(
             children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: Container(
-                  padding: EdgeInsets.only(right: 20),
-                  child: InkWell(
-                    onTap: () {
-                      if (!_isLoggedIn) {
-                        Navigator.of(context).push(new CupertinoPageRoute(
-                            builder: (context) => Login()));
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          _isLoggedIn
-                              ? "${userInfo.data.user.firstName} ${userInfo.data.user.lastName}"
-                              : "LogIn",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Icon(
-                          FontAwesomeIcons.arrowRight,
-                          color: Colors.white,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                accountEmail: Text(_isLoggedIn ? userInfo.data.user.email : ""),
-                currentAccountPicture: _isLoggedIn
-                    ? CircleAvatar(
-                        child: Text(
-                          userInfo.data.user.firstName[0] ?? "N",
-                          style: TextStyle(fontSize: 40.0),
-                        ),
-                      )
-                    : Container(),
-              ),
+              Container(height: 40),
               Column(
                 children: drawerOptions,
               ),
@@ -224,17 +152,13 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         child: PageView(
             controller: _pageController,
             children: <Widget>[
-              HomeScreen(),
-              ProfileScreen(),
-              CartPage(
-                fromNavigationDrawer: true,
-              ),
-              OrderByParchiScreen(
-                fromNavigation: true,
-              ),
-              OrderHistory(),
-              Setting(),
-              ContactUs(),
+              CommingSoonScreen(),
+              BrandScreen(),
+              CommingSoonScreen(),
+              CommingSoonScreen(),
+              CommingSoonScreen(),
+              CommingSoonScreen(),
+              CommingSoonScreen(),
             ],
             physics: NeverScrollableScrollPhysics()),
       ),
@@ -244,7 +168,9 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   Future<bool> onWillPop() {
     DateTime now = DateTime.now();
     if (_pageController.page != 0) {
-      _setSelectedZero();
+      _pageController.jumpToPage(0);
+      _title = "NGMart";
+      setState(() {});
       return Future.value(false);
     } else if (currentBackPressTime == null ||
         now.difference(currentBackPressTime) > Duration(seconds: 2)) {
@@ -257,16 +183,6 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     }
     return Future.value(true);
   }
-
-  _setSelectedZero(){
-    _title = "NGMart";
-    _pageController.jumpToPage(0);
-    showSearch = true;
-    setState(() {
-      _selectionIndex = 0;
-    });
-  }
-
 
   Widget toast = Container(
     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),

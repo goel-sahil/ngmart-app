@@ -26,6 +26,7 @@ class CartData {
   int userId;
   int productId;
   num quantity;
+  num initialQuantity;
   num pricePerUnit;
   String createdAt;
   String updatedAt;
@@ -36,6 +37,7 @@ class CartData {
         this.userId,
         this.productId,
         this.quantity,
+        this.initialQuantity,
         this.pricePerUnit,
         this.createdAt,
         this.updatedAt,
@@ -46,6 +48,7 @@ class CartData {
     userId = json['user_id'];
     productId = json['product_id'];
     quantity = json['quantity'];
+    initialQuantity = json['quantity'];
     pricePerUnit = json['price_per_unit'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -59,6 +62,7 @@ class CartData {
     data['user_id'] = this.userId;
     data['product_id'] = this.productId;
     data['quantity'] = this.quantity;
+    data['quantity'] = this.initialQuantity;
     data['price_per_unit'] = this.pricePerUnit;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;

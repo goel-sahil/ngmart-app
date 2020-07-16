@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/AssetStrings.dart';
@@ -58,12 +59,13 @@ class _HomeScreenState extends State<HomeScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            getSpacer(height: 20),
             getCachedNetworkImage(
                 url: categoryList.imageUrl, height: 100, width: 100),
             getSpacer(height: 10),
             Container(
               color: Colors.black26,
-              width: double.infinity,
+              width: getScreenSize(context: context).width,
               alignment: Alignment.center,
               child: Text(
                 categoryList.title ?? "",
@@ -112,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen>
             }
           },
         );
-      }else{
+      } else {
         showInSnackBar(response.error);
       }
     } else if (response is BannerResponse) {
@@ -174,20 +176,17 @@ class _HomeScreenState extends State<HomeScreen>
                       getSpacer(height: 10),
                       sectionHeader("Shop by Category"),
                       getSpacer(height: 10),
-                      GridView.builder(
-                        physics: ScrollPhysics(),
-                        shrinkWrap: true,
-                        // to disable GridView's scrolling
-                        itemBuilder: (ctx, index) {
-                          return prepareList(index, categoryList[index]);
-                        },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: getScreenSize(context: context)
-                                  .width /
-                              (getScreenSize(context: context).height / 1.6),
-                        ),
+                      new StaggeredGridView.countBuilder(
+                        crossAxisCount: 4,
                         itemCount: categoryList.length,
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) =>
+                            prepareList(index, categoryList[index]),
+                        staggeredTileBuilder: (int index) =>
+                            new StaggeredTile.count(2, 2),
+                        mainAxisSpacing: 8.0,
+                        crossAxisSpacing: 8.0,
                       ),
                       getSpacer(height: 10),
                       Divider(),
@@ -232,13 +231,13 @@ class _HomeScreenState extends State<HomeScreen>
             decoration: BoxDecoration(color: Colors.white),
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => BannerProductScreen(
-                              title: bannerList[itemIndex].title,
-                              products: bannerList[itemIndex].products,
-                            )));
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => BannerProductScreen(
+                                title: bannerList[itemIndex].title,
+                                products: bannerList[itemIndex].products,
+                              )));
               },
               child: getNetworkImage(
                   url: bannerList[itemIndex].imageUrl,

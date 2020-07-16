@@ -2,20 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
-import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/ValidatorFunctions.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/signUp/SignUpRequest.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
-import 'package:ngmartflutter/ui/otp/otp_verification.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {

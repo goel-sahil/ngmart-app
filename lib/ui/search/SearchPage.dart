@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
@@ -273,7 +274,7 @@ class _SearchPageState extends State<SearchPage> {
                               Text(
                                 "${getFormattedCurrency(productList.price.toDouble())} / ${productList.quantity} ${productList.quantityUnit.title}",
                                 style: CustomTextStyle.textFormFieldBlack
-                                    .copyWith(color: Colors.green),
+                                    .copyWith(color: AppColors.kPrimaryBlue),
                               ),
                             ],
                           ),

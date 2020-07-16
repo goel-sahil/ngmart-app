@@ -118,7 +118,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
         isDismissible: false,
         builder: (builder) {
           return Container(
-            height: 400,
+            height: (getScreenSize(context: context).height/2)+400,
             decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.grey.shade200, width: 2),
@@ -127,68 +127,62 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     topLeft: Radius.circular(16))),
             child: Column(
               children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Image(
-                        image: AssetImage("images/ic_thank_you.png"),
-                        width: 300,
-                      ),
+                Container(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Image(
+                      image: AssetImage("images/ic_thank_you.png"),
+                      width: 300,
                     ),
                   ),
-                  flex: 5,
                 ),
                 //Your order has been placed. We we reach out to you shortly with your order.
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 16, right: 16),
-                    child: Column(
-                      children: <Widget>[
-                        RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(children: [
-                              TextSpan(
-                                text:
-                                    "\n\nThank you for your purchase. Our company values each and every customer."
-                                    " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
-                                    "If you have any questions or feedback, please don’t hesitate to reach out.",
-                                style: CustomTextStyle.textFormFieldMedium
-                                    .copyWith(
-                                        fontSize: 14,
-                                        color: Colors.grey.shade800),
-                              )
-                            ])),
-                        SizedBox(
-                          height: 24,
+                Container(
+                  margin: EdgeInsets.only(left: 16, right: 16),
+                  child: Column(
+                    children: <Widget>[
+                      RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text:
+                                  "\n\nThank you for your purchase. Our company values each and every customer."
+                                  " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
+                                  "If you have any questions or feedback, please don’t hesitate to reach out.",
+                              style: CustomTextStyle.textFormFieldMedium
+                                  .copyWith(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade800),
+                            )
+                          ])),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            new CupertinoPageRoute(
+                                builder: (BuildContext context) {
+                              return new NavigationDrawer();
+                            }),
+                            (route) => false,
+                          );
+                        },
+                        padding: EdgeInsets.only(left: 48, right: 48),
+                        child: Text(
+                          "Close",
+                          style: CustomTextStyle.textFormFieldMedium
+                              .copyWith(color: Colors.white),
                         ),
-                        RaisedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              new CupertinoPageRoute(
-                                  builder: (BuildContext context) {
-                                return new NavigationDrawer();
-                              }),
-                              (route) => false,
-                            );
-                          },
-                          padding: EdgeInsets.only(left: 48, right: 48),
-                          child: Text(
-                            "Close",
-                            style: CustomTextStyle.textFormFieldMedium
-                                .copyWith(color: Colors.white),
-                          ),
-                          color: AppColors.kPrimaryBlue,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(24))),
-                        )
-                      ],
-                    ),
+                        color: AppColors.kPrimaryBlue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(24))),
+                      )
+                    ],
                   ),
-                  flex: 5,
                 )
               ],
             ),
@@ -221,7 +215,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "${userInfo.data.user.firstName ?? ""} ${userInfo.data.user.lastName ?? ""}(Default)",
+                    "${userInfo.data.user.firstName ?? ""} ${userInfo.data.user.lastName ?? ""}",
                     style: CustomTextStyle.textFormFieldSemiBold
                         .copyWith(fontSize: 14),
                   ),
@@ -235,7 +229,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     child: Text(
                       "HOME",
                       style: CustomTextStyle.textFormFieldBlack
-                          .copyWith(color: Colors.green, fontSize: 8),
+                          .copyWith(color: AppColors.kPrimaryBlue, fontSize: 8),
                     ),
                   )
                 ],
@@ -433,7 +427,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12)),
               TextSpan(
-                  text: "  Qty:${cartList.product.quantity}",
+                  text: "  Qty:${cartList.quantity}",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12, fontWeight: FontWeight.w600))
             ]),

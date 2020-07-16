@@ -3,19 +3,11 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  static const Color kPrimaryBlue = const Color(0xff44c662);
+  static const Color kPrimaryBlue = Colors.green;
   static const Color kOrange = const Color(0xFFFE7822);
-
-
   static const Color kBlack = const Color(0xFF4E5253);
   static const Color kBlackGrey = const Color(0xFF4F5555);
   static const Color kHintColor = const Color(0xFFABABAB);
-
-
-
-
-
-
   static const Color kSkyBlue = const Color(0xFF009CE7);
   static const Color kDarkBlue = const Color(0xFF009BCF);
   static final Color kWhite = Colors.white.withOpacity(0.8);

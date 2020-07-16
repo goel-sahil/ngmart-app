@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/buttons.dart';
@@ -121,12 +122,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         key: _scaffoldKeys,
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: bgColor,
+          backgroundColor: AppColors.kPrimaryBlue,
           centerTitle: true,
-          leading: BackButton(
-            color: darkText,
-          ),
-          title: Text(widget.productData.title, style: h4),
+          title: Text(widget.productData.title, style: h4.copyWith(color: Colors.white)),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 10),
@@ -146,7 +144,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 },
                 icon: Icon(
                   FontAwesomeIcons.shoppingCart,
-                  color: darkText,
+                  color: Colors.white,
                 ),
               ),
             )

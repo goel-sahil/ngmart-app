@@ -56,19 +56,19 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                 ? AppBar(
                     title: Text("Order By Parchi"),
                     centerTitle: true,
-                    actions: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) => SearchPage()));
-                            }),
-                      )
-                    ],
+//                    actions: <Widget>[
+//                      Padding(
+//                        padding: const EdgeInsets.symmetric(horizontal: 8),
+//                        child: IconButton(
+//                            icon: Icon(Icons.search),
+//                            onPressed: () {
+//                              Navigator.push(
+//                                  context,
+//                                  CupertinoPageRoute(
+//                                      builder: (context) => SearchPage()));
+//                            }),
+//                      )
+//                    ],
                   )
                 : null,
             body: SingleChildScrollView(
@@ -136,7 +136,24 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                     Image.file(
                       _image ?? File(""),
                     ),
-                    getSpacer(height: 30),
+                    getSpacer(height: 20),
+                    _image!=null? Container(
+                      width: getScreenSize(context: context).width - 80,
+                      child: new FlatButton(
+                          child: new Text(
+                            "Place order",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () {
+                            if (_image != null) _hitAPi();
+                          },
+                          color: AppColors.kPrimaryBlue,
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(4.0))),
+                    ):Container(),
+                    getSpacer(height: 50),
                   ],
                 ),
               ),
@@ -195,7 +212,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
         source: ImageSource.gallery, maxWidth: maxWidth, maxHeight: maxHeight);
     _image = imageFileSelect;
     setState(() {});
-    if (_image != null) _hitAPi();
+
   }
 
   Future _getCameraImage() async {
@@ -203,7 +220,6 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
         source: ImageSource.camera, maxWidth: maxWidth, maxHeight: maxHeight);
     _image = imageFileSelect;
     setState(() {});
-    if (_image != null) _hitAPi();
   }
 
   Future<http.StreamedResponse> _hitAPi() async {
@@ -243,7 +259,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
     if (response.statusCode == 200) {
       final respStr = await response.stream.bytesToString();
       Map data = jsonDecode(respStr); // Parse data from JSON string
-      showThankYouBottomSheet(context);
+      showThankYouBottomSheet();
     } else {
       final respStr = await response.stream.bytesToString();
       Map data = jsonDecode(respStr); // Parse data from JSON string
@@ -272,85 +288,81 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
     );
   }
 
-  showThankYouBottomSheet(BuildContext context) {
-    return _scaffoldKey.currentState.showBottomSheet((context) {
-      return Container(
-        height: 400,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey.shade200, width: 2),
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16), topLeft: Radius.circular(16))),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Image(
-                    image: AssetImage("images/ic_thank_you.png"),
-                    width: 300,
+  void showThankYouBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: false,
+        builder: (builder) {
+          return Container(
+            height: (getScreenSize(context: context).height/2)+400,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey.shade200, width: 2),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16))),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Image(
+                      image: AssetImage("images/ic_thank_you.png"),
+                      width: 300,
+                    ),
                   ),
                 ),
-              ),
-              flex: 5,
-            ),
-            //Your order has been placed. We we reach out to you shortly with your order.
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Column(
-                  children: <Widget>[
-                    RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(children: [
-                          TextSpan(
-                            text:
-                                "\n\nThank you for your purchase. Our company values each and every customer."
-                                " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
-                                "If you have any questions or feedback, please don’t hesitate to reach out.",
-                            style: CustomTextStyle.textFormFieldMedium.copyWith(
-                                fontSize: 14, color: Colors.grey.shade800),
-                          )
-                        ])),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          new CupertinoPageRoute(
-                              builder: (BuildContext context) {
-                            return new NavigationDrawer();
-                          }),
-                          (route) => false,
-                        );
-                      },
-                      padding: EdgeInsets.only(left: 48, right: 48),
-                      child: Text(
-                        "Close",
-                        style: CustomTextStyle.textFormFieldMedium
-                            .copyWith(color: Colors.white),
+                //Your order has been placed. We we reach out to you shortly with your order.
+                Container(
+                  margin: EdgeInsets.only(left: 16, right: 16),
+                  child: Column(
+                    children: <Widget>[
+                      RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text:
+                              "\n\nThank you for your purchase. Our company values each and every customer."
+                                  " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
+                                  "If you have any questions or feedback, please don’t hesitate to reach out.",
+                              style: CustomTextStyle.textFormFieldMedium
+                                  .copyWith(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade800),
+                            )
+                          ])),
+                      SizedBox(
+                        height: 24,
                       ),
-                      color: AppColors.kPrimaryBlue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(24))),
-                    )
-                  ],
-                ),
-              ),
-              flex: 5,
-            )
-          ],
-        ),
-      );
-    },
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16), topRight: Radius.circular(16))),
-        backgroundColor: Colors.white,
-        elevation: 2);
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            new CupertinoPageRoute(
+                                builder: (BuildContext context) {
+                                  return new NavigationDrawer();
+                                }),
+                                (route) => false,
+                          );
+                        },
+                        padding: EdgeInsets.only(left: 48, right: 48),
+                        child: Text(
+                          "Close",
+                          style: CustomTextStyle.textFormFieldMedium
+                              .copyWith(color: Colors.white),
+                        ),
+                        color: AppColors.kPrimaryBlue,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(24))),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 }

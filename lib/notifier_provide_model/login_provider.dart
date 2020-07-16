@@ -41,6 +41,7 @@ class LoginProvider with ChangeNotifier {
       MemoryManagement.setAccessToken(
           accessToken: loginResponseData.data.token ?? "");
       MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
+      MemoryManagement.setUserRole(role: loginResponseData.data.user.roleId);
       MemoryManagement.setLoggedInStatus(logInStatus: true);
       completer.complete(loginResponseData);
       notifyListeners();

@@ -590,3 +590,44 @@ String getFormattedCurrency(double amount) {
 
   return fmf.output.symbolOnLeft;
 }
+
+Future<bool> isConnectedToInternet() async {
+  try {
+    final result = await InternetAddress.lookup('google.com')
+        .timeout(const Duration(seconds: 5));
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (_) {
+    return false;
+  }
+}
+
+showAlertDialog({context, title, message, iconData}) {
+  return showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: iconData == null ? Text("$title") : Icon(iconData),
+          content: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text("$message"),
+          ),
+          actions: <Widget>[
+            CupertinoButton(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: Text(
+                "Ok",
+                style: TextStyle(color: AppColors.kPrimaryBlue),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      });
+}
+

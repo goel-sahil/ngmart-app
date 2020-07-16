@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/helper/AssetStrings.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/ui/admin/admin_navigation_drawer.dart';
 
 import 'drawer/navigation_drawer.dart';
 import 'login/login_screen.dart';
@@ -50,15 +51,26 @@ class FadeIn extends State<SplashScreen> {
 
   void moveToScreen() async {
     await MemoryManagement.init();
-    Timer _timer = new Timer(const Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 2), () {
       var token = MemoryManagement?.getUserLoggedIn() ?? false;
-      Navigator.pushAndRemoveUntil(
-        context,
-        new CupertinoPageRoute(builder: (BuildContext context) {
-          return new NavigationDrawer();
-        }),
-        (route) => false,
-      );
+      var role = MemoryManagement?.getUserRole() ?? 0;
+      if (role == 1) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          new CupertinoPageRoute(builder: (BuildContext context) {
+            return new AdminNavigationDrawer();
+          }),
+          (route) => false,
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          new CupertinoPageRoute(builder: (BuildContext context) {
+            return new NavigationDrawer();
+          }),
+          (route) => false,
+        );
+      }
     });
   }
 }

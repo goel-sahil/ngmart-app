@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/orderHistory/orderHistory.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
+import 'package:ngmartflutter/ui/FullScreenImageScreen.dart';
 import 'package:provider/provider.dart';
 
 import 'OrderHistoryItems.dart';
@@ -65,7 +67,7 @@ class _OrderHistoryState extends State<OrderHistory> {
     } else {
       _currentPageNumber = 1;
     }
-    var response = await provider.getOrderHistory(context,_currentPageNumber);
+    var response = await provider.getOrderHistory(context, _currentPageNumber);
     if (response is APIError) {
       if (response.status == 401) {
         showAlert(
@@ -136,13 +138,22 @@ class _OrderHistoryState extends State<OrderHistory> {
   createCartListItem(DataOrderHistory productList, int type) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => OrderItemsScreen(
-                      dataList: productList.orderItems,
-                      orderId: productList.id,
-                    )));
+        if (type == 1) {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => FullScreenImage(
+                        imageSrc: productList.imageUrl,
+                      )));
+        } else {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => OrderItemsScreen(
+                        dataList: productList.orderItems,
+                        orderId: productList.id,
+                      )));
+        }
       },
       child: Stack(
         children: <Widget>[
@@ -202,7 +213,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                               Text(
                                 "Date: ${getFormattedDateString(dateTime: getDateFromString(dateString: productList.createdAt))}",
                                 style: CustomTextStyle.textFormFieldBlack
-                                    .copyWith(color: Colors.green),
+                                    .copyWith(color: AppColors.kPrimaryBlue),
                               ),
                             ],
                           ),

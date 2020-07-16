@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
@@ -67,19 +68,16 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
   }
 
   Widget _buildGridItem() {
-    return GridView.builder(
+    return StaggeredGridView.countBuilder(
+      crossAxisCount: 4,
+      itemCount: widget.categories.length,
       shrinkWrap: true,
       physics: ScrollPhysics(),
-      // to disable GridView's scrolling
-      itemBuilder: (ctx, index) {
-        return prepareList(index, widget.categories[index]);
-      },
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: getScreenSize(context: context).width /
-            (getScreenSize(context: context).height / 1.56),
-      ),
-      itemCount: widget.categories.length,
+      itemBuilder: (BuildContext context, int index) =>
+          prepareList(index, widget.categories[index]),
+      staggeredTileBuilder: (int index) => new StaggeredTile.count(2, 2),
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
     );
   }
 
@@ -98,6 +96,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            getSpacer(height: 20),
             getCachedNetworkImage(
                 url: categories.imageUrl, height: 100, width: 100),
             getSpacer(height: 10),

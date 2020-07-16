@@ -30,6 +30,7 @@ class SharedPrefsKeys {
   static const String LOGIN_STATUS= "login_social_status";
   static const String FILTER_DATA_STATUS = "FILTER_STATUS";
   static const String LOG_IN_STATUS = "TAB_STATUS";
+  static const String USER_ROLE = "ROLE";
 
   static const String ACCCOUNT_DATA_STATUS = "ACCOUNT_TAB_STATUS";
   static const String ACCOUNT_FILTER_DATA = "ACCOUNT_FILTER_TAB_STATUS";

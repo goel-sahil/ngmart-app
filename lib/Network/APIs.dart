@@ -27,4 +27,8 @@ class APIs {
   static const String aboutUs = "$baseUrl/cms-page/about-us";
   static const String orderByParchi = "$baseUrl/order-by-parchi";
   static const String banners = "$baseUrl/banners";
+
+  //admin
+  static const String getBrands = "$baseUrl/admin/brands";
+
 }
