@@ -8,6 +8,9 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
+import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
+import 'package:ngmartflutter/ui/admin/quantity/QuantiityScreen.dart';
 import 'package:ngmartflutter/ui/drawer/drawer_item.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:ngmartflutter/ui/search/SearchPage.dart';
@@ -32,55 +35,6 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   String _title = "NGMart";
   DateTime currentBackPressTime;
 
-  _onSelectItem(int index) {
-    FocusScope.of(context).unfocus();
-    Navigator.pop(context);
-    if (_isLoggedIn) {
-      if (index == 0) {
-        _title = "NGMart";
-        _pageController.jumpToPage(0);
-        showSearch = true;
-      } else if (index == 1) {
-        //show profile
-        _pageController.jumpToPage(1);
-        _title = "Brands";
-        showSearch = false;
-      } else if (index == 2) {
-        //show cart
-        _pageController.jumpToPage(2);
-        _title = "Category";
-        showSearch = false;
-      } else if (index == 3) {
-        //show purchi
-        _title = "Product";
-        _pageController.jumpToPage(3);
-        showSearch = false;
-      } else if (index == 4) {
-        //show order history
-        _title = "Orders";
-        _pageController.jumpToPage(4);
-        showSearch = false;
-      } else if (index == 5) {
-        //show setting
-        _title = "Cms Pages";
-        _pageController.jumpToPage(5);
-        showSearch = false;
-      } else if (index == 6) {
-        //show contact us
-        _title = "Contact us";
-        _pageController.jumpToPage(6);
-        showSearch = false;
-      } else if (index == 7) {
-        onLogoutSuccess(context: context);
-        _pageController.jumpToPage(7);
-      }
-    }
-
-    setState(() {
-      _selectionIndex = index;
-    });
-  }
-
   @override
   void initState() {
     _body = CommingSoonScreen();
@@ -92,20 +46,63 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
       userInfo = LoginResponse.fromJson(infoData);
     }
     drawerItems.add(DrawerItem("Dashboard", FontAwesomeIcons.tachometerAlt));
-    if (_isLoggedIn) {
-      drawerItems.add(DrawerItem("Brands", FontAwesomeIcons.meetup));
-      drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
-    }
+    drawerItems.add(DrawerItem("Brands", FontAwesomeIcons.meetup));
+    drawerItems.add(DrawerItem("Quantity", FontAwesomeIcons.sortAmountUp));
+    drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
     drawerItems.add(DrawerItem("Products", FontAwesomeIcons.th));
-    if (_isLoggedIn) {
-      drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.history));
-    }
+    drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.history));
     drawerItems.add(DrawerItem("Cms Pages", FontAwesomeIcons.userSecret));
-    drawerItems.add(DrawerItem("Contact us", FontAwesomeIcons.mailBulk));
-    if (_isLoggedIn) {
-      drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
-    }
+    drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     super.initState();
+  }
+
+  _onSelectItem(int index) {
+    FocusScope.of(context).unfocus();
+    Navigator.pop(context);
+    if (_isLoggedIn) {
+      if (index == 0) {
+        _title = "NGMart";
+        _pageController.jumpToPage(0);
+        showSearch = true;
+      }else if (index == 1) {
+        //show profile
+        _pageController.jumpToPage(1);
+        _title = "Brands";
+        showSearch = false;
+      } else if (index == 2) {
+        //show profile
+        _pageController.jumpToPage(2);
+        _title = "Quantity Units";
+        showSearch = false;
+      } else if (index == 3) {
+        //show cart
+        _pageController.jumpToPage(3);
+        _title = "Category";
+        showSearch = false;
+      } else if (index == 4) {
+        //show purchi
+        _title = "Product";
+        _pageController.jumpToPage(4);
+        showSearch = false;
+      } else if (index == 5) {
+        //show order history
+        _title = "Orders";
+        _pageController.jumpToPage(5);
+        showSearch = false;
+      } else if (index == 6) {
+        //show setting
+        _title = "Cms Pages";
+        _pageController.jumpToPage(6);
+        showSearch = false;
+      } else if (index == 7) {
+        onLogoutSuccess(context: context);
+        _pageController.jumpToPage(7);
+      }
+    }
+
+    setState(() {
+      _selectionIndex = index;
+    });
   }
 
   @override
@@ -131,7 +128,29 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         actions: <Widget>[
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: IconButton(icon: Icon(Icons.add), onPressed: () {}))
+              child: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    if (_pageController.page == 1) {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => AddBrandScreen(
+                                    fromBrandScreen: false,
+                                    title: "",
+                                    brandId: 1,
+                                  )));
+                    } else if (_pageController.page == 2) {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => AddQuantityScreen(
+                                    fromBrandScreen: false,
+                                    title: "",
+                                    brandId: 1,
+                                  )));
+                    }
+                  }))
         ],
       ),
       drawer: Drawer(
@@ -154,7 +173,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
             children: <Widget>[
               CommingSoonScreen(),
               BrandScreen(),
-              CommingSoonScreen(),
+              QuantityScreen(),
               CommingSoonScreen(),
               CommingSoonScreen(),
               CommingSoonScreen(),

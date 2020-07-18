@@ -12,14 +12,15 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/BrandResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
+import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
 import 'package:provider/provider.dart';
 
-class BrandScreen extends StatefulWidget {
+class QuantityScreen extends StatefulWidget {
   @override
-  _BrandScreenState createState() => _BrandScreenState();
+  _QuantityScreenState createState() => _QuantityScreenState();
 }
 
-class _BrandScreenState extends State<BrandScreen> {
+class _QuantityScreenState extends State<QuantityScreen> {
   AdminProvider adminProvider;
   List<DataInner> dataInner = new List();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -74,7 +75,7 @@ class _BrandScreenState extends State<BrandScreen> {
       _currentPageNumber = 1;
     }
 
-    var response = await adminProvider.getBrands(context);
+    var response = await adminProvider.getQuantity(context);
     if (response is APIError) {
     } else if (response is BranResponse) {
       if (_currentPageNumber == 1) {
@@ -97,7 +98,7 @@ class _BrandScreenState extends State<BrandScreen> {
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
-    var response = await adminProvider.deleteBrand(context, id);
+    var response = await adminProvider.deleteQuantity(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
@@ -152,7 +153,7 @@ class _BrandScreenState extends State<BrandScreen> {
                           var isUpdated = await Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) => AddBrandScreen(
+                                  builder: (context) => AddQuantityScreen(
                                         title: dataInner[index].title,
                                         fromBrandScreen: true,
                                         brandId: dataInner[index].id,
@@ -186,7 +187,7 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
           (dataInner.length == 0) && (adminProvider.getLoading() == false)
               ? Center(
-                  child: getNoDataView(msg: "No Brands found.", onRetry: null))
+                  child: getNoDataView(msg: "No Quantity found.", onRetry: null))
               : Container()
         ],
       ),
