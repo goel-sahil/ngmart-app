@@ -18,6 +18,8 @@ import 'package:share/share.dart';
 
 import '../CommingSoonScreen.dart';
 import 'brand/BrandScreen.dart';
+import 'category/AddCategoryScreen.dart';
+import 'category/CategoryScreen.dart';
 
 class AdminNavigationDrawer extends StatefulWidget {
   _AdminNavigationDrawerState createState() => _AdminNavigationDrawerState();
@@ -64,7 +66,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         _title = "NGMart";
         _pageController.jumpToPage(0);
         showSearch = true;
-      }else if (index == 1) {
+      } else if (index == 1) {
         //show profile
         _pageController.jumpToPage(1);
         _title = "Brands";
@@ -149,6 +151,15 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                     title: "",
                                     brandId: 1,
                                   )));
+                    } else if (_pageController.page == 3) {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => AddCategoryScreen(
+                                    fromCategoryScreen: false,
+                                    title: "",
+                                    brandId: 1,
+                                  )));
                     }
                   }))
         ],
@@ -174,7 +185,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               CommingSoonScreen(),
               BrandScreen(),
               QuantityScreen(),
-              CommingSoonScreen(),
+              CategoryScreen(),
               CommingSoonScreen(),
               CommingSoonScreen(),
               CommingSoonScreen(),

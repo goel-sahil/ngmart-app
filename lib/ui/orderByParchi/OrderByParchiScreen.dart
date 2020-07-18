@@ -15,7 +15,6 @@ import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
-import 'package:ngmartflutter/ui/search/SearchPage.dart';
 
 class OrderByParchiScreen extends StatefulWidget {
   bool fromNavigation;
@@ -56,19 +55,6 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                 ? AppBar(
                     title: Text("Order By Parchi"),
                     centerTitle: true,
-//                    actions: <Widget>[
-//                      Padding(
-//                        padding: const EdgeInsets.symmetric(horizontal: 8),
-//                        child: IconButton(
-//                            icon: Icon(Icons.search),
-//                            onPressed: () {
-//                              Navigator.push(
-//                                  context,
-//                                  CupertinoPageRoute(
-//                                      builder: (context) => SearchPage()));
-//                            }),
-//                      )
-//                    ],
                   )
                 : null,
             body: SingleChildScrollView(
@@ -137,22 +123,25 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                       _image ?? File(""),
                     ),
                     getSpacer(height: 20),
-                    _image!=null? Container(
-                      width: getScreenSize(context: context).width - 80,
-                      child: new FlatButton(
-                          child: new Text(
-                            "Place order",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () {
-                            if (_image != null) _hitAPi();
-                          },
-                          color: AppColors.kPrimaryBlue,
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(4.0))),
-                    ):Container(),
+                    _image != null
+                        ? Container(
+                            width: getScreenSize(context: context).width - 80,
+                            child: new FlatButton(
+                                child: new Text(
+                                  "Place order",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                onPressed: () {
+                                  if (_image != null) _hitAPi();
+                                },
+                                color: AppColors.kPrimaryBlue,
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(4.0))),
+                          )
+                        : Container(),
                     getSpacer(height: 50),
                   ],
                 ),
@@ -212,7 +201,6 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
         source: ImageSource.gallery, maxWidth: maxWidth, maxHeight: maxHeight);
     _image = imageFileSelect;
     setState(() {});
-
   }
 
   Future _getCameraImage() async {
@@ -294,7 +282,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
         isDismissible: false,
         builder: (builder) {
           return Container(
-            height: (getScreenSize(context: context).height/2)+400,
+            height: (getScreenSize(context: context).height / 2) + 400,
             decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.grey.shade200, width: 2),
@@ -322,13 +310,13 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                           text: TextSpan(children: [
                             TextSpan(
                               text:
-                              "\n\nThank you for your purchase. Our company values each and every customer."
+                                  "\n\nThank you for your purchase. Our company values each and every customer."
                                   " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
                                   "If you have any questions or feedback, please don’t hesitate to reach out.",
                               style: CustomTextStyle.textFormFieldMedium
                                   .copyWith(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade800),
+                                      fontSize: 14,
+                                      color: Colors.grey.shade800),
                             )
                           ])),
                       SizedBox(
@@ -341,9 +329,9 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                             context,
                             new CupertinoPageRoute(
                                 builder: (BuildContext context) {
-                                  return new NavigationDrawer();
-                                }),
-                                (route) => false,
+                              return new NavigationDrawer();
+                            }),
+                            (route) => false,
                           );
                         },
                         padding: EdgeInsets.only(left: 48, right: 48),
@@ -355,7 +343,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
                         color: AppColors.kPrimaryBlue,
                         shape: RoundedRectangleBorder(
                             borderRadius:
-                            BorderRadius.all(Radius.circular(24))),
+                                BorderRadius.all(Radius.circular(24))),
                       )
                     ],
                   ),
