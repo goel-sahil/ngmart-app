@@ -16,6 +16,7 @@ import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
 import 'package:provider/provider.dart';
 
 import '../../FullScreenImageScreen.dart';
+import 'AddCategoryScreen.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override
@@ -77,14 +78,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
       _currentPageNumber = 1;
     }
 
-    var response = await adminProvider.getCategory(context);
+    var response = await adminProvider.getCategory(context,_currentPageNumber);
     if (response is APIError) {
     } else if (response is AdminCategoryResponse) {
       if (_currentPageNumber == 1) {
         dataInner.clear();
       }
       dataInner.addAll(response.data.dataCategory);
-
       if (response.data.dataCategory.length < response.data.perPage) {
         _loadMore = false;
       } else {
@@ -93,14 +93,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  _hitDeleteBrandApi({int id, int position}) async {
+  _hitDeleteCategoryApi({int id, int position}) async {
     bool isConnected = await isConnectedToInternet();
     if (!isConnected) {
       showAlertDialog(
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
-    var response = await adminProvider.deleteBrand(context, id);
+    var response = await adminProvider.deleteCategory(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
@@ -168,10 +168,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           var isUpdated = await Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) => AddBrandScreen(
-                                        title: dataInner[index].title,
-                                        fromBrandScreen: true,
-                                        brandId: dataInner[index].id,
+                                  builder: (context) => AddCategoryScreen(
+                                        fromCategoryScreen: true,
+                                        dataCategory: dataInner[index],
                                       )));
                           if (isUpdated != null && isUpdated) {
                             _currentPageNumber = 1;
@@ -184,7 +183,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         color: Colors.red,
                         icon: Icons.delete,
                         onTap: () {
-                          _hitDeleteBrandApi(
+                          _hitDeleteCategoryApi(
                               id: dataInner[index].id, position: index);
                         },
                       ),

@@ -1,9 +1,9 @@
-class AdminCategoryResponse {
+class AdminProductResponse {
   Data data;
 
-  AdminCategoryResponse({this.data});
+  AdminProductResponse({this.data});
 
-  AdminCategoryResponse.fromJson(Map<String, dynamic> json) {
+  AdminProductResponse.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
@@ -18,7 +18,7 @@ class AdminCategoryResponse {
 
 class Data {
   int currentPage;
-  List<DataCategory> dataCategory;
+  List<DataInner> dataInner;
   String firstPageUrl;
   int from;
   int lastPage;
@@ -26,13 +26,13 @@ class Data {
   String nextPageUrl;
   String path;
   int perPage;
-  String prevPageUrl;
+  Null prevPageUrl;
   int to;
   int total;
 
   Data(
       {this.currentPage,
-        this.dataCategory,
+        this.dataInner,
         this.firstPageUrl,
         this.from,
         this.lastPage,
@@ -47,9 +47,9 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      dataCategory = new List<DataCategory>();
+      dataInner = new List<DataInner>();
       json['data'].forEach((v) {
-        dataCategory.add(new DataCategory.fromJson(v));
+        dataInner.add(new DataInner.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -67,8 +67,8 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['current_page'] = this.currentPage;
-    if (this.dataCategory != null) {
-      data['data'] = this.dataCategory.map((v) => v.toJson()).toList();
+    if (this.dataInner != null) {
+      data['data'] = this.dataInner.map((v) => v.toJson()).toList();
     }
     data['first_page_url'] = this.firstPageUrl;
     data['from'] = this.from;
@@ -84,39 +84,71 @@ class Data {
   }
 }
 
-class DataCategory {
+class DataInner {
   int id;
   String title;
+  String description;
   String image;
   int categoryId;
+  int brandId;
+  int price;
+  int quantity;
+  int quantityIncrement;
+  int quantityUnitId;
+  int orderedTimes;
   int status;
   String createdAt;
   String updatedAt;
+  int isDeleted;
   String imageUrl;
+  Brand brand;
   Category category;
+  Brand quantityUnit;
 
-  DataCategory(
+  DataInner(
       {this.id,
         this.title,
+        this.description,
         this.image,
         this.categoryId,
+        this.brandId,
+        this.price,
+        this.quantity,
+        this.quantityIncrement,
+        this.quantityUnitId,
+        this.orderedTimes,
         this.status,
         this.createdAt,
         this.updatedAt,
+        this.isDeleted,
         this.imageUrl,
-        this.category});
+        this.brand,
+        this.category,
+        this.quantityUnit});
 
-  DataCategory.fromJson(Map<String, dynamic> json) {
+  DataInner.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
+    description = json['description'];
     image = json['image'];
     categoryId = json['category_id'];
+    brandId = json['brand_id'];
+    price = json['price'];
+    quantity = json['quantity'];
+    quantityIncrement = json['quantity_increment'];
+    quantityUnitId = json['quantity_unit_id'];
+    orderedTimes = json['ordered_times'];
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    isDeleted = json['is_deleted'];
     imageUrl = json['image_url'];
+    brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
     category = json['category'] != null
         ? new Category.fromJson(json['category'])
+        : null;
+    quantityUnit = json['quantity_unit'] != null
+        ? new Brand.fromJson(json['quantity_unit'])
         : null;
   }
 
@@ -124,15 +156,48 @@ class DataCategory {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['title'] = this.title;
+    data['description'] = this.description;
     data['image'] = this.image;
     data['category_id'] = this.categoryId;
+    data['brand_id'] = this.brandId;
+    data['price'] = this.price;
+    data['quantity'] = this.quantity;
+    data['quantity_increment'] = this.quantityIncrement;
+    data['quantity_unit_id'] = this.quantityUnitId;
+    data['ordered_times'] = this.orderedTimes;
     data['status'] = this.status;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['is_deleted'] = this.isDeleted;
     data['image_url'] = this.imageUrl;
+    if (this.brand != null) {
+      data['brand'] = this.brand.toJson();
+    }
     if (this.category != null) {
       data['category'] = this.category.toJson();
     }
+    if (this.quantityUnit != null) {
+      data['quantity_unit'] = this.quantityUnit.toJson();
+    }
+    return data;
+  }
+}
+
+class Brand {
+  int id;
+  String title;
+
+  Brand({this.id, this.title});
+
+  Brand.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
     return data;
   }
 }
@@ -141,10 +206,11 @@ class Category {
   int id;
   String title;
   String image;
-  Null categoryId;
+  int categoryId;
   int status;
   String createdAt;
   String updatedAt;
+  int isDeleted;
   String imageUrl;
 
   Category(
@@ -155,6 +221,7 @@ class Category {
         this.status,
         this.createdAt,
         this.updatedAt,
+        this.isDeleted,
         this.imageUrl});
 
   Category.fromJson(Map<String, dynamic> json) {
@@ -165,6 +232,7 @@ class Category {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    isDeleted = json['is_deleted'];
     imageUrl = json['image_url'];
   }
 
@@ -177,6 +245,7 @@ class Category {
     data['status'] = this.status;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['is_deleted'] = this.isDeleted;
     data['image_url'] = this.imageUrl;
     return data;
   }

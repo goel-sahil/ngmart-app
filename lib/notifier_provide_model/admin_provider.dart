@@ -9,6 +9,7 @@ import 'package:ngmartflutter/model/admin/BrandResponse.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
+import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
 
 class AdminProvider with ChangeNotifier {
   var _isLoading = false;
@@ -63,7 +64,7 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> getCategory(BuildContext context) async {
+  Future<dynamic> getCategory(BuildContext context, int page) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
       "Accept": "application/json",
@@ -72,7 +73,9 @@ class AdminProvider with ChangeNotifier {
     print("Token==> ${MemoryManagement.getAccessToken()}");
 
     var response = await APIHandler.get(
-        context: context, url: APIs.category, additionalHeaders: headers);
+        context: context,
+        url: "${APIs.category}?page=$page",
+        additionalHeaders: headers);
 
     hideLoader();
     if (response is APIError) {
@@ -82,6 +85,33 @@ class AdminProvider with ChangeNotifier {
       print("Response==> $response");
       AdminCategoryResponse adminCategoryResponse =
           new AdminCategoryResponse.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> getCategoryList(BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var response = await APIHandler.get(
+        context: context,
+        url: APIs.getCategoryList,
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CategoryListResponse adminCategoryResponse =
+          new CategoryListResponse.fromJson(response);
       completer.complete(adminCategoryResponse);
       notifyListeners();
       return completer.future;
@@ -135,6 +165,32 @@ class AdminProvider with ChangeNotifier {
       return completer.future;
     }
   }
+
+  Future<dynamic> deleteCategory(BuildContext context, int id) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.delete(
+        context: context,
+        url: "${APIs.category}/$id",
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+
 
   Future<dynamic> addBrand(
       BuildContext context, AddBrandRequest request) async {
@@ -249,5 +305,4 @@ class AdminProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
   }
-
 }

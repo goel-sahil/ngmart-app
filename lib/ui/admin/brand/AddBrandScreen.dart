@@ -29,7 +29,7 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
 
   Future<void> _hitApi() async {
     provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text);
+    var request = AddBrandRequest(title: _titleController.text,status: 1);
 
     var response = await provider.addBrand(context, request);
     if (response is APIError) {
@@ -42,7 +42,7 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
 
   Future<void> _hitUpdateBrandApi() async {
     provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text);
+    var request = AddBrandRequest(title: _titleController.text, status: 1);
 
     var response = await provider.updateBrand(context, request, widget.brandId);
     if (response is APIError) {
@@ -79,47 +79,50 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
             body: SingleChildScrollView(
               child: Form(
                 key: _fieldKey,
-                child: Column(
-                  children: <Widget>[
-                    getSpacer(height: 80),
-                    getTextField(
-                      context: context,
-                      labelText: "Title",
-                      obsectextType: false,
-                      textType: TextInputType.text,
-                      focusNodeNext: _titleField,
-                      focusNodeCurrent: _titleField,
-                      enablefield: true,
-                      controller: _titleController,
-                      validators: (val) => emptyValidator(
-                          value: val, txtMsg: "Please enter brand title."),
-                    ),
-                    getSpacer(height: 20),
-                    Container(
-                      width: getScreenSize(context: context).width,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: RaisedButton(
-                        onPressed: () {
-                          if (_fieldKey.currentState.validate()) {
-                            if (widget.fromBrandScreen) {
-                              _hitUpdateBrandApi();
-                            } else {
-                              _hitApi();
-                            }
-                          }
-                        },
-                        child: Text(
-                          "SUBMIT",
-                          style: CustomTextStyle.textFormFieldRegular
-                              .copyWith(color: Colors.white, fontSize: 14),
-                        ),
-                        color: AppColors.kPrimaryBlue,
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(4))),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: <Widget>[
+                      getSpacer(height: 80),
+                      getTextField(
+                        context: context,
+                        labelText: "Title",
+                        obsectextType: false,
+                        textType: TextInputType.text,
+                        focusNodeNext: _titleField,
+                        focusNodeCurrent: _titleField,
+                        enablefield: true,
+                        controller: _titleController,
+                        validators: (val) => emptyValidator(
+                            value: val, txtMsg: "Please enter brand title."),
                       ),
-                    ),
-                  ],
+                      getSpacer(height: 20),
+                      Container(
+                        width: getScreenSize(context: context).width,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: RaisedButton(
+                          onPressed: () {
+                            if (_fieldKey.currentState.validate()) {
+                              if (widget.fromBrandScreen) {
+                                _hitUpdateBrandApi();
+                              } else {
+                                _hitApi();
+                              }
+                            }
+                          },
+                          child: Text(
+                            "SUBMIT",
+                            style: CustomTextStyle.textFormFieldRegular
+                                .copyWith(color: Colors.white, fontSize: 14),
+                          ),
+                          color: AppColors.kPrimaryBlue,
+                          textColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(4))),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

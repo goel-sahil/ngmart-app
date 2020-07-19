@@ -11,21 +11,26 @@ import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
+import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/model/CategoryModel.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
+import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
+import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class AddCategoryScreen extends StatefulWidget {
-  var title;
   var fromCategoryScreen;
-  var brandId;
+  DataCategory dataCategory;
 
-  AddCategoryScreen({this.title, this.fromCategoryScreen, this.brandId});
+  AddCategoryScreen({this.fromCategoryScreen, this.dataCategory});
 
   @override
   _AddCategoryScreenState createState() => _AddCategoryScreenState();
@@ -35,32 +40,23 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
   GlobalKey<FormState> _fieldKey = new GlobalKey<FormState>();
   TextEditingController _titleController = new TextEditingController();
+  TextEditingController _categoryController = new TextEditingController();
   FocusNode _titleField = new FocusNode();
+  FocusNode _categoryField = new FocusNode();
   AdminProvider provider;
-  String _myActivity;
+  String catId="";
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
   File _image;
 
-  Future<void> _hitUpdateBrandApi() async {
-    provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text);
-
-    var response = await provider.updateBrand(context, request, widget.brandId);
-    if (response is APIError) {
-      showInSnackBar(response.error);
-    } else {
-      AddBrandResponse forgotPasswordResponse = response;
-      showInSnackBar(forgotPasswordResponse.message);
-      Navigator.pop(context, true);
-    }
-  }
-
   @override
   void initState() {
     if (widget.fromCategoryScreen) {
-      _titleController.text = widget.title;
+      _titleController.text = widget.dataCategory.title;
+      if (widget.dataCategory.category != null) {
+        _categoryController.text = widget.dataCategory.category.title;
+      }
       setState(() {});
     }
     super.initState();
@@ -88,16 +84,53 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                   child: Column(
                     children: <Widget>[
                       getSpacer(height: 40),
-                      InkWell(
-                        onTap: () {
-                          _openActionSheet();
-                        },
-                        child: CircleAvatar(
-                            backgroundColor: Colors.blue.shade50,
-                            radius: 60.0,
-                            backgroundImage: FileImage(
-                              _image ?? File(""),
-                            )),
+                      Padding(
+                        padding: EdgeInsets.only(top: 20.0),
+                        child:
+                            new Stack(fit: StackFit.loose, children: <Widget>[
+                          new Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Container(
+                                  width: 140.0,
+                                  height: 140.0,
+                                  decoration: new BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.blue.shade50,
+                                    image: new DecorationImage(
+                                      image: widget.fromCategoryScreen
+                                          ? NetworkImage(
+                                              widget.dataCategory.imageUrl)
+                                          : new FileImage(
+                                              _image ?? File(""),
+                                            ),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )),
+                            ],
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(top: 90.0, right: 100.0),
+                              child: new Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: () {
+                                      _openActionSheet();
+                                    },
+                                    child: new CircleAvatar(
+                                      backgroundColor: Colors.green,
+                                      radius: 20.0,
+                                      child: new Icon(
+                                        Icons.camera_alt,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )),
+                        ]),
                       ),
                       getSpacer(height: 40),
                       getTextField(
@@ -113,57 +146,27 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                             value: val, txtMsg: "Please enter brand title."),
                       ),
                       getSpacer(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: DropDownFormField(
-                          titleText: "Category id",
-                          hintText: 'Please choose Category id.',
-                          required: true,
-                          filled: false,
-                          errorText: "Please choose Category id. ",
-                          value: _myActivity,
-                          onSaved: (value) {
-                            setState(() {
-                              _myActivity = value;
-                            });
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              _myActivity = value;
-                            });
-                          },
-                          dataSource: [
-                            {
-                              "display": "Running",
-                              "value": "Running",
-                            },
-                            {
-                              "display": "Climbing",
-                              "value": "Climbing",
-                            },
-                            {
-                              "display": "Walking",
-                              "value": "Walking",
-                            },
-                            {
-                              "display": "Swimming",
-                              "value": "Swimming",
-                            },
-                            {
-                              "display": "Soccer Practice",
-                              "value": "Soccer Practice",
-                            },
-                            {
-                              "display": "Baseball Practice",
-                              "value": "Baseball Practice",
-                            },
-                            {
-                              "display": "Football Practice",
-                              "value": "Football Practice",
-                            },
-                          ],
-                          textField: 'display',
-                          valueField: 'value',
+                      InkWell(
+                        onTap: () async {
+                          CategoryModel catModel = await Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      SelectCategoryScreen()));
+                          if (catModel != null) {
+                            _categoryController.text = catModel.title;
+                            catId = catModel.id;
+                          }
+                        },
+                        child: getTextFieldWithoutValidation(
+                          context: context,
+                          labelText: "Category Id",
+                          obsectextType: false,
+                          textType: TextInputType.text,
+                          focusNodeNext: _categoryField,
+                          focusNodeCurrent: _categoryField,
+                          enablefield: false,
+                          controller: _categoryController,
                         ),
                       ),
                       getSpacer(height: 20),
@@ -174,10 +177,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           onPressed: () {
                             if (_fieldKey.currentState.validate()) {
                               if (widget.fromCategoryScreen) {
-                                _hitUpdateBrandApi();
+                                addCategory(true);
                               } else {
                                 if (_image != null) {
-                                  addCategory();
+                                  addCategory(false);
                                 } else {
                                   showInSnackBar("Please add category image.");
                                 }
@@ -222,9 +225,14 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         .showSnackBar(new SnackBar(content: new Text(value)));
   }
 
-  Future<http.StreamedResponse> addCategory() async {
+  Future<http.StreamedResponse> addCategory(bool forUpdate) async {
     _loaderStreamController.add(true); //show loader
-    var url = Uri.parse(APIs.category);
+    var url;
+    if (forUpdate) {
+      url = Uri.parse("${APIs.category}/${widget.dataCategory.id}");
+    } else {
+      url = Uri.parse(APIs.category);
+    }
 
     print("$url");
 
@@ -244,23 +252,36 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
       var bytes = await _image.readAsBytes();
 
-      request.fields['title'] = "title";
-      request.fields['category_id'] = "id";
+      request.fields['title'] = _titleController.text;
+      request.fields['category_id'] = catId;
+      request.fields['status'] = "1";
 
       request.files.add(new http.MultipartFile.fromBytes(
         "image",
         bytes,
         filename: fileName,
       ));
+    } else {
+      request.fields['title'] = _titleController.text;
+      request.fields['category_id'] = catId;
+      request.fields['status'] = "1";
     }
+
+    print("${request.fields.toString()}");
 
     http.StreamedResponse response = await request.send();
     _loaderStreamController.add(false); //show loader
     if (response.statusCode == 200) {
       final respStr = await response.stream.bytesToString();
+      Map data = jsonDecode(respStr);
+      print("Data==> $data");
+      showInSnackBar("${data["message"]}");
+      Navigator.pop(context, true);
     } else {
       final respStr = await response.stream.bytesToString();
       Map data = jsonDecode(respStr);
+      print("Response==> $data");
+      showInSnackBar("${data["message"]}");
     }
   }
 

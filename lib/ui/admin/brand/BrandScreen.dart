@@ -125,6 +125,7 @@ class _BrandScreenState extends State<BrandScreen> {
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
+              physics: ScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {},

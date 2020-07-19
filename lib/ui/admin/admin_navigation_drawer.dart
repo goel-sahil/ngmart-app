@@ -132,7 +132,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: IconButton(
                   icon: Icon(Icons.add),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_pageController.page == 1) {
                       Navigator.push(
                           context,
@@ -152,14 +152,15 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                     brandId: 1,
                                   )));
                     } else if (_pageController.page == 3) {
-                      Navigator.push(
+                      bool isWOrkDone = await Navigator.push(
                           context,
                           CupertinoPageRoute(
                               builder: (context) => AddCategoryScreen(
                                     fromCategoryScreen: false,
-                                    title: "",
-                                    brandId: 1,
                                   )));
+                      if (isWOrkDone != null && isWOrkDone) {
+                        _pageController.jumpToPage(3);
+                      }
                     }
                   }))
         ],

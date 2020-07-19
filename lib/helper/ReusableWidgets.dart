@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ngmartflutter/Network/APIs.dart';
 
 import 'AppColors.dart';
+import 'AssetStrings.dart';
 import 'Const.dart';
 import 'CustomBorder.dart';
 import 'CustomTextStyle.dart';
@@ -392,4 +394,72 @@ Widget getTextField(
               color: Colors.black)),
     ),
   );
+}
+
+
+
+Widget getTextFieldWithoutValidation(
+    {BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      FocusNode focusNodeCurrent,
+      FocusNode focusNodeNext,
+      bool obsectextType,
+      TextInputType textType,
+      int length,
+      bool enablefield}) {
+  return Container(
+    margin: new EdgeInsets.only(left: 10.0, right: 10.0),
+    child: new TextFormField(
+      controller: controller,
+      maxLines: 1,
+      keyboardType: textType,
+      obscureText: obsectextType,
+      focusNode: focusNodeCurrent,
+      enabled: enablefield,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        focusNodeCurrent.unfocus();
+        FocusScope.of(context).autofocus(focusNodeNext);
+      },
+      maxLength: length,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(16, 16, 16, 12),
+          border: CustomBorder.enabledBorder,
+          labelText: labelText,
+          focusedBorder: CustomBorder.focusBorder,
+          errorBorder: CustomBorder.errorBorder,
+          enabledBorder: CustomBorder.enabledBorder,
+          labelStyle: CustomTextStyle.textFormFieldMedium.copyWith(
+              fontSize: MediaQuery.of(context).textScaleFactor * 16,
+              color: Colors.black)),
+    ),
+  );
+}
+
+
+
+Widget getImage(File _image, String _profileThumbImage) {
+  return new CircleAvatar(
+      backgroundColor: Colors.white24,
+      child: (_image != null)
+          ? new Container(
+              width: 100.0,
+              height: 100.0,
+              child: ClipOval(
+                child: new Image.file(
+                  _image,
+                  fit: BoxFit.cover,
+                ),
+              ))
+          : (_profileThumbImage != null && _profileThumbImage.length > 0)
+              ? ClipOval(
+                  child: getCachedNetworkImage(
+                      url: "${_profileThumbImage ?? ""}", fit: BoxFit.cover),
+                )
+              : new Image.asset(
+                  AssetStrings.logoImage,
+                  width: 100.0,
+                  height: 100.0,
+                ));
 }
