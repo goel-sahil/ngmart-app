@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
@@ -37,6 +39,9 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
     } else {
       AddBrandResponse forgotPasswordResponse = response;
       showInSnackBar(forgotPasswordResponse.message);
+      Timer(Duration(milliseconds: 500), () {
+        Navigator.pop(context, true);
+      });
     }
   }
 
@@ -50,7 +55,9 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
     } else {
       AddBrandResponse forgotPasswordResponse = response;
       showInSnackBar(forgotPasswordResponse.message);
-      Navigator.pop(context, true);
+      Timer(Duration(milliseconds: 500), () {
+        Navigator.pop(context, true);
+      });
     }
   }
 

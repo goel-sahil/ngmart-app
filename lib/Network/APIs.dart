@@ -30,6 +30,7 @@ class APIs {
 
   //admin
   static const String getBrands = "$baseUrl/admin/brands";
+  static const String getBanners = "$baseUrl/admin/banners";
   static const String getQuantity = "$baseUrl/admin/quantity-units";
   static const String category = "$baseUrl/admin/categories";
   static const String getCategoryList = "$baseUrl/admin/categories/list";

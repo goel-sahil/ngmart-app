@@ -9,18 +9,19 @@ import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
-import 'file:///D:/Workspace/ngmart_flutter/lib/model/admin/brand/BrandResponse.dart';
+import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
-import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
 import 'package:provider/provider.dart';
 
-class QuantityScreen extends StatefulWidget {
+import '../../FullScreenImageScreen.dart';
+
+class BannerScreen extends StatefulWidget {
   @override
-  _QuantityScreenState createState() => _QuantityScreenState();
+  _BannerScreenState createState() => _BannerScreenState();
 }
 
-class _QuantityScreenState extends State<QuantityScreen> {
+class _BannerScreenState extends State<BannerScreen> {
   AdminProvider adminProvider;
   List<DataInner> dataInner = new List();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -75,9 +76,9 @@ class _QuantityScreenState extends State<QuantityScreen> {
       _currentPageNumber = 1;
     }
 
-    var response = await adminProvider.getQuantity(context);
+    var response = await adminProvider.getBanners(context,_currentPageNumber);
     if (response is APIError) {
-    } else if (response is BranResponse) {
+    } else if (response is BannerResponse) {
       if (_currentPageNumber == 1) {
         dataInner.clear();
       }
@@ -91,14 +92,14 @@ class _QuantityScreenState extends State<QuantityScreen> {
     }
   }
 
-  _hitDeleteBrandApi({int id, int position}) async {
+  _hitDeleteBannerApi({int id, int position}) async {
     bool isConnected = await isConnectedToInternet();
     if (!isConnected) {
       showAlertDialog(
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
-    var response = await adminProvider.deleteQuantity(context, id);
+    var response = await adminProvider.deleteBanner(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
@@ -126,6 +127,7 @@ class _QuantityScreenState extends State<QuantityScreen> {
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
+              physics: ScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {},
@@ -135,10 +137,22 @@ class _QuantityScreenState extends State<QuantityScreen> {
                     child: Container(
                       color: Colors.white,
                       child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.green,
-                          child: Text(dataInner[index].title[0] ?? "A"),
-                          foregroundColor: Colors.white,
+                        leading: InkWell(
+                          onTap: (){
+                            Navigator.of(context)
+                                .push(new MaterialPageRoute<Null>(
+                                builder: (BuildContext context) {
+                                  return new FullScreenImage(
+                                    imageSrc: dataInner[index].imageUrl,
+                                  );
+                                },
+                                fullscreenDialog: true));
+                          },
+                          child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage:
+                              NetworkImage("${dataInner[index].imageUrl}")
+                          ),
                         ),
                         title: Text(dataInner[index].title),
                         subtitle: Text('Status: ${dataInner[index].status}'),
@@ -153,7 +167,7 @@ class _QuantityScreenState extends State<QuantityScreen> {
                           var isUpdated = await Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) => AddQuantityScreen(
+                                  builder: (context) => AddBrandScreen(
                                         title: dataInner[index].title,
                                         fromBrandScreen: true,
                                         brandId: dataInner[index].id,
@@ -169,7 +183,7 @@ class _QuantityScreenState extends State<QuantityScreen> {
                         color: Colors.red,
                         icon: Icons.delete,
                         onTap: () {
-                          _hitDeleteBrandApi(
+                          _hitDeleteBannerApi(
                               id: dataInner[index].id, position: index);
                         },
                       ),
@@ -187,7 +201,7 @@ class _QuantityScreenState extends State<QuantityScreen> {
           ),
           (dataInner.length == 0) && (adminProvider.getLoading() == false)
               ? Center(
-                  child: getNoDataView(msg: "No Quantity found.", onRetry: null))
+                  child: getNoDataView(msg: "No Brands found.", onRetry: null))
               : Container()
         ],
       ),

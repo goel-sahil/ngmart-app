@@ -1,9 +1,9 @@
-class AdminProductResponse {
+class BannerResponse {
   Data data;
 
-  AdminProductResponse({this.data});
+  BannerResponse({this.data});
 
-  AdminProductResponse.fromJson(Map<String, dynamic> json) {
+  BannerResponse.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
@@ -18,15 +18,15 @@ class AdminProductResponse {
 
 class Data {
   int currentPage;
-  List<AdminProductList> dataInner;
+  List<DataInner> dataInner;
   String firstPageUrl;
   int from;
   int lastPage;
   String lastPageUrl;
-  String nextPageUrl;
+  Null nextPageUrl;
   String path;
   int perPage;
-  String prevPageUrl;
+  Null prevPageUrl;
   int to;
   int total;
 
@@ -47,9 +47,9 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      dataInner = new List<AdminProductList>();
+      dataInner = new List<DataInner>();
       json['data'].forEach((v) {
-        dataInner.add(new AdminProductList.fromJson(v));
+        dataInner.add(new DataInner.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -84,7 +84,63 @@ class Data {
   }
 }
 
-class AdminProductList {
+class DataInner {
+  int id;
+  String title;
+  String description;
+  String image;
+  int status;
+  String createdAt;
+  String updatedAt;
+  String imageUrl;
+  List<Products> products;
+
+  DataInner(
+      {this.id,
+      this.title,
+      this.description,
+      this.image,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.imageUrl,
+      this.products});
+
+  DataInner.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    description = json['description'];
+    image = json['image'];
+    status = json['status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    imageUrl = json['image_url'];
+    if (json['products'] != null) {
+      products = new List<Products>();
+      json['products'].forEach((v) {
+        products.add(new Products.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['description'] = this.description;
+    data['image'] = this.image;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['image_url'] = this.imageUrl;
+    if (this.products != null) {
+      data['products'] = this.products.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Products {
   int id;
   String title;
   String description;
@@ -101,11 +157,12 @@ class AdminProductList {
   String updatedAt;
   int isDeleted;
   String imageUrl;
-  Brand brand;
+  Pivot pivot;
   Category category;
+  Brand brand;
   Brand quantityUnit;
 
-  AdminProductList(
+  Products(
       {this.id,
       this.title,
       this.description,
@@ -122,11 +179,12 @@ class AdminProductList {
       this.updatedAt,
       this.isDeleted,
       this.imageUrl,
-      this.brand,
+      this.pivot,
       this.category,
+      this.brand,
       this.quantityUnit});
 
-  AdminProductList.fromJson(Map<String, dynamic> json) {
+  Products.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     description = json['description'];
@@ -143,10 +201,11 @@ class AdminProductList {
     updatedAt = json['updated_at'];
     isDeleted = json['is_deleted'];
     imageUrl = json['image_url'];
-    brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
+    pivot = json['pivot'] != null ? new Pivot.fromJson(json['pivot']) : null;
     category = json['category'] != null
         ? new Category.fromJson(json['category'])
         : null;
+    brand = json['brand'] != null ? new Brand.fromJson(json['brand']) : null;
     quantityUnit = json['quantity_unit'] != null
         ? new Brand.fromJson(json['quantity_unit'])
         : null;
@@ -170,11 +229,14 @@ class AdminProductList {
     data['updated_at'] = this.updatedAt;
     data['is_deleted'] = this.isDeleted;
     data['image_url'] = this.imageUrl;
-    if (this.brand != null) {
-      data['brand'] = this.brand.toJson();
+    if (this.pivot != null) {
+      data['pivot'] = this.pivot.toJson();
     }
     if (this.category != null) {
       data['category'] = this.category.toJson();
+    }
+    if (this.brand != null) {
+      data['brand'] = this.brand.toJson();
     }
     if (this.quantityUnit != null) {
       data['quantity_unit'] = this.quantityUnit.toJson();
@@ -183,21 +245,21 @@ class AdminProductList {
   }
 }
 
-class Brand {
-  int id;
-  String title;
+class Pivot {
+  int bannerId;
+  int productId;
 
-  Brand({this.id, this.title});
+  Pivot({this.bannerId, this.productId});
 
-  Brand.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
+  Pivot.fromJson(Map<String, dynamic> json) {
+    bannerId = json['banner_id'];
+    productId = json['product_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
+    data['banner_id'] = this.bannerId;
+    data['product_id'] = this.productId;
     return data;
   }
 }
@@ -247,6 +309,25 @@ class Category {
     data['updated_at'] = this.updatedAt;
     data['is_deleted'] = this.isDeleted;
     data['image_url'] = this.imageUrl;
+    return data;
+  }
+}
+
+class Brand {
+  int id;
+  String title;
+
+  Brand({this.id, this.title});
+
+  Brand.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
     return data;
   }
 }

@@ -15,10 +15,10 @@ import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
 import 'package:ngmartflutter/ui/admin/quantity/QuantiityScreen.dart';
 import 'package:ngmartflutter/ui/drawer/drawer_item.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
-import 'package:ngmartflutter/ui/search/SearchPage.dart';
-import 'package:share/share.dart';
+import 'package:ngmartflutter/ui/settings/setting.dart';
 
 import '../CommingSoonScreen.dart';
+import 'banner/BannerScreen.dart';
 import 'brand/BrandScreen.dart';
 import 'category/AddCategoryScreen.dart';
 import 'category/CategoryScreen.dart';
@@ -32,7 +32,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   final _pageController = PageController();
   int _selectionIndex = 0;
   bool _isLoggedIn = false;
-  bool showSearch = true;
+  bool showAddIcon = false;
   var drawerItems = new List();
   LoginResponse userInfo;
   Widget _body;
@@ -54,8 +54,9 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     drawerItems.add(DrawerItem("Quantity", FontAwesomeIcons.sortAmountUp));
     drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
     drawerItems.add(DrawerItem("Products", FontAwesomeIcons.th));
-    drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.history));
+    drawerItems.add(DrawerItem("Banners", FontAwesomeIcons.history));
     drawerItems.add(DrawerItem("Cms Pages", FontAwesomeIcons.userSecret));
+    drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
     drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     super.initState();
   }
@@ -65,42 +66,47 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     Navigator.pop(context);
     if (_isLoggedIn) {
       if (index == 0) {
-        _title = "NGMart";
+        _title = "Dashboard";
         _pageController.jumpToPage(0);
-        showSearch = true;
+        showAddIcon = false;
       } else if (index == 1) {
         //show profile
         _pageController.jumpToPage(1);
         _title = "Brands";
-        showSearch = false;
+        showAddIcon = true;
       } else if (index == 2) {
         //show profile
         _pageController.jumpToPage(2);
         _title = "Quantity Units";
-        showSearch = false;
+        showAddIcon = true;
       } else if (index == 3) {
         //show cart
         _pageController.jumpToPage(3);
         _title = "Category";
-        showSearch = false;
+        showAddIcon = true;
       } else if (index == 4) {
         //show purchi
         _title = "Product";
         _pageController.jumpToPage(4);
-        showSearch = false;
+        showAddIcon = true;
       } else if (index == 5) {
         //show order history
-        _title = "Orders";
+        _title = "Banners";
         _pageController.jumpToPage(5);
-        showSearch = false;
+        showAddIcon = true;
       } else if (index == 6) {
         //show setting
         _title = "Cms Pages";
         _pageController.jumpToPage(6);
-        showSearch = false;
+        showAddIcon = true;
       } else if (index == 7) {
-        onLogoutSuccess(context: context);
+        //show setting
+        _title = "Settings";
         _pageController.jumpToPage(7);
+        showAddIcon = false;
+      } else if (index == 8) {
+        onLogoutSuccess(context: context);
+        _pageController.jumpToPage(8);
       }
     }
 
@@ -127,51 +133,53 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_title ?? "NGMart"),
+        title: Text(_title ?? "Dashboard"),
         centerTitle: true,
         actions: <Widget>[
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () async {
-                    if (_pageController.page == 1) {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => AddBrandScreen(
-                                    fromBrandScreen: false,
-                                    title: "",
-                                    brandId: 1,
-                                  )));
-                    } else if (_pageController.page == 2) {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => AddQuantityScreen(
-                                    fromBrandScreen: false,
-                                    title: "",
-                                    brandId: 1,
-                                  )));
-                    } else if (_pageController.page == 3) {
-                      bool isWOrkDone = await Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => AddCategoryScreen(
-                                    fromCategoryScreen: false,
-                                  )));
-                      if (isWOrkDone != null && isWOrkDone) {
-                        _pageController.jumpToPage(3);
-                      }
-                    } else if (_pageController.page == 4) {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => AddProductScreen(
-                                    fromProductScreen: false,
-                                  )));
-                    }
-                  }))
+              child: showAddIcon
+                  ? IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () async {
+                        if (_pageController.page == 1) {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => AddBrandScreen(
+                                        fromBrandScreen: false,
+                                        title: "",
+                                        brandId: 1,
+                                      )));
+                        } else if (_pageController.page == 2) {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => AddQuantityScreen(
+                                        fromBrandScreen: false,
+                                        title: "",
+                                        brandId: 1,
+                                      )));
+                        } else if (_pageController.page == 3) {
+                          bool isWOrkDone = await Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => AddCategoryScreen(
+                                        fromCategoryScreen: false,
+                                      )));
+                          if (isWOrkDone != null && isWOrkDone) {
+                            _pageController.jumpToPage(3);
+                          }
+                        } else if (_pageController.page == 4) {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => AddProductScreen(
+                                        fromProductScreen: false,
+                                      )));
+                        }
+                      })
+                  : Container())
         ],
       ),
       drawer: Drawer(
@@ -179,7 +187,43 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
           physics: ScrollPhysics(),
           child: Column(
             children: <Widget>[
-              Container(height: 40),
+              UserAccountsDrawerHeader(
+                accountName: Container(
+                  padding: EdgeInsets.only(right: 20),
+                  child: InkWell(
+                    onTap: () {
+                      if (!_isLoggedIn) {
+                        Navigator.of(context).push(new CupertinoPageRoute(
+                            builder: (context) => Login()));
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          _isLoggedIn
+                              ? "${userInfo.data.user.firstName} ${userInfo.data.user.lastName}"
+                              : "LogIn",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Icon(
+                          FontAwesomeIcons.arrowRight,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                accountEmail: Text(_isLoggedIn ? userInfo.data.user.email : ""),
+                currentAccountPicture: _isLoggedIn
+                    ? CircleAvatar(
+                        child: Text(
+                          userInfo.data.user.firstName[0] ?? "N",
+                          style: TextStyle(fontSize: 40.0),
+                        ),
+                      )
+                    : Container(),
+              ),
               Column(
                 children: drawerOptions,
               ),
@@ -197,7 +241,9 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               QuantityScreen(),
               CategoryScreen(),
               ProductScreen(),
+              BannerScreen(),
               CommingSoonScreen(),
+              Setting(),
               CommingSoonScreen(),
             ],
             physics: NeverScrollableScrollPhysics()),

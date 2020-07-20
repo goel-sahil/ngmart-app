@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
@@ -29,7 +31,7 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
 
   Future<void> _hitApi() async {
     provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text,status: 1);
+    var request = AddBrandRequest(title: _titleController.text, status: 1);
 
     var response = await provider.addBrand(context, request);
     if (response is APIError) {
@@ -37,6 +39,9 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
     } else {
       AddBrandResponse forgotPasswordResponse = response;
       showInSnackBar(forgotPasswordResponse.message);
+      Timer(Duration(milliseconds: 500), () {
+        Navigator.pop(context, true);
+      });
     }
   }
 
@@ -50,7 +55,9 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
     } else {
       AddBrandResponse forgotPasswordResponse = response;
       showInSnackBar(forgotPasswordResponse.message);
-      Navigator.pop(context, true);
+      Timer(Duration(milliseconds: 500), () {
+        Navigator.pop(context, true);
+      });
     }
   }
 
@@ -118,7 +125,8 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
                           color: AppColors.kPrimaryBlue,
                           textColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(4))),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4))),
                         ),
                       ),
                     ],
