@@ -34,6 +34,7 @@ class APIs {
   static const String category = "$baseUrl/admin/categories";
   static const String getCategoryList = "$baseUrl/admin/categories/list";
   static const String getSelectBrandList = "$baseUrl/admin/brands/list";
+  static const String getQuantityUnitList = "$baseUrl/admin/quantity-units/list";
   static const String products = "$baseUrl/admin/products/list";
   static const String product = "$baseUrl/admin/products";
   static const String addBrand = "$baseUrl/admin/brands";

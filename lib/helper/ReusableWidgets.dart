@@ -365,13 +365,14 @@ Widget getTextField(
     bool obsectextType,
     TextInputType textType,
     int length,
+      int maxLines=1,
     bool enablefield}) {
   return Container(
     margin: new EdgeInsets.only(left: 10.0, right: 10.0),
     child: new TextFormField(
       validator: validators,
       controller: controller,
-      maxLines: 1,
+      maxLines: maxLines,
       keyboardType: textType,
       obscureText: obsectextType,
       focusNode: focusNodeCurrent,

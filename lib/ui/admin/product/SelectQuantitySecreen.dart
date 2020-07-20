@@ -12,12 +12,13 @@ import 'package:ngmartflutter/model/admin/brand/AdminBrandList.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:provider/provider.dart';
 
-class SelectBrandScreen extends StatefulWidget {
+class SelectQuantityUnitScreen extends StatefulWidget {
   @override
-  _SelectBrandScreenState createState() => _SelectBrandScreenState();
+  _SelectQuantityUnitScreenState createState() =>
+      _SelectQuantityUnitScreenState();
 }
 
-class _SelectBrandScreenState extends State<SelectBrandScreen> {
+class _SelectQuantityUnitScreenState extends State<SelectQuantityUnitScreen> {
   AdminProvider adminProvider;
   List<Data> dataInner = new List();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -41,7 +42,7 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
       return;
     }
     adminProvider.setLoading(); //show loader
-    var response = await adminProvider.getBrandList(context);
+    var response = await adminProvider.getQuantityUnitList(context);
     if (response is APIError) {
     } else if (response is AdminBrandList) {
       dataInner.addAll(response.data);
@@ -54,7 +55,7 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Select Brand",
+          "Select Quantity Unit",
         ),
         centerTitle: true,
       ),
@@ -106,7 +107,7 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
           (dataInner.length == 0) && (adminProvider.getLoading() == false)
               ? Center(
                   child: getNoDataView(
-                      msg: "No Category list found.", onRetry: null))
+                      msg: "No Quantity unit found.", onRetry: null))
               : Container()
         ],
       ),

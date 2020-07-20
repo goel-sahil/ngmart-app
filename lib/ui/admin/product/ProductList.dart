@@ -17,6 +17,8 @@ import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'AddProductScreen.dart';
+
 class ProductScreen extends StatefulWidget {
   @override
   _ProductScreenState createState() => _ProductScreenState();
@@ -204,18 +206,17 @@ class _ProductScreenState extends State<ProductScreen> {
             color: Colors.black45,
             icon: Icons.edit,
             onTap: () async {
-//              var isUpdated = await Navigator.push(
-//                  context,
-//                  CupertinoPageRoute(
-//                      builder: (context) => AddQuantityScreen(
-//                        title: dataInner[index].title,
-//                        fromBrandScreen: true,
-//                        brandId: dataInner[index].id,
-//                      )));
-//              if (isUpdated!=null&&isUpdated) {
-//                _currentPageNumber = 1;
-//                _hitApi();
-//              }
+              var isUpdated = await Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => AddProductScreen(
+                        fromProductScreen: true,
+                        adminProductItem: productList,
+                      )));
+              if (isUpdated!=null&&isUpdated) {
+                _currentPageNumber = 1;
+                _hitApi();
+              }
             },
           ),
           IconSlideAction(

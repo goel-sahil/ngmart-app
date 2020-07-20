@@ -23,7 +23,7 @@ class Data {
   int from;
   int lastPage;
   String lastPageUrl;
-  String nextPageUrl;
+  Null nextPageUrl;
   String path;
   int perPage;
   String prevPageUrl;
@@ -46,9 +46,9 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
-    if (json['data'] != null) {
+    if (json['dataInner'] != null) {
       dataInner = new List<AdminProductList>();
-      json['data'].forEach((v) {
+      json['dataInner'].forEach((v) {
         dataInner.add(new AdminProductList.fromJson(v));
       });
     }
@@ -68,7 +68,7 @@ class Data {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['current_page'] = this.currentPage;
     if (this.dataInner != null) {
-      data['data'] = this.dataInner.map((v) => v.toJson()).toList();
+      data['dataInner'] = this.dataInner.map((v) => v.toJson()).toList();
     }
     data['first_page_url'] = this.firstPageUrl;
     data['from'] = this.from;

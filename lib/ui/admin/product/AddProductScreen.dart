@@ -20,6 +20,7 @@ import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
+import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
 import 'package:ngmartflutter/ui/admin/product/SelectBrandSecreen.dart';
@@ -27,11 +28,13 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
+import 'SelectQuantitySecreen.dart';
+
 class AddProductScreen extends StatefulWidget {
   var fromProductScreen;
-  DataCategory dataCategory;
+  AdminProductList adminProductItem;
 
-  AddProductScreen({this.fromProductScreen, this.dataCategory});
+  AddProductScreen({this.fromProductScreen, this.adminProductItem});
 
   @override
   _AddProductScreenState createState() => _AddProductScreenState();
@@ -46,14 +49,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController _quantityIdController = new TextEditingController();
   TextEditingController _priceController = new TextEditingController();
   TextEditingController _quantityIncController = new TextEditingController();
+  TextEditingController _quantityController = new TextEditingController();
+  TextEditingController _descController = new TextEditingController();
   FocusNode _titleField = new FocusNode();
   FocusNode _categoryField = new FocusNode();
   FocusNode _brandField = new FocusNode();
   FocusNode _quantityIdField = new FocusNode();
+  FocusNode _quantityField = new FocusNode();
   FocusNode _priceField = new FocusNode();
   FocusNode _quantityIncField = new FocusNode();
+  FocusNode _descField = new FocusNode();
   AdminProvider provider;
   String catId = "";
+  String brandId = "";
+  String quantId = "";
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
@@ -62,9 +71,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   void initState() {
     if (widget.fromProductScreen) {
-      _titleController.text = widget.dataCategory.title;
-      if (widget.dataCategory.category != null) {
-        _categoryController.text = widget.dataCategory.category.title;
+      _titleController.text = widget.adminProductItem.title;
+      _priceController.text = widget.adminProductItem.price.toString();
+      _quantityController.text = widget.adminProductItem.quantity.toString();
+      _brandController.text = widget.adminProductItem.brand.title;
+      _quantityIncController.text =
+          widget.adminProductItem.quantityIncrement.toString();
+      _quantityIdController.text = widget.adminProductItem.quantityUnit.title;
+      catId = widget.adminProductItem.categoryId.toString();
+      brandId = widget.adminProductItem.brand.id.toString();
+      quantId = widget.adminProductItem.quantityUnitId.toString();
+      _descController.text = widget.adminProductItem.description;
+      if (widget.adminProductItem.category != null) {
+        _categoryController.text = widget.adminProductItem.category.title;
       }
       setState(() {});
     }
@@ -109,7 +128,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     image: new DecorationImage(
                                       image: widget.fromProductScreen
                                           ? NetworkImage(
-                                              widget.dataCategory.imageUrl)
+                                              widget.adminProductItem.imageUrl)
                                           : new FileImage(
                                               _image ?? File(""),
                                             ),
@@ -183,11 +202,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           CategoryModel catModel = await Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) =>
-                                      SelectBrandScreen()));
+                                  builder: (context) => SelectBrandScreen()));
                           if (catModel != null) {
                             _brandController.text = catModel.title;
-                            catId = catModel.id;
+                            brandId = catModel.id;
                           }
                         },
                         child: getTextFieldWithoutValidation(
@@ -208,24 +226,38 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) =>
-                                      SelectCategoryScreen()));
+                                      SelectQuantityUnitScreen()));
                           if (catModel != null) {
-                            _categoryController.text = catModel.title;
-                            catId = catModel.id;
+                            _quantityIdController.text = catModel.title;
+                            quantId = catModel.id;
                           }
                         },
                         child: getTextFieldWithoutValidation(
-                  context: context,
-                  labelText: "Quantity Id",
-                  obsectextType: false,
-                  textType: TextInputType.text,
-                  focusNodeNext: _quantityIdField,
-                  focusNodeCurrent: _quantityIdField,
-                  enablefield: false,
-                  controller: _quantityIdController,
-                ),
-                ),
-                getSpacer(height: 20),
+                          context: context,
+                          labelText: "Quantity Unit",
+                          obsectextType: false,
+                          textType: TextInputType.text,
+                          focusNodeNext: _quantityIdField,
+                          focusNodeCurrent: _quantityIdField,
+                          enablefield: false,
+                          controller: _quantityIdController,
+                        ),
+                      ),
+                      getSpacer(height: 20),
+                      getTextField(
+                        context: context,
+                        labelText: "Quantity",
+                        obsectextType: false,
+                        textType: TextInputType.number,
+                        focusNodeNext: _priceField,
+                        focusNodeCurrent: _quantityField,
+                        enablefield: true,
+                        controller: _quantityController,
+                        validators: (val) => emptyValidator(
+                            value: val,
+                            txtMsg: "Please enter product quantity."),
+                      ),
+                      getSpacer(height: 20),
                       getTextField(
                         context: context,
                         labelText: "Price",
@@ -239,18 +271,32 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             value: val, txtMsg: "Please enter product price."),
                       ),
                       getSpacer(height: 20),
-                      getSpacer(height: 20),
                       getTextField(
                         context: context,
                         labelText: "Quantity Increment",
                         obsectextType: false,
                         textType: TextInputType.number,
-                        focusNodeNext: _quantityIncField,
+                        focusNodeNext: _descField,
                         focusNodeCurrent: _quantityIncField,
                         enablefield: true,
                         controller: _quantityIncController,
                         validators: (val) => emptyValidator(
-                            value: val, txtMsg: "Please enter quantity increment."),
+                            value: val,
+                            txtMsg: "Please enter quantity increment."),
+                      ),
+                      getSpacer(height: 20),
+                      getTextField(
+                        context: context,
+                        labelText: "Description",
+                        obsectextType: false,
+                        textType: TextInputType.text,
+                        focusNodeNext: _descField,
+                        focusNodeCurrent: _descField,
+                        enablefield: true,
+                        maxLines: 4,
+                        controller: _descController,
+                        validators: (val) => emptyValidator(
+                            value: val, txtMsg: "Please enter description."),
                       ),
                       getSpacer(height: 20),
                       Container(
@@ -265,7 +311,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 if (_image != null) {
                                   addCategory(false);
                                 } else {
-                                  showInSnackBar("Please add category image.");
+                                  showInSnackBar("Please add product image.");
                                 }
                               }
                             }
@@ -312,9 +358,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _loaderStreamController.add(true); //show loader
     var url;
     if (forUpdate) {
-      url = Uri.parse("${APIs.category}/${widget.dataCategory.id}");
+      url = Uri.parse("${APIs.product}/${widget.adminProductItem.id}");
     } else {
-      url = Uri.parse(APIs.category);
+      url = Uri.parse(APIs.product);
     }
 
     print("$url");
@@ -336,8 +382,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
       var bytes = await _image.readAsBytes();
 
       request.fields['title'] = _titleController.text;
+      request.fields['description'] = _descController.text;
+      request.fields['price'] = _priceController.text;
+      request.fields['brand_id'] = brandId;
       request.fields['category_id'] = catId;
       request.fields['status'] = "1";
+      request.fields['quantity'] = _quantityController.text;
+      request.fields['quantity_unit_id'] = quantId;
+      request.fields['quantity_increment'] = _quantityIncController.text;
 
       request.files.add(new http.MultipartFile.fromBytes(
         "image",
@@ -346,8 +398,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ));
     } else {
       request.fields['title'] = _titleController.text;
+      request.fields['description'] = _descController.text;
+      request.fields['price'] = _priceController.text;
+      request.fields['brand_id'] = brandId;
       request.fields['category_id'] = catId;
       request.fields['status'] = "1";
+      request.fields['quantity'] = _quantityController.text;
+      request.fields['quantity_unit_id'] = quantId;
+      request.fields['quantity_increment'] = _quantityIncController.text;
     }
 
     print("${request.fields.toString()}");
@@ -359,7 +417,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
       Map data = jsonDecode(respStr);
       print("Data==> $data");
       showInSnackBar("${data["message"]}");
-      Navigator.pop(context, true);
+      Timer(Duration(milliseconds: 500), () {
+        Navigator.pop(context, true);
+      });
     } else {
       final respStr = await response.stream.bytesToString();
       Map data = jsonDecode(respStr);
