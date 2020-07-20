@@ -18,7 +18,7 @@ class AdminProductResponse {
 
 class Data {
   int currentPage;
-  List<DataInner> dataInner;
+  List<AdminProductList> dataInner;
   String firstPageUrl;
   int from;
   int lastPage;
@@ -26,7 +26,7 @@ class Data {
   String nextPageUrl;
   String path;
   int perPage;
-  Null prevPageUrl;
+  String prevPageUrl;
   int to;
   int total;
 
@@ -47,9 +47,9 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      dataInner = new List<DataInner>();
+      dataInner = new List<AdminProductList>();
       json['data'].forEach((v) {
-        dataInner.add(new DataInner.fromJson(v));
+        dataInner.add(new AdminProductList.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -84,7 +84,7 @@ class Data {
   }
 }
 
-class DataInner {
+class AdminProductList {
   int id;
   String title;
   String description;
@@ -105,7 +105,7 @@ class DataInner {
   Category category;
   Brand quantityUnit;
 
-  DataInner(
+  AdminProductList(
       {this.id,
         this.title,
         this.description,
@@ -126,7 +126,7 @@ class DataInner {
         this.category,
         this.quantityUnit});
 
-  DataInner.fromJson(Map<String, dynamic> json) {
+  AdminProductList.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     description = json['description'];

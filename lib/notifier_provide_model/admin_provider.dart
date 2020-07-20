@@ -10,6 +10,8 @@ import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
+import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
+import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 
 class AdminProvider with ChangeNotifier {
   var _isLoading = false;
@@ -118,6 +120,35 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> getProducts(BuildContext context, int currentPageNumber,
+      AdminProductRequest adminProductRequest) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var response = await APIHandler.post(
+        context: context,
+        url: "${APIs.products}?page=$currentPageNumber",
+        requestBody: adminProductRequest.toJson(),
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      AdminProductResponse adminCategoryResponse =
+          new AdminProductResponse.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
   Future<dynamic> deleteBrand(BuildContext context, int id) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
@@ -175,6 +206,30 @@ class AdminProvider with ChangeNotifier {
     var response = await APIHandler.delete(
         context: context,
         url: "${APIs.category}/$id",
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> deleteProduct(BuildContext context, int id) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.delete(
+        context: context,
+        url: "${APIs.product}/$id",
         additionalHeaders: headers);
 
     hideLoader();

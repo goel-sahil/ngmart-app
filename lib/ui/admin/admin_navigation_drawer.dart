@@ -9,6 +9,8 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
+import 'package:ngmartflutter/ui/admin/product/AddProductScreen.dart';
+import 'package:ngmartflutter/ui/admin/product/ProductList.dart';
 import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
 import 'package:ngmartflutter/ui/admin/quantity/QuantiityScreen.dart';
 import 'package:ngmartflutter/ui/drawer/drawer_item.dart';
@@ -161,6 +163,13 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                       if (isWOrkDone != null && isWOrkDone) {
                         _pageController.jumpToPage(3);
                       }
+                    } else if (_pageController.page == 4) {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => AddProductScreen(
+                                    fromProductScreen: false,
+                                  )));
                     }
                   }))
         ],
@@ -187,7 +196,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               BrandScreen(),
               QuantityScreen(),
               CategoryScreen(),
-              CommingSoonScreen(),
+              ProductScreen(),
               CommingSoonScreen(),
               CommingSoonScreen(),
             ],
