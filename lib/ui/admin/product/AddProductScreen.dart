@@ -22,6 +22,7 @@ import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
+import 'package:ngmartflutter/ui/admin/product/SelectBrandSecreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:searchable_dropdown/searchable_dropdown.dart';
@@ -183,7 +184,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) =>
-                                      SelectCategoryScreen()));
+                                      SelectBrandScreen()));
                           if (catModel != null) {
                             _brandController.text = catModel.title;
                             catId = catModel.id;

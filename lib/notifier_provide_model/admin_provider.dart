@@ -8,6 +8,7 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/BrandResponse.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
+import 'package:ngmartflutter/model/admin/brand/AdminBrandList.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
@@ -119,6 +120,36 @@ class AdminProvider with ChangeNotifier {
       return completer.future;
     }
   }
+
+  Future<dynamic> getBrandList(BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var response = await APIHandler.get(
+        context: context,
+        url: APIs.getSelectBrandList,
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      AdminBrandList adminCategoryResponse =
+      new AdminBrandList.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+
+
 
   Future<dynamic> getProducts(BuildContext context, int currentPageNumber,
       AdminProductRequest adminProductRequest) async {
