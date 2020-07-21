@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,6 +15,7 @@ import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/admin/order/OrderDetails.dart';
 import 'package:provider/provider.dart';
 
 class AdminOrdersScreen extends StatefulWidget {
@@ -187,72 +189,83 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   }
 
   buildItem(DataInner dataList, String status, int intStatus, int position) {
-    return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
-      child: Column(
-        children: <Widget>[
-          getSpacer(height: 10),
-          Row(
-            children: <Widget>[
-              getSpacer(width: 10),
-              CircleAvatar(
-                backgroundColor: Colors.green,
-                child: Text(dataList.id.toString() ?? "A"),
-                foregroundColor: Colors.white,
-              ),
-              getSpacer(width: 16),
-              Column(
-                children: <Widget>[
-                  Text(
-                    "Order Id ${dataList.id}",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Text('Status: $status')
-                ],
-              ),
-            ],
-          ),
-          getSpacer(height: 10)
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(new CupertinoPageRoute(
+            builder: (context) => OrderDetailsScreen(
+                  cartList: dataList.orderItems,
+                  total: dataList.totalPrice,
+                  inVoiceUrl: dataList.invoiceUrl,
+                  id: dataList.id,
+                )));
+      },
+      child: Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.25,
+        child: Column(
+          children: <Widget>[
+            getSpacer(height: 10),
+            Row(
+              children: <Widget>[
+                getSpacer(width: 10),
+                CircleAvatar(
+                  backgroundColor: Colors.green,
+                  child: Text(dataList.id.toString() ?? "A"),
+                  foregroundColor: Colors.white,
+                ),
+                getSpacer(width: 16),
+                Column(
+                  children: <Widget>[
+                    Text(
+                      "Order Id ${dataList.id}",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text('Status: $status')
+                  ],
+                ),
+              ],
+            ),
+            getSpacer(height: 10)
+          ],
+        ),
+        secondaryActions: <Widget>[
+          intStatus == 0 || intStatus == 2
+              ? IconSlideAction(
+                  caption: 'Accept',
+                  color: Colors.green,
+                  icon: FontAwesomeIcons.check,
+                  onTap: () {
+                    _hitOrderStatusApi(
+                        id: dataList.id, position: position, status: 1);
+                  },
+                )
+              : Container(),
+          intStatus == 0
+              ? IconSlideAction(
+                  caption: 'Reject',
+                  color: Colors.red,
+                  closeOnTap: true,
+                  icon: Icons.delete,
+                  onTap: () {
+                    _hitOrderStatusApi(
+                        id: dataList.id, position: position, status: 2);
+                  },
+                )
+              : Container(),
+          intStatus == 1
+              ? IconSlideAction(
+                  caption: 'Cancel',
+                  color: Colors.red,
+                  closeOnTap: true,
+                  icon: Icons.delete,
+                  onTap: () {
+                    _hitOrderStatusApi(
+                        id: dataList.id, position: position, status: 3);
+                  },
+                )
+              : Container()
         ],
       ),
-      secondaryActions: <Widget>[
-        intStatus == 0 || intStatus == 2
-            ? IconSlideAction(
-                caption: 'Accept',
-                color: Colors.green,
-                icon: FontAwesomeIcons.check,
-                onTap: () {
-                  _hitOrderStatusApi(
-                      id: dataList.id, position: position, status: 1);
-                },
-              )
-            : Container(),
-        intStatus == 0
-            ? IconSlideAction(
-                caption: 'Reject',
-                color: Colors.red,
-                closeOnTap: true,
-                icon: Icons.delete,
-                onTap: () {
-                  _hitOrderStatusApi(
-                      id: dataList.id, position: position, status: 2);
-                },
-              )
-            : Container(),
-        intStatus == 1
-            ? IconSlideAction(
-                caption: 'Cancel',
-                color: Colors.red,
-                closeOnTap: true,
-                icon: Icons.delete,
-                onTap: () {
-                  _hitOrderStatusApi(
-                      id: dataList.id, position: position, status: 3);
-                },
-              )
-            : Container()
-      ],
     );
   }
 
@@ -311,7 +324,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
             if (_dateFromController.text.isNotEmpty &&
                 _dateToController.text.isNotEmpty) {
               _currentPageNumber = 1;
-              _loadMore=false;
+              _loadMore = false;
               _hitApi(isFilter: true);
             } else {
               showInSnackBar("Date from and date to should not be empty.");
@@ -327,7 +340,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
             _dateFromController.clear();
             _dateToController.clear();
             _currentPageNumber = 1;
-            _loadMore=false;
+            _loadMore = false;
             _hitApi(isFilter: false);
           },
         ),

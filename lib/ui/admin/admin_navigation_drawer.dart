@@ -56,8 +56,8 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         .add(DrawerItem("Quantity Units", FontAwesomeIcons.sortAmountUp));
     drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
     drawerItems.add(DrawerItem("Products", FontAwesomeIcons.th));
-    drawerItems.add(DrawerItem("Banners", FontAwesomeIcons.history));
-    drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.firstOrder));
+    drawerItems.add(DrawerItem("Banners", FontAwesomeIcons.firstOrder));
+    drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.history));
     drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
     drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     super.initState();

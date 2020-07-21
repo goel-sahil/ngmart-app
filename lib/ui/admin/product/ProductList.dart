@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
@@ -15,6 +14,7 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/admin/product/ProductDetail.dart';
 import 'package:provider/provider.dart';
 
 import 'AddProductScreen.dart';
@@ -196,12 +196,12 @@ class _ProductScreenState extends State<ProductScreen> {
   createCartListItem({AdminProductList productList, int index}) {
     return InkWell(
       onTap: () {
-//        Navigator.push(
-//            context,
-//            CupertinoPageRoute(
-//                builder: (context) => ProductDetailPage(
-//                      productData: productList,
-//                    )));
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => AdminProductDetailPage(
+                      productData: productList,
+                    )));
       },
       child: Slidable(
         actionPane: SlidableDrawerActionPane(),

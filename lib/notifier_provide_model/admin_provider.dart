@@ -16,6 +16,7 @@ import 'package:ngmartflutter/model/admin/order/OrderStatusRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/model/admin/order/AdminOrderResponse.dart';
+import 'package:ngmartflutter/model/admin/InvoiceResponse.dart';
 
 class AdminProvider with ChangeNotifier {
   var _isLoading = false;
@@ -258,6 +259,35 @@ class AdminProvider with ChangeNotifier {
       return completer.future;
     }
   }
+
+
+  Future<dynamic> getInvoice(BuildContext context, int id,) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var response = await APIHandler.get(
+        context: context,
+        url: "${APIs.adminOrders}/$id/invoice",
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      InvoiceResponse adminCategoryResponse =
+      new InvoiceResponse.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
 
   Future<dynamic> deleteBrand(BuildContext context, int id) async {
     Completer<dynamic> completer = new Completer<dynamic>();
