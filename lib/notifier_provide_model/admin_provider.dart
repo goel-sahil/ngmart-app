@@ -6,14 +6,15 @@ import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
-import 'file:///D:/Workspace/ngmart_flutter/lib/model/admin/brand/BrandResponse.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
 import 'package:ngmartflutter/model/admin/brand/AdminBrandList.dart';
+import 'package:ngmartflutter/model/admin/brand/BrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
+import 'package:ngmartflutter/model/admin/order/AdminOrderResponse.dart';
 
 class AdminProvider with ChangeNotifier {
   var _isLoading = false;
@@ -89,6 +90,34 @@ class AdminProvider with ChangeNotifier {
     } else {
       print("Response==> $response");
       BranResponse productResponse = new BranResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> getOrders(BuildContext context, int currentPageNumber) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var url;
+
+    url = "${APIs.adminOrders}?page=$currentPageNumber";
+    var response = await APIHandler.get(
+        context: context, url: url, additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      AdminOrderResponse productResponse =
+          new AdminOrderResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;

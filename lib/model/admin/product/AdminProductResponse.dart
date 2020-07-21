@@ -104,6 +104,7 @@ class AdminProductList {
   Brand brand;
   Category category;
   Brand quantityUnit;
+  bool isSelected=false;
 
   AdminProductList(
       {this.id,

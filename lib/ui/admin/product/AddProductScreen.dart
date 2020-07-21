@@ -2,31 +2,24 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
-import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
-import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CategoryModel.dart';
-import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
-import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
-import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
-import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/ToggleWidget.dart';
 import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
 import 'package:ngmartflutter/ui/admin/product/SelectBrandSecreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 import 'SelectQuantitySecreen.dart';
 
@@ -68,6 +61,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final picker = ImagePicker();
   File _image;
 
+  int status = 1;
+
   @override
   void initState() {
     if (widget.fromProductScreen) {
@@ -85,6 +80,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       if (widget.adminProductItem.category != null) {
         _categoryController.text = widget.adminProductItem.category.title;
       }
+      status = widget.adminProductItem.status;
       setState(() {});
     }
     super.initState();
@@ -299,6 +295,28 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             value: val, txtMsg: "Please enter description."),
                       ),
                       getSpacer(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Manage Status"),
+                          ToggleWidget(
+                            activeBgColor: Colors.green,
+                            activeTextColor: Colors.white,
+                            inactiveBgColor: Colors.white,
+                            inactiveTextColor: Colors.black,
+                            labels: [
+                              'INACTIVE',
+                              'ACTIVE',
+                            ],
+                            initialLabel: status,
+                            onToggle: (index) {
+                              print("Index $index");
+                              status = index;
+                            },
+                          ),
+                        ],
+                      ),
+                      getSpacer(height: 20),
                       Container(
                         width: getScreenSize(context: context).width,
                         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -386,7 +404,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       request.fields['price'] = _priceController.text;
       request.fields['brand_id'] = brandId;
       request.fields['category_id'] = catId;
-      request.fields['status'] = "1";
+      request.fields['status'] = status.toString();
       request.fields['quantity'] = _quantityController.text;
       request.fields['quantity_unit_id'] = quantId;
       request.fields['quantity_increment'] = _quantityIncController.text;
@@ -402,7 +420,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       request.fields['price'] = _priceController.text;
       request.fields['brand_id'] = brandId;
       request.fields['category_id'] = catId;
-      request.fields['status'] = "1";
+      request.fields['status'] = status.toString();
       request.fields['quantity'] = _quantityController.text;
       request.fields['quantity_unit_id'] = quantId;
       request.fields['quantity_increment'] = _quantityIncController.text;

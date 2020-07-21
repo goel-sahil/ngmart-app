@@ -21,7 +21,7 @@ class ToggleWidget extends StatefulWidget {
     @required this.inactiveTextColor,
     @required this.labels,
     this.onToggle,
-    this.cornerRadius = 8.0,
+    this.cornerRadius = 6.0,
     this.minWidth = 72,
     this.initialLabel = 0,
   }) : super(key: key);

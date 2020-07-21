@@ -12,11 +12,10 @@ import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
-import 'package:ngmartflutter/model/CategoryModel.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
-import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
-import 'package:ngmartflutter/ui/admin/product/SelectBrandSecreen.dart';
+import 'package:ngmartflutter/ui/ToggleWidget.dart';
+import 'package:ngmartflutter/ui/admin/banner/SelectProductScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,12 +45,14 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
   FocusNode _productField = new FocusNode();
   AdminProvider provider;
   String catId = "";
+  String status = "1";
   String brandId = "";
   String quantId = "";
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
   File _image;
+  List<AdminProductList> selectedProductList;
 
   @override
   void initState() {
@@ -154,16 +155,38 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
                         validators: (val) => emptyValidator(
                             value: val, txtMsg: "Please enter product title."),
                       ),
-                      getSpacer(height: 40),
-                      getTextFieldWithoutValidation(
-                        context: context,
-                        labelText: "Products",
-                        obsectextType: false,
-                        textType: TextInputType.text,
-                        focusNodeNext: _descField,
-                        focusNodeCurrent: _productField,
-                        enablefield: true,
-                        controller: _productController,
+                      getSpacer(height: 20),
+                      InkWell(
+                        onTap: () async {
+                          selectedProductList = await Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => SelectProductScreen(
+                                        selectedProductList:
+                                            selectedProductList,
+                                      )));
+                          if (selectedProductList != null) {
+                            print(
+                                "Add banner screen==> ${selectedProductList.length}");
+                            List<String> mproductName = new List();
+                            for (int i = 0;
+                                i < selectedProductList.length;
+                                i++) {
+                              mproductName.add(selectedProductList[i].title);
+                            }
+                            _productController.text = mproductName.join(',   ');
+                          }
+                        },
+                        child: getTextFieldWithoutValidation(
+                          context: context,
+                          labelText: "Products",
+                          obsectextType: false,
+                          textType: TextInputType.text,
+                          focusNodeNext: _descField,
+                          focusNodeCurrent: _productField,
+                          enablefield: false,
+                          controller: _productController,
+                        ),
                       ),
                       getSpacer(height: 20),
                       getTextField(
@@ -178,6 +201,28 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
                         controller: _descController,
                         validators: (val) => emptyValidator(
                             value: val, txtMsg: "Please enter description."),
+                      ),
+                      getSpacer(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Manage Status"),
+                          ToggleWidget(
+                            activeBgColor: Colors.green,
+                            activeTextColor: Colors.white,
+                            inactiveBgColor: Colors.white,
+                            inactiveTextColor: Colors.black,
+                            labels: [
+                              'INACTIVE',
+                              'ACTIVE',
+                            ],
+                            initialLabel: 1,
+                            onToggle: (index) {
+                              print("Index $index");
+                              status=index.toString();
+                            },
+                          ),
+                        ],
                       ),
                       getSpacer(height: 20),
                       Container(
@@ -209,6 +254,7 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
                                   BorderRadius.all(Radius.circular(4))),
                         ),
                       ),
+                      getSpacer(height: 50),
                     ],
                   ),
                 ),
@@ -257,7 +303,10 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
         new http.MultipartRequest("POST", url); //changed
 
     request.headers.addAll(headers);
-
+    List<int> selectedIds = List();
+    for (int i = 0; i < selectedProductList.length; i++) {
+      selectedIds.add(selectedProductList[i].id);
+    }
     if (_image != null) {
       final fileName = _image.path;
 
@@ -265,7 +314,8 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
 
       request.fields['title'] = _titleController.text;
       request.fields['description'] = _descController.text;
-      request.fields['product_ids[]'] = '190';
+      request.fields['product_ids'] = '$selectedIds';
+      request.fields['status'] = status;
       request.files.add(new http.MultipartFile.fromBytes(
         "image",
         bytes,
@@ -275,6 +325,7 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
       request.fields['title'] = _titleController.text;
       request.fields['description'] = _descController.text;
       request.fields['product_ids'] = '$list';
+      request.fields['status'] = status;
     }
 
     print("${request.fields.toString()}");

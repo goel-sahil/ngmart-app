@@ -9,14 +9,16 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/ToggleWidget.dart';
 import 'package:provider/provider.dart';
 
 class AddBrandScreen extends StatefulWidget {
   var title;
   var fromBrandScreen;
   var brandId;
+  var status;
 
-  AddBrandScreen({this.title, this.fromBrandScreen, this.brandId});
+  AddBrandScreen({this.title, this.fromBrandScreen, this.brandId,this.status});
 
   @override
   _AddBrandScreenState createState() => _AddBrandScreenState();
@@ -29,9 +31,11 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
   FocusNode _titleField = new FocusNode();
   AdminProvider provider;
 
+  int status=1;
+
   Future<void> _hitApi() async {
     provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text, status: 1);
+    var request = AddBrandRequest(title: _titleController.text, status: status);
 
     var response = await provider.addBrand(context, request);
     if (response is APIError) {
@@ -47,7 +51,7 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
 
   Future<void> _hitUpdateBrandApi() async {
     provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text, status: 1);
+    var request = AddBrandRequest(title: _titleController.text, status: status);
 
     var response = await provider.updateBrand(context, request, widget.brandId);
     if (response is APIError) {
@@ -65,6 +69,7 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
   void initState() {
     if (widget.fromBrandScreen) {
       _titleController.text = widget.title;
+      status=widget.status;
       setState(() {});
     }
     super.initState();
@@ -102,6 +107,30 @@ class _AddBrandScreenState extends State<AddBrandScreen> {
                         controller: _titleController,
                         validators: (val) => emptyValidator(
                             value: val, txtMsg: "Please enter brand title."),
+                      ),
+                      getSpacer(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Manage Status"),
+                          ToggleWidget(
+                            activeBgColor: Colors.green,
+                            activeTextColor: Colors.white,
+                            inactiveBgColor: Colors.white,
+                            inactiveTextColor: Colors.black,
+                            labels: [
+                              'INACTIVE',
+                              'ACTIVE',
+                            ],
+                            initialLabel: status,
+                            onToggle: (index) {
+                              print("Status $index");
+                              setState(() {
+                                status = index;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                       getSpacer(height: 20),
                       Container(

@@ -9,9 +9,8 @@ import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
-import 'file:///D:/Workspace/ngmart_flutter/lib/model/admin/brand/BrandResponse.dart';
+import 'package:ngmartflutter/model/admin/brand/BrandResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
-import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
 import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
 import 'package:provider/provider.dart';
 
@@ -128,6 +127,8 @@ class _QuantityScreenState extends State<QuantityScreen> {
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
               itemBuilder: (BuildContext context, int index) {
+                String status =
+                    dataInner[index].status == 1 ? "Active" : "In Active";
                 return InkWell(
                   onTap: () {},
                   child: Slidable(
@@ -142,7 +143,7 @@ class _QuantityScreenState extends State<QuantityScreen> {
                           foregroundColor: Colors.white,
                         ),
                         title: Text(dataInner[index].title),
-                        subtitle: Text('Status: ${dataInner[index].status}'),
+                        subtitle: Text('Status: $status'),
                       ),
                     ),
                     secondaryActions: <Widget>[
@@ -158,8 +159,9 @@ class _QuantityScreenState extends State<QuantityScreen> {
                                         title: dataInner[index].title,
                                         fromBrandScreen: true,
                                         brandId: dataInner[index].id,
+                                        status: dataInner[index].status,
                                       )));
-                          if (isUpdated!=null&&isUpdated) {
+                          if (isUpdated != null && isUpdated) {
                             _currentPageNumber = 1;
                             _hitApi();
                           }
@@ -188,7 +190,8 @@ class _QuantityScreenState extends State<QuantityScreen> {
           ),
           (dataInner.length == 0) && (adminProvider.getLoading() == false)
               ? Center(
-                  child: getNoDataView(msg: "No Quantity found.", onRetry: null))
+                  child:
+                      getNoDataView(msg: "No Quantity found.", onRetry: null))
               : Container()
         ],
       ),

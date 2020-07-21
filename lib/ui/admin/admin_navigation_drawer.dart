@@ -13,6 +13,7 @@ import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
 import 'package:ngmartflutter/ui/admin/product/AddProductScreen.dart';
 import 'package:ngmartflutter/ui/admin/product/ProductList.dart';
 import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
+import 'package:ngmartflutter/ui/admin/order/OrderScreen.dart';
 import 'package:ngmartflutter/ui/admin/quantity/QuantiityScreen.dart';
 import 'package:ngmartflutter/ui/drawer/drawer_item.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
@@ -56,7 +57,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
     drawerItems.add(DrawerItem("Products", FontAwesomeIcons.th));
     drawerItems.add(DrawerItem("Banners", FontAwesomeIcons.history));
-    drawerItems.add(DrawerItem("Cms Pages", FontAwesomeIcons.userSecret));
+    drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.firstOrder));
     drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
     drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     super.initState();
@@ -245,7 +246,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               CategoryScreen(),
               ProductScreen(),
               BannerScreen(),
-              CommingSoonScreen(),
+              AdminOrdersScreen(),
               Setting(),
               CommingSoonScreen(),
             ],

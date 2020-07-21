@@ -9,14 +9,17 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/ToggleWidget.dart';
 import 'package:provider/provider.dart';
 
 class AddQuantityScreen extends StatefulWidget {
   var title;
   var fromBrandScreen;
   var brandId;
+  var status;
 
-  AddQuantityScreen({this.title, this.fromBrandScreen, this.brandId});
+  AddQuantityScreen(
+      {this.title, this.fromBrandScreen, this.brandId, this.status});
 
   @override
   _AddQuantityScreenState createState() => _AddQuantityScreenState();
@@ -29,9 +32,11 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
   FocusNode _titleField = new FocusNode();
   AdminProvider provider;
 
+  int status = 1;
+
   Future<void> _hitApi() async {
     provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text);
+    var request = AddBrandRequest(title: _titleController.text, status: status);
 
     var response = await provider.addQuantity(context, request);
     if (response is APIError) {
@@ -47,9 +52,10 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
 
   Future<void> _hitUpdateBrandApi() async {
     provider.setLoading();
-    var request = AddBrandRequest(title: _titleController.text);
+    var request = AddBrandRequest(title: _titleController.text, status: status);
 
-    var response = await provider.updateQuantity(context, request, widget.brandId);
+    var response =
+    await provider.updateQuantity(context, request, widget.brandId);
     if (response is APIError) {
       showInSnackBar(response.error);
     } else {
@@ -65,6 +71,7 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
   void initState() {
     if (widget.fromBrandScreen) {
       _titleController.text = widget.title;
+      status = widget.status;
       setState(() {});
     }
     super.initState();
@@ -79,8 +86,8 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
           Scaffold(
             key: _scaffoldKeys,
             appBar: AppBar(
-              title:
-                  Text(widget.fromBrandScreen ? "Update Quantity" : "Add Quantity"),
+              title: Text(
+                  widget.fromBrandScreen ? "Update Quantity" : "Add Quantity"),
               centerTitle: true,
             ),
             body: SingleChildScrollView(
@@ -100,8 +107,32 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
                         focusNodeCurrent: _titleField,
                         enablefield: true,
                         controller: _titleController,
-                        validators: (val) => emptyValidator(
-                            value: val, txtMsg: "Please enter brand title."),
+                        validators: (val) =>
+                            emptyValidator(
+                                value: val,
+                                txtMsg: "Please enter brand title."),
+                      ),
+                      getSpacer(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Manage Status"),
+                          ToggleWidget(
+                            activeBgColor: Colors.green,
+                            activeTextColor: Colors.white,
+                            inactiveBgColor: Colors.white,
+                            inactiveTextColor: Colors.black,
+                            labels: [
+                              'INACTIVE',
+                              'ACTIVE',
+                            ],
+                            initialLabel: status,
+                            onToggle: (index) {
+                              print("Index $index");
+                              status = index;
+                            },
+                          ),
+                        ],
                       ),
                       getSpacer(height: 20),
                       Container(
@@ -125,7 +156,8 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
                           color: AppColors.kPrimaryBlue,
                           textColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(4))),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(4))),
                         ),
                       ),
                     ],

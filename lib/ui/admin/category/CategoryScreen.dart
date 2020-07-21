@@ -9,7 +9,6 @@ import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
-import 'file:///D:/Workspace/ngmart_flutter/lib/model/admin/brand/BrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
@@ -131,6 +130,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
               itemBuilder: (BuildContext context, int index) {
+                String status =dataInner[index].status==1?"Active":"In Active";
                 return InkWell(
                   onTap: () {},
                   child: Slidable(
@@ -158,7 +158,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         title: Text(dataInner[index].title),
                         subtitle: Text(dataInner[index].category != null
                             ? 'Parent Category: ${dataInner[index].category.title}'
-                            : "Status: ${dataInner[index].status}"),
+                            : "Status: $status"),
                       ),
                     ),
                     secondaryActions: <Widget>[

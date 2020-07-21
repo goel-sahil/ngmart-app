@@ -39,5 +39,6 @@ class APIs {
   static const String products = "$baseUrl/admin/products/list";
   static const String product = "$baseUrl/admin/products";
   static const String addBrand = "$baseUrl/admin/brands";
+  static const String adminOrders = "$baseUrl/admin/orders";
 
 }

@@ -14,6 +14,7 @@ import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CategoryModel.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/ToggleWidget.dart';
 import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -42,6 +43,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final picker = ImagePicker();
   File _image;
 
+  int status = 1;
+
   @override
   void initState() {
     if (widget.fromCategoryScreen) {
@@ -49,6 +52,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       if (widget.dataCategory.category != null) {
         _categoryController.text = widget.dataCategory.category.title;
       }
+      status = widget.dataCategory.status;
       setState(() {});
     }
     super.initState();
@@ -162,6 +166,28 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         ),
                       ),
                       getSpacer(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Manage Status"),
+                          ToggleWidget(
+                            activeBgColor: Colors.green,
+                            activeTextColor: Colors.white,
+                            inactiveBgColor: Colors.white,
+                            inactiveTextColor: Colors.black,
+                            labels: [
+                              'INACTIVE',
+                              'ACTIVE',
+                            ],
+                            initialLabel: status,
+                            onToggle: (index) {
+                              print("Index $index");
+                              status = index;
+                            },
+                          ),
+                        ],
+                      ),
+                      getSpacer(height: 20),
                       Container(
                         width: getScreenSize(context: context).width,
                         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -246,7 +272,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
       request.fields['title'] = _titleController.text;
       request.fields['category_id'] = catId;
-      request.fields['status'] = "1";
+      request.fields['status'] = status.toString();
 
       request.files.add(new http.MultipartFile.fromBytes(
         "image",
@@ -256,7 +282,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     } else {
       request.fields['title'] = _titleController.text;
       request.fields['category_id'] = catId;
-      request.fields['status'] = "1";
+      request.fields['status'] = status.toString();
     }
 
     print("${request.fields.toString()}");

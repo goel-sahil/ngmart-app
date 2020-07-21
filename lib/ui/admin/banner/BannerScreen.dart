@@ -76,7 +76,7 @@ class _BannerScreenState extends State<BannerScreen> {
       _currentPageNumber = 1;
     }
 
-    var response = await adminProvider.getBanners(context,_currentPageNumber);
+    var response = await adminProvider.getBanners(context, _currentPageNumber);
     if (response is APIError) {
     } else if (response is BannerResponse) {
       if (_currentPageNumber == 1) {
@@ -129,6 +129,8 @@ class _BannerScreenState extends State<BannerScreen> {
               controller: scrollController,
               physics: ScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
+                String status =
+                    dataInner[index].status == 1 ? "Active" : "In Active";
                 return InkWell(
                   onTap: () {},
                   child: Slidable(
@@ -138,24 +140,23 @@ class _BannerScreenState extends State<BannerScreen> {
                       color: Colors.white,
                       child: ListTile(
                         leading: InkWell(
-                          onTap: (){
+                          onTap: () {
                             Navigator.of(context)
                                 .push(new MaterialPageRoute<Null>(
-                                builder: (BuildContext context) {
-                                  return new FullScreenImage(
-                                    imageSrc: dataInner[index].imageUrl,
-                                  );
-                                },
-                                fullscreenDialog: true));
+                                    builder: (BuildContext context) {
+                                      return new FullScreenImage(
+                                        imageSrc: dataInner[index].imageUrl,
+                                      );
+                                    },
+                                    fullscreenDialog: true));
                           },
                           child: CircleAvatar(
                               backgroundColor: Colors.white,
                               backgroundImage:
-                              NetworkImage("${dataInner[index].imageUrl}")
-                          ),
+                                  NetworkImage("${dataInner[index].imageUrl}")),
                         ),
                         title: Text(dataInner[index].title),
-                        subtitle: Text('Status: ${dataInner[index].status}'),
+                        subtitle: Text('Status: $status'),
                       ),
                     ),
                     secondaryActions: <Widget>[
@@ -171,8 +172,9 @@ class _BannerScreenState extends State<BannerScreen> {
                                         title: dataInner[index].title,
                                         fromBrandScreen: true,
                                         brandId: dataInner[index].id,
+                                        status: dataInner[index].status,
                                       )));
-                          if (isUpdated!=null&&isUpdated) {
+                          if (isUpdated != null && isUpdated) {
                             _currentPageNumber = 1;
                             _hitApi();
                           }
