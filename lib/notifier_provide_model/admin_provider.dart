@@ -12,6 +12,7 @@ import 'package:ngmartflutter/model/admin/brand/AdminBrandList.dart';
 import 'package:ngmartflutter/model/admin/brand/BrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
+import 'package:ngmartflutter/model/admin/order/OrderStatusRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/model/admin/order/AdminOrderResponse.dart';
@@ -96,17 +97,14 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> getOrders(BuildContext context, int currentPageNumber) async {
+  Future<dynamic> getOrders(BuildContext context, String url) async {
+    print("Url==> $url");
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
     print("Token==> ${MemoryManagement.getAccessToken()}");
-
-    var url;
-
-    url = "${APIs.adminOrders}?page=$currentPageNumber";
     var response = await APIHandler.get(
         context: context, url: url, additionalHeaders: headers);
 
@@ -270,6 +268,32 @@ class AdminProvider with ChangeNotifier {
     var response = await APIHandler.delete(
         context: context,
         url: "${APIs.getBrands}/$id",
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> updateOrderStatus(BuildContext context, int id,
+      OrderStatusRequest orderStatusequest) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.put(
+        context: context,
+        url: "${APIs.adminOrders}/$id",
+        requestBody: orderStatusequest,
         additionalHeaders: headers);
 
     hideLoader();

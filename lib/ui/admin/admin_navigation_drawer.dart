@@ -94,9 +94,9 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         showAddIcon = true;
       } else if (index == 5) {
         //show setting
-        _title = "Cms Pages";
+        _title = "Orders";
         _pageController.jumpToPage(5);
-        showAddIcon = true;
+        showAddIcon = false;
       } else if (index == 6) {
         //show setting
         _title = "Settings";

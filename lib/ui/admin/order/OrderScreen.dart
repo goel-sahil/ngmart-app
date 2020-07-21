@@ -1,13 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/Const.dart';
+import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/order/AdminOrderResponse.dart';
+import 'package:ngmartflutter/model/admin/order/OrderStatusRequest.dart';
 import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
@@ -40,7 +42,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     _setScrollListener();
     _currentPageNumber = 1;
     Timer(Duration(milliseconds: 500), () {
-      _hitApi();
+      _hitApi(isFilter: false);
     });
     super.initState();
   }
@@ -53,14 +55,14 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
         if (dataList.length >= (PAGINATION_SIZE * _currentPageNumber) &&
             _loadMore) {
           isPullToRefresh = true;
-          _hitApi();
+          _hitApi(isFilter: false);
           showInSnackBar("Loading data...");
         }
       }
     });
   }
 
-  Future<void> _hitApi() async {
+  Future<void> _hitApi({@required bool isFilter}) async {
     bool isConnected = await isConnectedToInternet();
     if (!isConnected) {
       showAlertDialog(
@@ -79,7 +81,15 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
       _currentPageNumber = 1;
     }
 
-    var response = await adminProvider.getOrders(context, _currentPageNumber);
+    var url = "";
+    if (isFilter) {
+      url =
+          "${APIs.adminOrders}?start_date=${_dateFromController.text}&end_date=${_dateToController.text}&page=$_currentPageNumber";
+    } else {
+      url = "${APIs.adminOrders}?page=$_currentPageNumber";
+    }
+
+    var response = await adminProvider.getOrders(context, url);
     if (response is APIError) {
     } else if (response is AdminOrderResponse) {
       if (_currentPageNumber == 1) {
@@ -95,6 +105,26 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     }
   }
 
+  _hitOrderStatusApi({int id, int position, int status}) async {
+    bool isConnected = await isConnectedToInternet();
+    if (!isConnected) {
+      showAlertDialog(
+          context: context, title: "Error", message: Messages.noInternetError);
+      return;
+    }
+    adminProvider.setLoading();
+    var orderStatusequest = OrderStatusRequest(status: status);
+    var response =
+        await adminProvider.updateOrderStatus(context, id, orderStatusequest);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+      showInSnackBar(response.message);
+      dataList[position].status = status;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     adminProvider = Provider.of<AdminProvider>(context);
@@ -106,7 +136,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
             onRefresh: () async {
               isPullToRefresh = true;
               _loadMore = false;
-              await _hitApi();
+              await _hitApi(isFilter: false);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -132,39 +162,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                           status = "Delivered";
                         }
 
-                        return buildItem(
-                            dataList[index], status, dataList[index].status);
-                        /*InkWell(
-                          onTap: () {},
-                          child: Slidable(
-                            actionPane: SlidableDrawerActionPane(),
-                            actionExtentRatio: 0.25,
-                            child: Container(
-                              color: Colors.white,
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.green,
-                                  child: Text(
-                                      dataList[index].id.toString() ?? "A"),
-                                  foregroundColor: Colors.white,
-                                ),
-                                title: Text("Order id ${dataList[index].id}"),
-                                subtitle: Text('Status: $status'),
-                              ),
-                            ),
-                            secondaryActions: <Widget>[
-                              IconSlideAction(
-                                caption: 'Delete',
-                                color: Colors.red,
-                                icon: Icons.delete,
-                                onTap: () {
-//                          _hitDeleteBrandApi(
-//                              id: dataInner[index].id, position: index);
-                                },
-                              ),
-                            ],
-                          ),
-                        );*/
+                        return buildItem(dataList[index], status,
+                            dataList[index].status, index);
                       },
                     ),
                   ),
@@ -187,7 +186,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     );
   }
 
-  buildItem(DataInner dataList, String status, int intStatus) {
+  buildItem(DataInner dataList, String status, int intStatus, int position) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
@@ -195,7 +194,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
         children: <Widget>[
           getSpacer(height: 10),
           Row(
-//          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               getSpacer(width: 10),
               CircleAvatar(
@@ -225,8 +223,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                 color: Colors.green,
                 icon: FontAwesomeIcons.check,
                 onTap: () {
-//            _hitDeleteBrandApi(
-//                id: dataInner[index].id, position: index);
+                  _hitOrderStatusApi(
+                      id: dataList.id, position: position, status: 1);
                 },
               )
             : Container(),
@@ -237,23 +235,23 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                 closeOnTap: true,
                 icon: Icons.delete,
                 onTap: () {
-//            _hitDeleteBrandApi(
-//                id: dataInner[index].id, position: index);
+                  _hitOrderStatusApi(
+                      id: dataList.id, position: position, status: 2);
                 },
               )
             : Container(),
         intStatus == 1
             ? IconSlideAction(
                 caption: 'Cancel',
-                color: Colors.grey,
+                color: Colors.red,
                 closeOnTap: true,
                 icon: Icons.delete,
                 onTap: () {
-//            _hitDeleteBrandApi(
-//                id: dataInner[index].id, position: index);
+                  _hitOrderStatusApi(
+                      id: dataList.id, position: position, status: 3);
                 },
               )
-            : null
+            : Container()
       ],
     );
   }
@@ -312,7 +310,9 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
           onPressed: () {
             if (_dateFromController.text.isNotEmpty &&
                 _dateToController.text.isNotEmpty) {
-              //_getTransactionsWithFilter();
+              _currentPageNumber = 1;
+              _loadMore=false;
+              _hitApi(isFilter: true);
             } else {
               showInSnackBar("Date from and date to should not be empty.");
             }
@@ -326,7 +326,9 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
           onPressed: () {
             _dateFromController.clear();
             _dateToController.clear();
-            // _getTransactions();
+            _currentPageNumber = 1;
+            _loadMore=false;
+            _hitApi(isFilter: false);
           },
         ),
         SizedBox(
