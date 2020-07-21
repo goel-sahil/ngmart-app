@@ -8,6 +8,7 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/ui/admin/banner/AddBannerScreen.dart';
 import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
 import 'package:ngmartflutter/ui/admin/product/AddProductScreen.dart';
 import 'package:ngmartflutter/ui/admin/product/ProductList.dart';
@@ -50,7 +51,8 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
       userInfo = LoginResponse.fromJson(infoData);
     }
     drawerItems.add(DrawerItem("Brands", FontAwesomeIcons.meetup));
-    drawerItems.add(DrawerItem("Quantity Units", FontAwesomeIcons.sortAmountUp));
+    drawerItems
+        .add(DrawerItem("Quantity Units", FontAwesomeIcons.sortAmountUp));
     drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
     drawerItems.add(DrawerItem("Products", FontAwesomeIcons.th));
     drawerItems.add(DrawerItem("Banners", FontAwesomeIcons.history));
@@ -170,6 +172,13 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => AddProductScreen(
+                                        fromProductScreen: false,
+                                      )));
+                        } else if (_pageController.page == 4) {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => AddBannerScreen(
                                         fromProductScreen: false,
                                       )));
                         }
