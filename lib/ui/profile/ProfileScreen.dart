@@ -15,6 +15,8 @@ import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
+  var fromAdmin;
+  ProfileScreen({this.fromAdmin});
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -102,11 +104,11 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     _lastNameController.text="${response.data.user.lastName}";
     _emailController.text="${response.data.user.email}";
     _mobileNumberController.text="${response.data.user.phoneNumber}";
-    _addressController.text="${response.data.user.userAddresses.first.address}";
-    _cityController.text="${response.data.user.userAddresses.first.city}";
-    _stateController.text="${response.data.user.userAddresses.first.state}";
-    _countryController.text="${response.data.user.userAddresses.first.country}";
-    _pinCodeController.text="${response.data.user.userAddresses.first.pinCode}";
+//    _addressController.text="${response.data.user.userAddresses.first.address}";
+//    _cityController.text="${response.data.user.userAddresses.first.city}";
+//    _stateController.text="${response.data.user.userAddresses.first.state}";
+//    _countryController.text="${response.data.user.userAddresses.first.country}";
+//    _pinCodeController.text="${response.data.user.userAddresses.first.pinCode}";
   }
 
   @override
@@ -115,6 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKeys,
+        appBar: widget.fromAdmin?AppBar(centerTitle: true,title: Text("My Profile"),):null,
         body: Stack(
           children: <Widget>[
             SingleChildScrollView(

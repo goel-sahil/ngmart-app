@@ -225,7 +225,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
             controller: _pageController,
             children: <Widget>[
               HomeScreen(),
-              ProfileScreen(),
+              ProfileScreen(fromAdmin: false,),
               CartPage(
                 fromNavigationDrawer: true,
               ),

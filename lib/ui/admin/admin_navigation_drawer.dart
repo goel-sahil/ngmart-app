@@ -15,6 +15,7 @@ import 'package:ngmartflutter/ui/admin/product/ProductList.dart';
 import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
 import 'package:ngmartflutter/ui/admin/order/OrderScreen.dart';
 import 'package:ngmartflutter/ui/admin/quantity/QuantiityScreen.dart';
+import 'package:ngmartflutter/ui/admin/settings/AdminSetting.dart';
 import 'package:ngmartflutter/ui/drawer/drawer_item.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:ngmartflutter/ui/settings/setting.dart';
@@ -247,7 +248,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               ProductScreen(),
               BannerScreen(),
               AdminOrdersScreen(),
-              Setting(),
+              AdminSettingScreen(),
               CommingSoonScreen(),
             ],
             physics: NeverScrollableScrollPhysics()),
