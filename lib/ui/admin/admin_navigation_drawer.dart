@@ -32,11 +32,11 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   final _pageController = PageController();
   int _selectionIndex = 0;
   bool _isLoggedIn = false;
-  bool showAddIcon = false;
+  bool showAddIcon = true;
   var drawerItems = new List();
   LoginResponse userInfo;
   Widget _body;
-  String _title = "NGMart";
+  String _title = "Brands";
   DateTime currentBackPressTime;
 
   @override
@@ -49,9 +49,8 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
       var infoData = jsonDecode(MemoryManagement.getUserInfo());
       userInfo = LoginResponse.fromJson(infoData);
     }
-    drawerItems.add(DrawerItem("Dashboard", FontAwesomeIcons.tachometerAlt));
     drawerItems.add(DrawerItem("Brands", FontAwesomeIcons.meetup));
-    drawerItems.add(DrawerItem("Quantity", FontAwesomeIcons.sortAmountUp));
+    drawerItems.add(DrawerItem("Quantity Units", FontAwesomeIcons.sortAmountUp));
     drawerItems.add(DrawerItem("Category", FontAwesomeIcons.bars));
     drawerItems.add(DrawerItem("Products", FontAwesomeIcons.th));
     drawerItems.add(DrawerItem("Banners", FontAwesomeIcons.history));
@@ -66,47 +65,43 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     Navigator.pop(context);
     if (_isLoggedIn) {
       if (index == 0) {
-        _title = "Dashboard";
+        //show profile
         _pageController.jumpToPage(0);
-        showAddIcon = false;
+        _title = "Brands";
+        showAddIcon = true;
       } else if (index == 1) {
         //show profile
         _pageController.jumpToPage(1);
-        _title = "Brands";
-        showAddIcon = true;
-      } else if (index == 2) {
-        //show profile
-        _pageController.jumpToPage(2);
         _title = "Quantity Units";
         showAddIcon = true;
-      } else if (index == 3) {
+      } else if (index == 2) {
         //show cart
-        _pageController.jumpToPage(3);
+        _pageController.jumpToPage(2);
         _title = "Category";
         showAddIcon = true;
-      } else if (index == 4) {
+      } else if (index == 3) {
         //show purchi
         _title = "Product";
+        _pageController.jumpToPage(3);
+        showAddIcon = true;
+      } else if (index == 4) {
+        //show order history
+        _title = "Banners";
         _pageController.jumpToPage(4);
         showAddIcon = true;
       } else if (index == 5) {
-        //show order history
-        _title = "Banners";
+        //show setting
+        _title = "Cms Pages";
         _pageController.jumpToPage(5);
         showAddIcon = true;
       } else if (index == 6) {
         //show setting
-        _title = "Cms Pages";
-        _pageController.jumpToPage(6);
-        showAddIcon = true;
-      } else if (index == 7) {
-        //show setting
         _title = "Settings";
-        _pageController.jumpToPage(7);
+        _pageController.jumpToPage(6);
         showAddIcon = false;
-      } else if (index == 8) {
+      } else if (index == 7) {
         onLogoutSuccess(context: context);
-        _pageController.jumpToPage(8);
+        _pageController.jumpToPage(7);
       }
     }
 
@@ -133,7 +128,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_title ?? "Dashboard"),
+        title: Text(_title ?? "Brands"),
         centerTitle: true,
         actions: <Widget>[
           Padding(
@@ -142,7 +137,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                   ? IconButton(
                       icon: Icon(Icons.add),
                       onPressed: () async {
-                        if (_pageController.page == 1) {
+                        if (_pageController.page == 0) {
                           Navigator.push(
                               context,
                               CupertinoPageRoute(
@@ -151,7 +146,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                         title: "",
                                         brandId: 1,
                                       )));
-                        } else if (_pageController.page == 2) {
+                        } else if (_pageController.page == 1) {
                           Navigator.push(
                               context,
                               CupertinoPageRoute(
@@ -160,7 +155,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                         title: "",
                                         brandId: 1,
                                       )));
-                        } else if (_pageController.page == 3) {
+                        } else if (_pageController.page == 2) {
                           bool isWOrkDone = await Navigator.push(
                               context,
                               CupertinoPageRoute(
@@ -168,9 +163,9 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                         fromCategoryScreen: false,
                                       )));
                           if (isWOrkDone != null && isWOrkDone) {
-                            _pageController.jumpToPage(3);
+                            _pageController.jumpToPage(2);
                           }
-                        } else if (_pageController.page == 4) {
+                        } else if (_pageController.page == 3) {
                           Navigator.push(
                               context,
                               CupertinoPageRoute(
@@ -236,7 +231,6 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         child: PageView(
             controller: _pageController,
             children: <Widget>[
-              CommingSoonScreen(),
               BrandScreen(),
               QuantityScreen(),
               CategoryScreen(),
@@ -255,7 +249,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     DateTime now = DateTime.now();
     if (_pageController.page != 0) {
       _pageController.jumpToPage(0);
-      _title = "NGMart";
+      _title = "Brands";
       setState(() {});
       return Future.value(false);
     } else if (currentBackPressTime == null ||

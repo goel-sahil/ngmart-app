@@ -100,6 +100,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
+    adminProvider.setLoading();
+
     var response = await adminProvider.deleteCategory(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);

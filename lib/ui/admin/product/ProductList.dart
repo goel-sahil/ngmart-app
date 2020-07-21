@@ -99,6 +99,8 @@ class _ProductScreenState extends State<ProductScreen> {
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
+    provider.setLoading();
+
     var response = await provider.deleteProduct(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);
@@ -125,32 +127,36 @@ class _ProductScreenState extends State<ProductScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: <Widget>[
-                      new TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          _loadMore = false;
-                          _hitApi(text: value, fromSearch: true);
-                        },
-                        decoration: new InputDecoration(
-                            border: new OutlineInputBorder(
-                                borderSide: new BorderSide(
-                                    color: AppColors.kPrimaryBlue)),
-                            hintText: 'Search for product',
-                            labelText: 'Search for product',
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: AppColors.kPrimaryBlue,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                _searchController.clear();
-                                productList.clear();
-                                setState(() {});
-                                _currentPageNumber = 1;
-                                _hitApi();
-                              },
-                              icon: Icon(Icons.clear),
-                            )),
+                      Container(
+                        width: getScreenSize(context: context).height,
+                        height: 50,
+                        child: new TextField(
+                          controller: _searchController,
+                          onChanged: (value) {
+                            _loadMore = false;
+                            _hitApi(text: value, fromSearch: true);
+                          },
+                          decoration: new InputDecoration(
+                              border: new OutlineInputBorder(
+                                  borderSide: new BorderSide(
+                                      color: AppColors.kPrimaryBlue)),
+                              hintText: 'Search for product',
+                              labelText: 'Search for product',
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: AppColors.kPrimaryBlue,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  _searchController.clear();
+                                  productList.clear();
+                                  setState(() {});
+                                  _currentPageNumber = 1;
+                                  _hitApi();
+                                },
+                                icon: Icon(Icons.clear),
+                              )),
+                        ),
                       ),
                       Expanded(
                         child: ListView.builder(
@@ -210,10 +216,10 @@ class _ProductScreenState extends State<ProductScreen> {
                   context,
                   CupertinoPageRoute(
                       builder: (context) => AddProductScreen(
-                        fromProductScreen: true,
-                        adminProductItem: productList,
-                      )));
-              if (isUpdated!=null&&isUpdated) {
+                            fromProductScreen: true,
+                            adminProductItem: productList,
+                          )));
+              if (isUpdated != null && isUpdated) {
                 _currentPageNumber = 1;
                 _hitApi();
               }

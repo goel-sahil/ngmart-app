@@ -97,6 +97,7 @@ class _BrandScreenState extends State<BrandScreen> {
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
+    adminProvider.setLoading();
     var response = await adminProvider.deleteBrand(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);

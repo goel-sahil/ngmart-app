@@ -98,6 +98,7 @@ class _QuantityScreenState extends State<QuantityScreen> {
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
+    adminProvider.setLoading();
     var response = await adminProvider.deleteQuantity(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);

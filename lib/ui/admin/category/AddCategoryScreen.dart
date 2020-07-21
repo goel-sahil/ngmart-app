@@ -1,30 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
-import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
-import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CategoryModel.dart';
-import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
-import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
-import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class AddCategoryScreen extends StatefulWidget {
   var fromCategoryScreen;
@@ -44,7 +36,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   FocusNode _titleField = new FocusNode();
   FocusNode _categoryField = new FocusNode();
   AdminProvider provider;
-  String catId="";
+  String catId = "";
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
@@ -160,7 +152,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         },
                         child: getTextFieldWithoutValidation(
                           context: context,
-                          labelText: "Category Id",
+                          labelText: "Category",
                           obsectextType: false,
                           textType: TextInputType.text,
                           focusNodeNext: _categoryField,

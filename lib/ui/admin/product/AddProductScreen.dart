@@ -187,7 +187,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         },
                         child: getTextFieldWithoutValidation(
                           context: context,
-                          labelText: "Category Id",
+                          labelText: "Category",
                           obsectextType: false,
                           textType: TextInputType.text,
                           focusNodeNext: _categoryField,
@@ -210,7 +210,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         },
                         child: getTextFieldWithoutValidation(
                           context: context,
-                          labelText: "Brand Id",
+                          labelText: "Brand",
                           obsectextType: false,
                           textType: TextInputType.text,
                           focusNodeNext: _brandField,
