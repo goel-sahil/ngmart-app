@@ -28,6 +28,7 @@ class APIs {
   static const String orderByParchi = "$baseUrl/order-by-parchi";
   static const String banners = "$baseUrl/banners";
   static const String notification = "$baseUrl/notifications";
+  static const String token = "$baseUrl/device-token";
   static const String getNotifications = "$baseUrl/notifications";
 
   //admin

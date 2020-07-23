@@ -1,13 +1,23 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
+import 'package:ngmartflutter/helper/Const.dart';
+import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/DeviceTokenRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
 import 'package:ngmartflutter/ui/contactUs/Contact_us.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
@@ -17,6 +27,8 @@ import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
 import 'package:ngmartflutter/ui/profile/ProfileScreen.dart';
 import 'package:ngmartflutter/ui/search/SearchPage.dart';
 import 'package:ngmartflutter/ui/settings/setting.dart';
+import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 import 'drawer_item.dart';
@@ -35,9 +47,13 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   bool showNotification = true;
   var drawerItems = new List();
   LoginResponse userInfo;
-  Widget _body;
   String _title = "NGMart";
   DateTime currentBackPressTime;
+  FirebaseMessaging _firebaseMessaging;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  DashboardProvider provider;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _initialized = false;
 
   _onSelectItem(int index) {
     Navigator.pop(context);
@@ -46,7 +62,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         _title = "NGMart";
         _pageController.jumpToPage(0);
         showSearch = false;
-        showNotification = false;
+        showNotification = true;
       } else if (index == 1) {
         //show profile
         _pageController.jumpToPage(1);
@@ -119,10 +135,27 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     });
   }
 
+  Future<void> init() async {
+    if (!_initialized) {
+      // For iOS request permission first.
+      _firebaseMessaging.requestNotificationPermissions();
+      _firebaseMessaging.configure();
+
+      // For testing purposes print the Firebase Messaging token
+      String token = await _firebaseMessaging.getToken();
+      print("FirebaseMessaging token: $token");
+
+      _initialized = true;
+    }
+  }
+
   @override
   void initState() {
-    _body = HomeScreen();
     MemoryManagement.init();
+    _firebaseMessaging = FirebaseMessaging();
+    _initPushNotification();
+    configurePushNotification();
+    printPackage();
     _isLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
     print("Logged In===> $_isLoggedIn");
     if (_isLoggedIn) {
@@ -147,8 +180,156 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     super.initState();
   }
 
+  void configurePushNotification() {
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        String body = message['notification']['body']?.toString();
+        String title = message['notification']['title']?.toString();
+        print("body==> $body");
+        showNotificationBar(title, body, message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        String payload = message['data']['type'];
+
+        moveToScreenFromPush(int.tryParse(payload));
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        int type = int.tryParse(message["data"]["type"]);
+        moveToScreenFromPush(type);
+      },
+    );
+
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      //printt("Settings registered: $settings");
+    });
+    _firebaseMessaging.getToken().then((String token) {
+      //printt("DevToken   $token");
+      if (token != null) {
+        setDeviceToken(token);
+        // updateTokenToFirebase(token); //save to firebase
+      }
+    });
+  }
+
+  void setDeviceToken(String token) async {
+    bool isConnected = await isConnectedToInternet();
+    if (!isConnected) {
+      showAlertDialog(
+          context: context, title: "Error", message: Messages.noInternetError);
+      return;
+    }
+    print("SET TOKEN==> $token");
+    if (isConnected) {
+      updateToken(token: token);
+    }
+  }
+
+  void updateToken({String token}) async {
+    provider.setLoading();
+    DeviceTokenResponse request = DeviceTokenResponse(deviceToken: token);
+    var response = await provider.updateToken(context, request);
+    if (response != null && (response is CommonResponse)) {
+      print(response.message);
+      showInSnackBar(response.message);
+    } else {
+      APIError apiError = response;
+      showInSnackBar(apiError.error);
+    }
+  }
+
+  void _initPushNotification() async {
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  void showNotificationBar(
+      String title, String body, Map<String, dynamic> data) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+        new AndroidNotificationDetails(
+            'your channel id', 'your channel name', 'your channel description');
+    IOSNotificationDetails iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+//    int type = int.tryParse(data["data"]["type"]);
+    await flutterLocalNotificationsPlugin.show(
+        100, title, body, platformChannelSpecifics,
+        payload: 1.toString());
+  }
+
+  Future onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {
+    // display a dialog with the notification details, tap ok to go to another page
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text('Ok'),
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  //screen redirection for chat
+  moveToScreenFromPush(int type) {
+    print("Type==> $type");
+//    switch ((type)) {
+//      case APPLIED_TO_LENDER_POST:
+//        movetoBorrowScreen(0);
+//        break;
+//      case LENDER_ACCEPT_REQUEST:
+//        movetoBorrowScreen(0);
+//        break;
+//      case LENDER_REJECT_REQUSET:
+//        movetoBorrowScreen(0);
+//        break;
+//      case LENDER_ACCEPT_HIS_POST_REQUEST:
+//        movetoBorrowScreen(0);
+//        break;
+//      case LENDER_REJECT_HIS_POST_REQUEST:
+//        movetoBorrowScreen(0);
+//        break;
+//      case COMPANY_ACCEPT_REQUEST:
+//        movetoBorrowScreen(1);
+//        break;
+//      case COMPANY_REJECT_REQUEST:
+//        movetoBorrowScreen(0);
+//        break;
+//      case LOAN_FUNDED:
+//      case LOAN_PAID_OFF:
+//      case LOAN_DEFAULTED:
+//        movetoBorrowScreen(1);
+//        break;
+//      case CHAT_MESSAGE:
+//        _moveToChatList();
+//
+//        break;
+//    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<DashboardProvider>(context);
     List<Widget> drawerOptions = [];
     for (var i = 0; i < drawerItems.length; i++) {
       var d = drawerItems[i];
@@ -164,6 +345,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     }
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(_title ?? "NGMart"),
         centerTitle: true,
@@ -187,10 +369,15 @@ class _NavigationDrawerState extends State<NavigationDrawer>
                   child: IconButton(
                       icon: Icon(Icons.notifications),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => NotificationScreen()));
+                        if (!_isLoggedIn) {
+                          Navigator.of(context).push(new CupertinoPageRoute(
+                              builder: (context) => Login()));
+                        } else {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => NotificationScreen()));
+                        }
                       }))
               : Container()
         ],
@@ -288,7 +475,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   _setSelectedZero() {
     _title = "NGMart";
     _pageController.jumpToPage(0);
-    showSearch = true;
+    showNotification = true;
     setState(() {
       _selectionIndex = 0;
     });
@@ -317,4 +504,87 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       ],
     ),
   );
+
+  Future<void> updateTokenToFirebase(String token) async {
+    await handleSignIn(); //annonymous login
+    var platForm = "IOS";
+    if (Platform.isAndroid) {
+      platForm = "ANDROID";
+    }
+
+    var userName = "";
+    var userId = "";
+
+    try {
+      if (MemoryManagement.getUserInfo() != null) {
+        var infoData = jsonDecode(MemoryManagement.getUserInfo());
+        var userinfo = LoginResponse.fromJson(infoData);
+        userName =
+            userinfo.data.user.firstName + " " + userinfo.data.user.lastName;
+        userId = userinfo.data.user.id.toString();
+      }
+    } catch (ex) {
+      return null;
+    }
+    //TODO: Update token
+    updateToken(token: token);
+  }
+
+  Future<void> handleSignIn() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    await _auth.signInAnonymously();
+  }
+
+  Future onSelectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+      moveToScreenFromPush(int.tryParse(payload)); //when click in push
+    }
+  }
+
+  void showInSnackBar(String value) {
+    _scaffoldKey.currentState
+        .showSnackBar(new SnackBar(content: new Text(value)));
+  }
+
+  printPackage() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+    print("appName===>$appName");
+    print("packageName===>$packageName");
+    print("version===>$version");
+    print("buildNumber===>$buildNumber");
+  }
+
+//  Future<bool> updateDeviceToken(
+//      {
+//        String deviceToken,
+//        String userId,
+//        @required String deviceType,
+//        @required String userName}) async {
+//
+//    String deviceid = MemoryManagement.getuserId();
+//
+//    var document =
+//    Firestore.instance.collection(FCM_DEVICE_TOKEN).document(userId);
+//
+//    var documentDevices = Firestore.instance
+//        .collection(FCM_DEVICE_TOKEN)
+//        .document(userId)
+//        .collection(DEVICES)
+//        .document(deviceid);
+//
+//    //save document to collection
+//    await document.setData(
+//        {"deviceType": deviceType, "userId": userId, "userName": userName});
+//    //save token to devices
+//    await documentDevices.setData({
+//      "fcmTokenId": deviceToken,
+//    });
+//
+//    return true;
+//  }
 }

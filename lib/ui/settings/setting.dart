@@ -75,41 +75,45 @@ class _SettingState extends State<Setting> {
             child: Container(
               child: new Column(
                 children: <Widget>[
-                  Container(
-                    margin:
-                        new EdgeInsets.only(left: 30.0, right: 20.0, top: 10.0),
-                    child: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new Text(
-                          "Push Notification",
-                          style: new TextStyle(
-                              color: AppColors.kAppBlack,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.0),
-                        ),
-                        Switch(
-                          value: isSwitched != null ? isSwitched : false,
-                          onChanged: (value) {
-                            setState(() {
-                              isSwitched = value;
-                              notificationApi();
-                            });
-                          },
-                          activeTrackColor: AppColors.kPrimaryBlue,
-                          activeColor: AppColors.kPrimaryBlue,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: new EdgeInsets.symmetric(horizontal: 30),
-                    child: new Container(
-                      height: 1.0,
-                      color: Colors.black45,
-                      margin: new EdgeInsets.only(top: 10.0),
-                    ),
-                  ),
+                  isLoggedIn
+                      ? Container(
+                          margin: new EdgeInsets.only(
+                              left: 30.0, right: 20.0, top: 10.0),
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Text(
+                                "Push Notification",
+                                style: new TextStyle(
+                                    color: AppColors.kAppBlack,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17.0),
+                              ),
+                              Switch(
+                                value: isSwitched != null ? isSwitched : false,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isSwitched = value;
+                                    notificationApi();
+                                  });
+                                },
+                                activeTrackColor: AppColors.kPrimaryBlue,
+                                activeColor: AppColors.kPrimaryBlue,
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(),
+                  isLoggedIn
+                      ? Padding(
+                          padding: new EdgeInsets.symmetric(horizontal: 30),
+                          child: new Container(
+                            height: 1.0,
+                            color: Colors.black45,
+                            margin: new EdgeInsets.only(top: 10.0),
+                          ),
+                        )
+                      : Container(),
                   getView("Review Us", 1),
                   getView("Rate Our App", 2),
                   isLoggedIn ? getView("Change Mobile Number", 3) : Container(),

@@ -6,6 +6,7 @@ import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/DeviceTokenRequest.dart';
 import 'package:ngmartflutter/model/NotificationResponse.dart';
 import 'package:ngmartflutter/model/bannerResponse/bannerResponse.dart';
 import 'package:ngmartflutter/model/cart/AddToCartRequest.dart';
@@ -344,6 +345,31 @@ class DashboardProvider with ChangeNotifier {
     };
     var response = await APIHandler.post(
         context: context, url: APIs.notification, additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> updateToken(
+      BuildContext context, DeviceTokenResponse request) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    MemoryManagement.init();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.token,
+        additionalHeaders: headers,
+        requestBody: request);
     hideLoader();
     if (response is APIError) {
       completer.complete(response);
