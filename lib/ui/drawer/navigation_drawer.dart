@@ -11,6 +11,7 @@ import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
 import 'package:ngmartflutter/ui/contactUs/Contact_us.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
+import 'package:ngmartflutter/ui/notification/NotificationScreen.dart';
 import 'package:ngmartflutter/ui/orderByParchi/OrderByParchiScreen.dart';
 import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
 import 'package:ngmartflutter/ui/profile/ProfileScreen.dart';
@@ -30,7 +31,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   final _pageController = PageController();
   int _selectionIndex = 0;
   bool _isLoggedIn = false;
-  bool showSearch = true;
+  bool showSearch = false;
+  bool showNotification = true;
   var drawerItems = new List();
   LoginResponse userInfo;
   Widget _body;
@@ -43,37 +45,44 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       if (index == 0) {
         _title = "NGMart";
         _pageController.jumpToPage(0);
-        showSearch = true;
+        showSearch = false;
+        showNotification = false;
       } else if (index == 1) {
         //show profile
         _pageController.jumpToPage(1);
         _title = "My Profile";
         showSearch = false;
+        showNotification = false;
       } else if (index == 2) {
         //show cart
         _pageController.jumpToPage(2);
         _title = "My Cart";
         showSearch = false;
+        showNotification = false;
       } else if (index == 3) {
         //show purchi
         _title = "Order by Parchi";
         _pageController.jumpToPage(3);
         showSearch = false;
+        showNotification = false;
       } else if (index == 4) {
         //show order history
         _title = "Order History";
         _pageController.jumpToPage(4);
         showSearch = false;
+        showNotification = false;
       } else if (index == 5) {
         //show setting
         _title = "Settings";
         _pageController.jumpToPage(5);
         showSearch = false;
+        showNotification = false;
       } else if (index == 6) {
         //show contact us
         _title = "Contact us";
         _pageController.jumpToPage(6);
         showSearch = false;
+        showNotification = false;
       } else if (index == 7) {
         onLogoutSuccess(context: context);
         _pageController.jumpToPage(7);
@@ -82,22 +91,26 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       if (index == 0) {
         _pageController.jumpToPage(0);
         _title = "NGMart";
-        showSearch = true;
+        showSearch = false;
+        showNotification = true;
       } else if (index == 1) {
         //Show parchi screen
         _title = "Order by Parchi";
         _pageController.jumpToPage(3);
         showSearch = false;
+        showNotification = false;
       } else if (index == 2) {
         //Show Settings
         _title = "Settings";
         _pageController.jumpToPage(5);
         showSearch = false;
+        showNotification = false;
       } else if (index == 3) {
         // Contact us
         _title = "Contact us";
         _pageController.jumpToPage(6);
         showSearch = false;
+        showNotification = false;
       }
     }
 
@@ -167,7 +180,19 @@ class _NavigationDrawerState extends State<NavigationDrawer>
                               builder: (context) => SearchPage()));
                     })
                 : Container(),
-          )
+          ),
+          showNotification
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: IconButton(
+                      icon: Icon(Icons.notifications),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => NotificationScreen()));
+                      }))
+              : Container()
         ],
       ),
       drawer: Drawer(
@@ -225,7 +250,9 @@ class _NavigationDrawerState extends State<NavigationDrawer>
             controller: _pageController,
             children: <Widget>[
               HomeScreen(),
-              ProfileScreen(fromAdmin: false,),
+              ProfileScreen(
+                fromAdmin: false,
+              ),
               CartPage(
                 fromNavigationDrawer: true,
               ),
@@ -258,7 +285,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     return Future.value(true);
   }
 
-  _setSelectedZero(){
+  _setSelectedZero() {
     _title = "NGMart";
     _pageController.jumpToPage(0);
     showSearch = true;
@@ -266,7 +293,6 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       _selectionIndex = 0;
     });
   }
-
 
   Widget toast = Container(
     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),

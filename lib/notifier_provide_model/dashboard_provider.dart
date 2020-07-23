@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:ngmartflutter/Network/APIHandler.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
-import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/NotificationResponse.dart';
 import 'package:ngmartflutter/model/bannerResponse/bannerResponse.dart';
 import 'package:ngmartflutter/model/cart/AddToCartRequest.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
@@ -277,6 +277,79 @@ class DashboardProvider with ChangeNotifier {
     } else {
       print("Response==> $response");
       CmsResponse productResponse = new CmsResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> getNotifications(
+      BuildContext context, int currentPageNumber) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var response = await APIHandler.get(
+        context: context,
+        url: "${APIs.notification}?page=$currentPageNumber",
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      NotificationResponse productResponse =
+          new NotificationResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> deleteNotification(BuildContext context, int id) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    var response = await APIHandler.delete(
+        context: context,
+        url: "${APIs.getNotifications}/$id",
+        additionalHeaders: headers);
+    print("Notification==> ${APIs.getNotifications}");
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> notification(BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    MemoryManagement.init();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.post(
+        context: context, url: APIs.notification, additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;
