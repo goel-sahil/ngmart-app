@@ -81,6 +81,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _categoryController.text = widget.adminProductItem.category.title;
       }
       status = widget.adminProductItem.status;
+      print("Product Update Status==> $status");
       setState(() {});
     }
     super.initState();

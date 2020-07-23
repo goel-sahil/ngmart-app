@@ -221,6 +221,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           )));
               if (isUpdated != null && isUpdated) {
                 _currentPageNumber = 1;
+                _loadMore = false;
                 _hitApi();
               }
             },
