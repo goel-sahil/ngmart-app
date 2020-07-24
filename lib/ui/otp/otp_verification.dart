@@ -377,14 +377,22 @@ class _OtpverificationState extends State<Otpverification> {
       } else {
         CommonResponse commonResponse = response;
         showInSnackBar(commonResponse.message);
-        MemoryManagement.clearMemory();
         Navigator.pushAndRemoveUntil(
           context,
           new CupertinoPageRoute(builder: (BuildContext context) {
-            return new Login();
+            return new NavigationDrawer();
           }),
           (route) => false,
         );
+//        MemoryManagement.clearMemory();
+//        Navigator.pushAndRemoveUntil(
+//          context,
+//          new CupertinoPageRoute(builder: (BuildContext context) {
+//            return new Login();
+//          }),
+//          (route) => false,
+//        );
+
       }
     }
   }
