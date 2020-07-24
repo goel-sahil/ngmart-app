@@ -69,15 +69,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (widget.fromProductScreen) {
       _titleController.text = widget.adminProductItem.title;
       _priceController.text = widget.adminProductItem.price.toString();
-      _quantityController.text = widget.adminProductItem.quantity.toString();
-      _brandController.text = widget.adminProductItem.brand.title;
+      _quantityController.text = widget?.adminProductItem?.quantity.toString();
+      _brandController.text = widget?.adminProductItem?.brand?.title ?? "";
       _quantityIncController.text =
           widget.adminProductItem.quantityIncrement.toString();
-      _quantityIdController.text = widget.adminProductItem.quantityUnit.title;
+      _quantityIdController.text =
+          widget.adminProductItem?.quantityUnit?.title ?? "";
       catId = widget.adminProductItem.categoryId.toString();
-      brandId = widget.adminProductItem.brand.id.toString();
+      if (widget?.adminProductItem?.brand != null) {
+        brandId = widget?.adminProductItem?.brand?.id.toString();
+      } else {
+        brandId = "";
+      }
       quantId = widget.adminProductItem.quantityUnitId.toString();
-      _descController.text = widget.adminProductItem.description;
+      _descController.text = widget?.adminProductItem?.description;
       if (widget.adminProductItem.category != null) {
         _categoryController.text = widget.adminProductItem.category.title;
       }

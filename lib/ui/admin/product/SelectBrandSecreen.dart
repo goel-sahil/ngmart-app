@@ -57,6 +57,18 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
           "Select Brand",
         ),
         centerTitle: true,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 22, right: 10),
+            child: InkWell(
+                onTap: () {
+                  CategoryModel catModel =
+                  CategoryModel(id: "", title: "", fromItem: true);
+                  Navigator.pop(context, catModel);
+                },
+                child: Text("Clear")),
+          )
+        ],
       ),
       backgroundColor: Colors.white,
       key: _scaffoldKey,

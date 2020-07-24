@@ -57,6 +57,18 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           "Select Category",
         ),
         centerTitle: true,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 22, right: 10),
+            child: InkWell(
+                onTap: () {
+                  CategoryModel catModel =
+                      CategoryModel(id: "", title: "", fromItem: true);
+                  Navigator.pop(context, catModel);
+                },
+                child: Text("Clear")),
+          )
+        ],
       ),
       backgroundColor: Colors.white,
       key: _scaffoldKey,
@@ -75,7 +87,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   onTap: () {
                     CategoryModel catModel = CategoryModel(
                         id: dataInner[index].id.toString(),
-                        title: dataInner[index].title);
+                        title: dataInner[index].title,
+                        fromItem: true);
                     Navigator.pop(context, catModel);
                   },
                   child: Slidable(

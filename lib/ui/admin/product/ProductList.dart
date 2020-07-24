@@ -269,7 +269,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           Container(
                             padding: EdgeInsets.only(right: 8, top: 4),
                             child: Text(
-                              productList.title,
+                              productList?.title??"",
                               maxLines: 2,
                               softWrap: true,
                               style: CustomTextStyle.textFormFieldSemiBold
@@ -278,7 +278,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
                           getSpacer(height: 6),
                           Text(
-                            productList.brand.title ?? "",
+                            productList.brand?.title ?? "",
                             style:
                                 CustomTextStyle.textFormFieldRegular.copyWith(
                               color: Colors.grey,
