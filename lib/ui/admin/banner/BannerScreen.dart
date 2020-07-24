@@ -11,6 +11,7 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/admin/banner/AddBannerScreen.dart';
 import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,7 @@ class BannerScreen extends StatefulWidget {
 
 class _BannerScreenState extends State<BannerScreen> {
   AdminProvider adminProvider;
-  List<DataInner> dataInner = new List();
+  List<BannerData> dataInner = new List();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _loadMore = false;
   bool isPullToRefresh = false;
@@ -168,14 +169,13 @@ class _BannerScreenState extends State<BannerScreen> {
                           var isUpdated = await Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) => AddBrandScreen(
-                                        title: dataInner[index].title,
-                                        fromBrandScreen: true,
-                                        brandId: dataInner[index].id,
-                                        status: dataInner[index].status,
+                                  builder: (context) => AddBannerScreen(
+                                    fromProductScreen: true,
+                                    adminProductItem: dataInner[index],
                                       )));
                           if (isUpdated != null && isUpdated) {
                             _currentPageNumber = 1;
+                            _loadMore = false;
                             _hitApi();
                           }
                         },

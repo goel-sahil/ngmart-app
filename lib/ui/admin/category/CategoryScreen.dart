@@ -77,7 +77,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       _currentPageNumber = 1;
     }
 
-    var response = await adminProvider.getCategory(context,_currentPageNumber);
+    var response = await adminProvider.getCategory(context, _currentPageNumber);
     if (response is APIError) {
     } else if (response is AdminCategoryResponse) {
       if (_currentPageNumber == 1) {
@@ -130,7 +130,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
               itemBuilder: (BuildContext context, int index) {
-                String status =dataInner[index].status==1?"Active":"In Active";
+                String status =
+                    dataInner[index].status == 1 ? "Active" : "In Active";
                 return InkWell(
                   onTap: () {},
                   child: Slidable(
@@ -176,6 +177,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                       )));
                           if (isUpdated != null && isUpdated) {
                             _currentPageNumber = 1;
+                            _loadMore = false;
                             _hitApi();
                           }
                         },

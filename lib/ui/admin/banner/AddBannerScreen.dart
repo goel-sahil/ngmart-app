@@ -12,6 +12,7 @@ import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/ToggleWidget.dart';
@@ -21,7 +22,7 @@ import 'package:http/http.dart' as http;
 
 class AddBannerScreen extends StatefulWidget {
   var fromProductScreen;
-  AdminProductList adminProductItem;
+  BannerData adminProductItem;
 
   AddBannerScreen({this.fromProductScreen, this.adminProductItem});
 
@@ -34,20 +35,12 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
   GlobalKey<FormState> _fieldKey = new GlobalKey<FormState>();
   TextEditingController _titleController = new TextEditingController();
   TextEditingController _productController = new TextEditingController();
-  TextEditingController _brandController = new TextEditingController();
-  TextEditingController _quantityIdController = new TextEditingController();
-  TextEditingController _priceController = new TextEditingController();
-  TextEditingController _quantityIncController = new TextEditingController();
-  TextEditingController _quantityController = new TextEditingController();
   TextEditingController _descController = new TextEditingController();
   FocusNode _titleField = new FocusNode();
   FocusNode _descField = new FocusNode();
   FocusNode _productField = new FocusNode();
   AdminProvider provider;
-  String catId = "";
   String status = "1";
-  String brandId = "";
-  String quantId = "";
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
@@ -58,15 +51,6 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
   void initState() {
     if (widget.fromProductScreen) {
       _titleController.text = widget.adminProductItem.title;
-      _priceController.text = widget.adminProductItem.price.toString();
-      _quantityController.text = widget.adminProductItem.quantity.toString();
-      _brandController.text = widget.adminProductItem.brand.title;
-      _quantityIncController.text =
-          widget.adminProductItem.quantityIncrement.toString();
-      _quantityIdController.text = widget.adminProductItem.quantityUnit.title;
-      catId = widget.adminProductItem.categoryId.toString();
-      brandId = widget.adminProductItem.brand.id.toString();
-      quantId = widget.adminProductItem.quantityUnitId.toString();
       _descController.text = widget.adminProductItem.description;
       setState(() {});
     }
@@ -219,7 +203,7 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
                             initialLabel: 1,
                             onToggle: (index) {
                               print("Index $index");
-                              status=index.toString();
+                              status = index.toString();
                             },
                           ),
                         ],
@@ -304,9 +288,12 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
 
     request.headers.addAll(headers);
     List<int> selectedIds = List();
-    for (int i = 0; i < selectedProductList.length; i++) {
-      selectedIds.add(selectedProductList[i].id);
+    if (selectedProductList?.isNotEmpty == true) {
+      for (int i = 0; i < selectedProductList?.length; i++) {
+        selectedIds.add(selectedProductList[i].id);
+      }
     }
+
     if (_image != null) {
       final fileName = _image.path;
 
@@ -324,7 +311,7 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
     } else {
       request.fields['title'] = _titleController.text;
       request.fields['description'] = _descController.text;
-      request.fields['product_ids'] = '$list';
+      request.fields['product_ids'] = '$selectedIds';
       request.fields['status'] = status;
     }
 

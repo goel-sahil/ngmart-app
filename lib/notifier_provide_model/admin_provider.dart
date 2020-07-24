@@ -177,6 +177,33 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> getSubCategoryList(BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var response = await APIHandler.get(
+        context: context,
+        url: "${APIs.getCategoryList}?sub_category=true",
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CategoryListResponse adminCategoryResponse =
+          new CategoryListResponse.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
   Future<dynamic> getBrandList(BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
@@ -260,8 +287,10 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
-
-  Future<dynamic> getInvoice(BuildContext context, int id,) async {
+  Future<dynamic> getInvoice(
+    BuildContext context,
+    int id,
+  ) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
       "Accept": "application/json",
@@ -281,13 +310,12 @@ class AdminProvider with ChangeNotifier {
     } else {
       print("Response==> $response");
       InvoiceResponse adminCategoryResponse =
-      new InvoiceResponse.fromJson(response);
+          new InvoiceResponse.fromJson(response);
       completer.complete(adminCategoryResponse);
       notifyListeners();
       return completer.future;
     }
   }
-
 
   Future<dynamic> deleteBrand(BuildContext context, int id) async {
     Completer<dynamic> completer = new Completer<dynamic>();

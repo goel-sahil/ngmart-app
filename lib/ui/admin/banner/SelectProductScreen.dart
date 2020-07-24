@@ -81,8 +81,8 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
       }
 
       productList.addAll(response.data.dataInner);
-      _ShowSelectedIfAny();
-       _compareLists();
+      _showSelectedIfAny();
+      _compareLists();
 
       if (response.data.dataInner.length < response.data.perPage) {
         _loadMore = false;
@@ -92,8 +92,8 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
     }
   }
 
-  _ShowSelectedIfAny() {
-    if (widget.selectedProductList.isNotEmpty) {
+  _showSelectedIfAny() {
+    if (widget.selectedProductList?.isNotEmpty == true) {
       for (int i = 0; i < productList.length; i++) {
         for (int j = 0; j < widget.selectedProductList.length; j++) {
           if (productList[i].id == widget.selectedProductList[j].id) {

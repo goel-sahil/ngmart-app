@@ -294,12 +294,17 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       Map data = jsonDecode(respStr);
       print("Data==> $data");
       showInSnackBar("${data["message"]}");
-      Navigator.pop(context, true);
+      Timer(Duration(milliseconds: 500), () {
+        Navigator.pop(context, true);
+      });
     } else {
       final respStr = await response.stream.bytesToString();
       Map data = jsonDecode(respStr);
       print("Response==> $data");
       showInSnackBar("${data["message"]}");
+      Timer(Duration(milliseconds: 500), () {
+        Navigator.pop(context, true);
+      });
     }
   }
 

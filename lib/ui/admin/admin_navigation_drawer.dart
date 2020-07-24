@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -142,7 +143,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                       icon: Icon(Icons.add),
                       onPressed: () async {
                         if (_pageController.page == 0) {
-                          Navigator.push(
+                          bool isWOrkDone = await Navigator.push(
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => AddBrandScreen(
@@ -150,8 +151,15 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                         title: "",
                                         brandId: 1,
                                       )));
+                          print("Page controller==> $isWOrkDone");
+                          if (isWOrkDone) {
+                            _pageController.jumpToPage(1);
+                            Timer(Duration(milliseconds: 300), () {
+                              _pageController.jumpToPage(0);
+                            });
+                          }
                         } else if (_pageController.page == 1) {
-                          Navigator.push(
+                          bool isWOrkDone = await Navigator.push(
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => AddQuantityScreen(
@@ -159,6 +167,12 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                         title: "",
                                         brandId: 1,
                                       )));
+                          if (isWOrkDone) {
+                            _pageController.jumpToPage(2);
+                            Timer(Duration(milliseconds: 300), () {
+                              _pageController.jumpToPage(1);
+                            });
+                          }
                         } else if (_pageController.page == 2) {
                           bool isWOrkDone = await Navigator.push(
                               context,
@@ -167,22 +181,37 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                         fromCategoryScreen: false,
                                       )));
                           if (isWOrkDone != null && isWOrkDone) {
-                            _pageController.jumpToPage(2);
+                            _pageController.jumpToPage(3);
+                            Timer(Duration(milliseconds: 300), () {
+                              _pageController.jumpToPage(2);
+                            });
                           }
                         } else if (_pageController.page == 3) {
-                          Navigator.push(
+                          bool isWOrkDone = await Navigator.push(
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => AddProductScreen(
                                         fromProductScreen: false,
                                       )));
+                          if (isWOrkDone != null && isWOrkDone) {
+                            _pageController.jumpToPage(4);
+                            Timer(Duration(milliseconds: 300), () {
+                              _pageController.jumpToPage(3);
+                            });
+                          }
                         } else if (_pageController.page == 4) {
-                          Navigator.push(
+                          bool isWOrkDone = await Navigator.push(
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => AddBannerScreen(
                                         fromProductScreen: false,
                                       )));
+                          if (isWOrkDone != null && isWOrkDone) {
+                            _pageController.jumpToPage(3);
+                            Timer(Duration(milliseconds: 300), () {
+                              _pageController.jumpToPage(4);
+                            });
+                          }
                         }
                       })
                   : Container())
@@ -298,4 +327,10 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
       ],
     ),
   );
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 }

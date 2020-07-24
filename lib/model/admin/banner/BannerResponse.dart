@@ -18,12 +18,12 @@ class BannerResponse {
 
 class Data {
   int currentPage;
-  List<DataInner> dataInner;
+  List<BannerData> dataInner;
   String firstPageUrl;
   int from;
   int lastPage;
   String lastPageUrl;
-  Null nextPageUrl;
+  String nextPageUrl;
   String path;
   int perPage;
   Null prevPageUrl;
@@ -47,9 +47,9 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      dataInner = new List<DataInner>();
+      dataInner = new List<BannerData>();
       json['data'].forEach((v) {
-        dataInner.add(new DataInner.fromJson(v));
+        dataInner.add(new BannerData.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -84,7 +84,7 @@ class Data {
   }
 }
 
-class DataInner {
+class BannerData {
   int id;
   String title;
   String description;
@@ -95,7 +95,7 @@ class DataInner {
   String imageUrl;
   List<Products> products;
 
-  DataInner(
+  BannerData(
       {this.id,
       this.title,
       this.description,
@@ -106,7 +106,7 @@ class DataInner {
       this.imageUrl,
       this.products});
 
-  DataInner.fromJson(Map<String, dynamic> json) {
+  BannerData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     description = json['description'];
@@ -147,9 +147,9 @@ class Products {
   String image;
   int categoryId;
   int brandId;
-  int price;
-  int quantity;
-  int quantityIncrement;
+  num price;
+  num quantity;
+  num quantityIncrement;
   int quantityUnitId;
   int orderedTimes;
   int status;

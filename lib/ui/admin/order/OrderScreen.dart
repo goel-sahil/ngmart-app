@@ -228,9 +228,9 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
             getSpacer(height: 10)
           ],
         ),
-        secondaryActions: <Widget>[
-          intStatus == 0 || intStatus == 2
-              ? IconSlideAction(
+        secondaryActions: intStatus == 0 || intStatus == 2
+            ? <Widget>[
+                IconSlideAction(
                   caption: 'Accept',
                   color: Colors.green,
                   icon: FontAwesomeIcons.check,
@@ -238,10 +238,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                     _hitOrderStatusApi(
                         id: dataList.id, position: position, status: 1);
                   },
-                )
-              : Container(),
-          intStatus == 0
-              ? IconSlideAction(
+                ),
+                IconSlideAction(
                   caption: 'Reject',
                   color: Colors.red,
                   closeOnTap: true,
@@ -251,9 +249,9 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                         id: dataList.id, position: position, status: 2);
                   },
                 )
-              : Container(),
-          intStatus == 1
-              ? IconSlideAction(
+              ]
+            : [
+                IconSlideAction(
                   caption: 'Cancel',
                   color: Colors.red,
                   closeOnTap: true,
@@ -263,8 +261,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                         id: dataList.id, position: position, status: 3);
                   },
                 )
-              : Container()
-        ],
+              ],
       ),
     );
   }

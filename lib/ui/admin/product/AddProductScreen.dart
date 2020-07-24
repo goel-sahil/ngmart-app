@@ -18,6 +18,7 @@ import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/ToggleWidget.dart';
 import 'package:ngmartflutter/ui/admin/category/SelectCategorySecreen.dart';
 import 'package:ngmartflutter/ui/admin/product/SelectBrandSecreen.dart';
+import 'package:ngmartflutter/ui/admin/product/SelectCategoryForProductSecreen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -176,7 +177,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) =>
-                                      SelectCategoryScreen()));
+                                      SelectCategoryForProductScreen()));
                           if (catModel != null) {
                             _categoryController.text = catModel.title;
                             catId = catModel.id;
