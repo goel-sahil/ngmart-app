@@ -282,7 +282,7 @@ class Product {
   int brandId;
   num price;
   num quantity;
-  int quantityIncrement;
+  num quantityIncrement;
   int quantityUnitId;
   int orderedTimes;
   int status;

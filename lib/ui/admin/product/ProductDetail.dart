@@ -56,10 +56,13 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
             brand: brand,
             quantity: _quantity,
             imageUrl: widget.productData.imageUrl);
-        var cartData =
-            CartData(productId: widget.productData.id, product: product);
+        var cartData = CartData(
+            productId: widget.productData.id,
+            product: product,
+            quantity: _quantity);
         var list = List<CartData>();
         list.add(cartData);
+        print("Quantity before==> $_quantity");
         Navigator.push(
             context,
             CupertinoPageRoute(
@@ -99,7 +102,8 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
           elevation: 0,
           backgroundColor: AppColors.kPrimaryBlue,
           centerTitle: true,
-          title: Text(widget.productData.title, style: h4.copyWith(color: Colors.white)),
+          title: Text(widget.productData.title,
+              style: h4.copyWith(color: Colors.white)),
         ),
         body: Stack(
           children: <Widget>[
@@ -120,8 +124,7 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text("${widget.productData.title}",
-                                    style: h3),
+                                Text("${widget.productData.title}", style: h3),
                                 getSpacer(height: 6),
                                 Text(widget.productData.brand.title, style: h4),
                                 getSpacer(height: 6),

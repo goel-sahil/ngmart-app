@@ -26,7 +26,7 @@ class Data {
   String nextPageUrl;
   String path;
   int perPage;
-  Null prevPageUrl;
+  String prevPageUrl;
   int to;
   int total;
 
@@ -161,7 +161,8 @@ class Products {
   Category category;
   Brand brand;
   Brand quantityUnit;
-  bool isSelected=false;
+  bool isSelected = false;
+
   Products(
       {this.id,
       this.title,

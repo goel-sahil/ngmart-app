@@ -31,7 +31,7 @@ class Data {
   String nextPageUrl;
   String path;
   int perPage;
-  Null prevPageUrl;
+  String prevPageUrl;
   int to;
   int total;
 
@@ -154,7 +154,7 @@ class Products {
   int brandId;
   num price;
   num quantity;
-  int quantityIncrement;
+  num quantityIncrement;
   int quantityUnitId;
   int orderedTimes;
   int status;

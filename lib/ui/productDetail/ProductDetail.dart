@@ -54,8 +54,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             brand: brand,
             quantity: _quantity,
             imageUrl: widget.productData.imageUrl);
-        var cartData =
-            CartData(productId: widget.productData.id, product: product);
+        var cartData = CartData(
+            productId: widget.productData.id,
+            product: product,
+            quantity: _quantity);
         var list = List<CartData>();
         list.add(cartData);
         Navigator.push(
@@ -124,7 +126,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           elevation: 0,
           backgroundColor: AppColors.kPrimaryBlue,
           centerTitle: true,
-          title: Text(widget.productData.title, style: h4.copyWith(color: Colors.white)),
+          title: Text(widget.productData.title,
+              style: h4.copyWith(color: Colors.white)),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 10),
@@ -169,8 +172,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text("${widget.productData.title}",
-                                    style: h3),
+                                Text("${widget.productData.title}", style: h3),
                                 getSpacer(height: 6),
                                 Text(widget.productData.brand.title, style: h4),
                                 getSpacer(height: 6),

@@ -256,10 +256,10 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         new IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-//    int type = int.tryParse(data["data"]["type"]);
+    int type = int.tryParse(data["data"]["type"]);
     await flutterLocalNotificationsPlugin.show(
         100, title, body, platformChannelSpecifics,
-        payload: 1.toString());
+        payload: type.toString());
   }
 
   Future onDidReceiveLocalNotification(
@@ -283,41 +283,18 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     );
   }
 
-  //screen redirection for chat
   moveToScreenFromPush(int type) {
     print("Type==> $type");
-//    switch ((type)) {
-//      case APPLIED_TO_LENDER_POST:
-//        movetoBorrowScreen(0);
-//        break;
-//      case LENDER_ACCEPT_REQUEST:
-//        movetoBorrowScreen(0);
-//        break;
-//      case LENDER_REJECT_REQUSET:
-//        movetoBorrowScreen(0);
-//        break;
-//      case LENDER_ACCEPT_HIS_POST_REQUEST:
-//        movetoBorrowScreen(0);
-//        break;
-//      case LENDER_REJECT_HIS_POST_REQUEST:
-//        movetoBorrowScreen(0);
-//        break;
-//      case COMPANY_ACCEPT_REQUEST:
-//        movetoBorrowScreen(1);
-//        break;
-//      case COMPANY_REJECT_REQUEST:
-//        movetoBorrowScreen(0);
-//        break;
-//      case LOAN_FUNDED:
-//      case LOAN_PAID_OFF:
-//      case LOAN_DEFAULTED:
-//        movetoBorrowScreen(1);
-//        break;
-//      case CHAT_MESSAGE:
-//        _moveToChatList();
-//
-//        break;
-//    }
+    if (MemoryManagement.getUserRole() == 2) {
+      if (type == 1 || type == 2 || type == 3 || type == 4) {
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => OrderHistory(
+                      fromNotification: true,
+                    )));
+      }
+    }
   }
 
   @override
@@ -369,7 +346,9 @@ class _NavigationDrawerState extends State<NavigationDrawer>
                           Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) => NotificationScreen(fromAdmin: false,)));
+                                  builder: (context) => NotificationScreen(
+                                        fromAdmin: false,
+                                      )));
                         }
                       }))
               : Container()
@@ -439,7 +418,9 @@ class _NavigationDrawerState extends State<NavigationDrawer>
               OrderByParchiScreen(
                 fromNavigation: true,
               ),
-              OrderHistory(fromNotification: false,),
+              OrderHistory(
+                fromNotification: false,
+              ),
               Setting(),
               ContactUs(),
             ],

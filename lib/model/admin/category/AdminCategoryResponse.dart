@@ -28,7 +28,7 @@ class Data {
   int perPage;
   String prevPageUrl;
   int to;
-  int total;
+  num total;
 
   Data(
       {this.currentPage,

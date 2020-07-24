@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
@@ -15,7 +14,6 @@ import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CheckOutPage extends StatefulWidget {
   List<CartData> cartList;
@@ -118,7 +116,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
         isDismissible: false,
         builder: (builder) {
           return Container(
-            height: (getScreenSize(context: context).height/2)+400,
+            height: (getScreenSize(context: context).height / 2) + 400,
             decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.grey.shade200, width: 2),
@@ -403,6 +401,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
   }
 
   checkoutListItem(CartData cartList) {
+    print("Quantity set==> ${cartList.quantity}");
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4),
       child: Row(

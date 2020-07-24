@@ -148,11 +148,11 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
       onResume: (Map<String, dynamic> message) async {
         String payload = message['data']['type'];
 
-        //moveToScreenFromPush(int.tryParse(payload));
+        moveToScreenFromPush(int.tryParse(payload));
       },
       onLaunch: (Map<String, dynamic> message) async {
         int type = int.tryParse(message["data"]["type"]);
-        // moveToScreenFromPush(type);
+         moveToScreenFromPush(type);
       },
     );
 
@@ -214,7 +214,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   Future onSelectNotification(String payload) async {
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
-      //  moveToScreenFromPush(int.tryParse(payload)); //when click in push
+        moveToScreenFromPush(int.tryParse(payload)); //when click in push
     }
   }
 
@@ -227,10 +227,10 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         new IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-//    int type = int.tryParse(data["data"]["type"]);
+    int type = int.tryParse(data["data"]["type"]);
     await flutterLocalNotificationsPlugin.show(
         100, title, body, platformChannelSpecifics,
-        payload: 1.toString());
+        payload: type.toString());
   }
 
   Future onDidReceiveLocalNotification(
@@ -496,5 +496,19 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  moveToScreenFromPush(int type) {
+    print("Type==> $type");
+    if (MemoryManagement.getUserRole() == 1) {
+      if (type == 0) {
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => AdminOrdersScreen(
+                      fromNotification: true,
+                    )));
+      }
+    }
   }
 }
