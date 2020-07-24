@@ -11,10 +11,15 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/NotificationResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
+import 'package:ngmartflutter/ui/admin/order/OrderScreen.dart';
 import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
 import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatefulWidget {
+  bool fromAdmin;
+
+  NotificationScreen({this.fromAdmin});
+
   @override
   _NotificationScreenState createState() => _NotificationScreenState();
 }
@@ -135,10 +140,22 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 String status = dataInner[index].message;
                 return InkWell(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => OrderHistory(fromNotification: true,)));
+                    if (widget.fromAdmin) {
+
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => AdminOrdersScreen(
+                                fromNotification: true,
+                              )));
+                    } else {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => OrderHistory(
+                                    fromNotification: true,
+                                  )));
+                    }
                   },
                   child: Slidable(
                     actionPane: SlidableDrawerActionPane(),

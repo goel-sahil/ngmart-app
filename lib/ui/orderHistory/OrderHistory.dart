@@ -124,8 +124,20 @@ class _OrderHistoryState extends State<OrderHistory> {
               child: ListView.builder(
                 controller: scrollController,
                 itemBuilder: (BuildContext context, int index) {
+                  String status;
+                  if (dataList[index].status == 0) {
+                    status = "Pending";
+                  } else if (dataList[index].status == 1) {
+                    status = "Accept";
+                  } else if (dataList[index].status == 2) {
+                    status = "Reject";
+                  } else if (dataList[index].status == 3) {
+                    status = "Cancel";
+                  } else if (dataList[index].status == 4) {
+                    status = "Delivered";
+                  }
                   return createCartListItem(
-                      dataList[index], dataList[index].type);
+                      dataList[index], dataList[index].type,status);
                 },
                 itemCount: dataList.length ?? 0,
               ),
@@ -145,7 +157,7 @@ class _OrderHistoryState extends State<OrderHistory> {
         ));
   }
 
-  createCartListItem(DataOrderHistory productList, int type) {
+  createCartListItem(DataOrderHistory productList, int type, String status) {
     return InkWell(
       onTap: () {
         if (type == 1) {
@@ -198,15 +210,25 @@ class _OrderHistoryState extends State<OrderHistory> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(right: 8, top: 4),
-                          child: Text(
-                            "Order ID: ${type == 0 ? productList.orderItems.first.orderId : productList.id}",
-                            maxLines: 2,
-                            softWrap: true,
-                            style: CustomTextStyle.textFormFieldSemiBold
-                                .copyWith(fontSize: 14),
-                          ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(right: 8, top: 4),
+                              child: Text(
+                                "Order ID: ${type == 0 ? productList.orderItems.first.orderId : productList.id}",
+                                maxLines: 2,
+                                softWrap: true,
+                                style: CustomTextStyle.textFormFieldSemiBold
+                                    .copyWith(fontSize: 14),
+                              ),
+                            ),
+                            Container(
+                                padding: EdgeInsets.only(right: 4, top: 4),
+                                child: Text(
+                                  '$status',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ))
+                          ],
                         ),
                         getSpacer(height: 6),
                         Text(

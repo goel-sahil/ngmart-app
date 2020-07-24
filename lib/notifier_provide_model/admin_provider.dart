@@ -150,18 +150,23 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> getCategoryList(BuildContext context) async {
+  Future<dynamic> getCategoryList(
+      BuildContext context, int catId, bool forUpdate) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
     print("Token==> ${MemoryManagement.getAccessToken()}");
-
+    var url;
+    if (forUpdate) {
+      url = "${APIs.getCategoryList}?category_id=$catId";
+    } else {
+      url = "${APIs.getCategoryList}";
+    }
+    print("Cat url==> $url");
     var response = await APIHandler.get(
-        context: context,
-        url: APIs.getCategoryList,
-        additionalHeaders: headers);
+        context: context, url: url, additionalHeaders: headers);
 
     hideLoader();
     if (response is APIError) {

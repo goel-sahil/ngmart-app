@@ -369,7 +369,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
                           Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) => NotificationScreen()));
+                                  builder: (context) => NotificationScreen(fromAdmin: false,)));
                         }
                       }))
               : Container()

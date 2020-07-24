@@ -21,6 +21,10 @@ import 'package:ngmartflutter/ui/admin/order/OrderDetails.dart';
 import 'package:provider/provider.dart';
 
 class AdminOrdersScreen extends StatefulWidget {
+  bool fromNotification;
+
+  AdminOrdersScreen({this.fromNotification});
+
   @override
   _AdminOrdersScreenState createState() => _AdminOrdersScreenState();
 }
@@ -133,6 +137,12 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   Widget build(BuildContext context) {
     adminProvider = Provider.of<AdminProvider>(context);
     return Scaffold(
+      appBar: widget.fromNotification
+          ? AppBar(
+              title: Text("Orders"),
+              centerTitle: true,
+            )
+          : null,
       body: Stack(
         children: <Widget>[
           RefreshIndicator(
@@ -248,9 +258,9 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
           caption: 'Deliver',
           color: AppColors.kGrey,
           closeOnTap: true,
-          icon: Icons.delete,
+          icon: FontAwesomeIcons.checkSquare,
           onTap: () {
-            _hitOrderStatusApi(id: id, position: position, status: 3);
+            _hitOrderStatusApi(id: id, position: position, status: 4);
           },
         )
       ];

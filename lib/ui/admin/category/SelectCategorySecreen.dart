@@ -13,6 +13,9 @@ import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:provider/provider.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
+  int catId;
+  bool forUpdate;
+  SelectCategoryScreen({this.catId, this.forUpdate});
   @override
   _SelectCategoryScreenState createState() => _SelectCategoryScreenState();
 }
@@ -41,7 +44,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       return;
     }
     adminProvider.setLoading(); //show loader
-    var response = await adminProvider.getCategoryList(context);
+    var response = await adminProvider.getCategoryList(context, widget.catId, widget.forUpdate);
     if (response is APIError) {
     } else if (response is CategoryListResponse) {
       dataInner.addAll(response.data);

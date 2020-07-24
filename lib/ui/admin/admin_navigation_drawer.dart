@@ -364,7 +364,9 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                         Navigator.push(
                             context,
                             CupertinoPageRoute(
-                                builder: (context) => NotificationScreen()));
+                                builder: (context) => NotificationScreen(
+                                      fromAdmin: true,
+                                    )));
                       }))
               : Container()
         ],
@@ -428,7 +430,9 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               CategoryScreen(),
               ProductScreen(),
               BannerScreen(),
-              AdminOrdersScreen(),
+              AdminOrdersScreen(
+                fromNotification: false,
+              ),
               AdminSettingScreen(),
               CommingSoonScreen(),
             ],

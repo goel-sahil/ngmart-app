@@ -44,6 +44,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   File _image;
 
   int status = 1;
+  int cat;
 
   @override
   void initState() {
@@ -53,6 +54,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         _categoryController.text = widget.dataCategory.category.title;
       }
       status = widget.dataCategory.status;
+      cat = widget.dataCategory.id;
       setState(() {});
     }
     super.initState();
@@ -147,8 +149,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           CategoryModel catModel = await Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                  builder: (context) =>
-                                      SelectCategoryScreen()));
+                                  builder: (context) => SelectCategoryScreen(
+                                        catId: cat,
+                                        forUpdate: widget.fromCategoryScreen,
+                                      )));
                           if (catModel != null) {
                             _categoryController.text = catModel.title;
                             catId = catModel.id;
