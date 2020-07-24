@@ -127,7 +127,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
-      showInSnackBar(response.message);
+//      showInSnackBar(response.message);
       dataList[position].status = status;
       setState(() {});
     }
@@ -380,7 +380,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   }
 
   void showInSnackBar(String value) {
-    Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(value)));
+    _scaffoldKey.currentState
+        .showSnackBar(new SnackBar(content: new Text(value)));
   }
 
   createCartListItem(DataInner productList, String status) {
