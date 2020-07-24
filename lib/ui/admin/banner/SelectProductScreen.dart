@@ -197,6 +197,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
                           },
                           itemCount: productList.length ?? 0,
                           controller: scrollController,
+                          physics: ScrollPhysics(),
                         ),
                       ),
                     ],
