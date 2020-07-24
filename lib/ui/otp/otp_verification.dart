@@ -16,6 +16,7 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/otp/otp_request.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
+import 'package:ngmartflutter/ui/admin/admin_navigation_drawer.dart';
 import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:ngmartflutter/ui/resetPassword/ResetPasswordScreen.dart';
@@ -377,22 +378,24 @@ class _OtpverificationState extends State<Otpverification> {
       } else {
         CommonResponse commonResponse = response;
         showInSnackBar(commonResponse.message);
-        Navigator.pushAndRemoveUntil(
-          context,
-          new CupertinoPageRoute(builder: (BuildContext context) {
-            return new NavigationDrawer();
-          }),
-          (route) => false,
-        );
-//        MemoryManagement.clearMemory();
-//        Navigator.pushAndRemoveUntil(
-//          context,
-//          new CupertinoPageRoute(builder: (BuildContext context) {
-//            return new Login();
-//          }),
-//          (route) => false,
-//        );
-
+        var role = MemoryManagement?.getUserRole() ?? 0;
+        if (role == 1) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            new CupertinoPageRoute(builder: (BuildContext context) {
+              return new AdminNavigationDrawer();
+            }),
+            (route) => false,
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            new CupertinoPageRoute(builder: (BuildContext context) {
+              return new NavigationDrawer();
+            }),
+            (route) => false,
+          );
+        }
       }
     }
   }
