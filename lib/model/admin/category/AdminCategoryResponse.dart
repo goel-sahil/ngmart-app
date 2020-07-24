@@ -141,7 +141,7 @@ class Category {
   int id;
   String title;
   String image;
-  Null categoryId;
+  int categoryId;
   int status;
   String createdAt;
   String updatedAt;

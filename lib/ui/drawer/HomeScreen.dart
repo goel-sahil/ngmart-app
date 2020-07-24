@@ -145,11 +145,8 @@ class _HomeScreenState extends State<HomeScreen>
                       (bannerList.isNotEmpty && !provider.getLoading())
                           ? _getCarousel(enlargeCenterPage: true)
                           : SizedBox(
-                              height: 170,
+                              height: 30,
                               width: getScreenSize(context: context).width,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
                             ),
                       getSpacer(height: 20),
                       Container(
@@ -193,11 +190,8 @@ class _HomeScreenState extends State<HomeScreen>
                       (bannerList.isNotEmpty && !provider.getLoading())
                           ? _getCarousel(enlargeCenterPage: true)
                           : SizedBox(
-                              height: 170,
+                              height: 30,
                               width: getScreenSize(context: context).width,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
                             ),
                       getSpacer(height: 10),
                     ],
@@ -231,13 +225,13 @@ class _HomeScreenState extends State<HomeScreen>
             decoration: BoxDecoration(color: Colors.white),
             child: InkWell(
               onTap: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => BannerProductScreen(
-                                title: bannerList[itemIndex].title,
-                                products: bannerList[itemIndex].products,
-                              )));
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => BannerProductScreen(
+                              title: bannerList[itemIndex].title,
+                              products: bannerList[itemIndex].products,
+                            )));
               },
               child: getNetworkImage(
                   url: bannerList[itemIndex].imageUrl,

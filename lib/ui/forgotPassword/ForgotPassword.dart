@@ -48,6 +48,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     provider = Provider.of<LoginProvider>(context);
     return Scaffold(
       key: _scaffoldKeys,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Forgot Password"),
         centerTitle: true,
@@ -60,7 +61,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               key: _fieldKey,
               child: Column(
                 children: <Widget>[
-                  getSpacer(height: 80),
+                  getSpacer(height: 40),
+                  Image(
+                      image: AssetImage("images/app_logo.jpeg"),
+                      height: 100,
+                      alignment: Alignment.center,
+                      width: 180),
+                  getSpacer(height: 40),
                   getTextField(
                     context: context,
                     labelText: "Mobile Number",
