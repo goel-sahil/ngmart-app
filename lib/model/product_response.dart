@@ -91,9 +91,9 @@ class DataInner {
   String image;
   int categoryId;
   int brandId;
-  int price;
-  int quantity;
-  int quantityIncrement;
+  num price;
+  num quantity;
+  num quantityIncrement;
   int quantityUnitId;
   int orderedTimes;
   int status;

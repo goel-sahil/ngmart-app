@@ -1,10 +1,10 @@
 class AdminOrderResponse {
-  Data data;
+  OrderData data;
 
   AdminOrderResponse({this.data});
 
   AdminOrderResponse.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new OrderData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -16,7 +16,7 @@ class AdminOrderResponse {
   }
 }
 
-class Data {
+class OrderData {
   int currentPage;
   List<DataInner> dataInner;
   String firstPageUrl;
@@ -30,21 +30,21 @@ class Data {
   int to;
   int total;
 
-  Data(
+  OrderData(
       {this.currentPage,
-      this.dataInner,
-      this.firstPageUrl,
-      this.from,
-      this.lastPage,
-      this.lastPageUrl,
-      this.nextPageUrl,
-      this.path,
-      this.perPage,
-      this.prevPageUrl,
-      this.to,
-      this.total});
+        this.dataInner,
+        this.firstPageUrl,
+        this.from,
+        this.lastPage,
+        this.lastPageUrl,
+        this.nextPageUrl,
+        this.path,
+        this.perPage,
+        this.prevPageUrl,
+        this.to,
+        this.total});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  OrderData.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
       dataInner = new List<DataInner>();
@@ -88,7 +88,7 @@ class DataInner {
   int id;
   int userId;
   int userAddressId;
-  int totalPrice;
+  num totalPrice;
   String image;
   int type;
   int status;
@@ -97,24 +97,26 @@ class DataInner {
   String invoice;
   String imageUrl;
   String invoiceUrl;
+  OrderUser user;
   UserAddress userAddress;
   List<OrderItems> orderItems;
 
   DataInner(
       {this.id,
-      this.userId,
-      this.userAddressId,
-      this.totalPrice,
-      this.image,
-      this.type,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.invoice,
-      this.imageUrl,
-      this.invoiceUrl,
-      this.userAddress,
-      this.orderItems});
+        this.userId,
+        this.userAddressId,
+        this.totalPrice,
+        this.image,
+        this.type,
+        this.status,
+        this.createdAt,
+        this.updatedAt,
+        this.invoice,
+        this.imageUrl,
+        this.invoiceUrl,
+        this.user,
+        this.userAddress,
+        this.orderItems});
 
   DataInner.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -129,6 +131,7 @@ class DataInner {
     invoice = json['invoice'];
     imageUrl = json['image_url'];
     invoiceUrl = json['invoice_url'];
+    user = json['user'] != null ? new OrderUser.fromJson(json['user']) : null;
     userAddress = json['user_address'] != null
         ? new UserAddress.fromJson(json['user_address'])
         : null;
@@ -154,12 +157,76 @@ class DataInner {
     data['invoice'] = this.invoice;
     data['image_url'] = this.imageUrl;
     data['invoice_url'] = this.invoiceUrl;
+    if (this.user != null) {
+      data['user'] = this.user.toJson();
+    }
     if (this.userAddress != null) {
       data['user_address'] = this.userAddress.toJson();
     }
     if (this.orderItems != null) {
       data['order_items'] = this.orderItems.map((v) => v.toJson()).toList();
     }
+    return data;
+  }
+}
+
+class OrderUser {
+  int id;
+  String firstName;
+  String lastName;
+  String email;
+  String phoneNumber;
+  int roleId;
+  int status;
+  String emailVerifiedAt;
+  String createdAt;
+  String updatedAt;
+  Null deviceToken;
+  int pushNotifications;
+
+  OrderUser(
+      {this.id,
+        this.firstName,
+        this.lastName,
+        this.email,
+        this.phoneNumber,
+        this.roleId,
+        this.status,
+        this.emailVerifiedAt,
+        this.createdAt,
+        this.updatedAt,
+        this.deviceToken,
+        this.pushNotifications});
+
+  OrderUser.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstName = json['first_name'];
+    lastName = json['last_name'];
+    email = json['email'];
+    phoneNumber = json['phone_number'];
+    roleId = json['role_id'];
+    status = json['status'];
+    emailVerifiedAt = json['email_verified_at'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deviceToken = json['device_token'];
+    pushNotifications = json['push_notifications'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['first_name'] = this.firstName;
+    data['last_name'] = this.lastName;
+    data['email'] = this.email;
+    data['phone_number'] = this.phoneNumber;
+    data['role_id'] = this.roleId;
+    data['status'] = this.status;
+    data['email_verified_at'] = this.emailVerifiedAt;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['device_token'] = this.deviceToken;
+    data['push_notifications'] = this.pushNotifications;
     return data;
   }
 }
@@ -177,14 +244,14 @@ class UserAddress {
 
   UserAddress(
       {this.id,
-      this.address,
-      this.city,
-      this.state,
-      this.country,
-      this.pinCode,
-      this.userId,
-      this.createdAt,
-      this.updatedAt});
+        this.address,
+        this.city,
+        this.state,
+        this.country,
+        this.pinCode,
+        this.userId,
+        this.createdAt,
+        this.updatedAt});
 
   UserAddress.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -223,25 +290,25 @@ class OrderItems {
   int brandId;
   num pricePerUnit;
   num totalPrice;
-  int quantity;
+  num quantity;
   String createdAt;
   String updatedAt;
   Product product;
 
   OrderItems(
       {this.id,
-      this.orderId,
-      this.userId,
-      this.userAddressId,
-      this.productId,
-      this.categoryId,
-      this.brandId,
-      this.pricePerUnit,
-      this.totalPrice,
-      this.quantity,
-      this.createdAt,
-      this.updatedAt,
-      this.product});
+        this.orderId,
+        this.userId,
+        this.userAddressId,
+        this.productId,
+        this.categoryId,
+        this.brandId,
+        this.pricePerUnit,
+        this.totalPrice,
+        this.quantity,
+        this.createdAt,
+        this.updatedAt,
+        this.product});
 
   OrderItems.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -257,7 +324,7 @@ class OrderItems {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     product =
-        json['product'] != null ? new Product.fromJson(json['product']) : null;
+    json['product'] != null ? new Product.fromJson(json['product']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -292,7 +359,7 @@ class Product {
   num quantity;
   num quantityIncrement;
   int quantityUnitId;
-  num orderedTimes;
+  int orderedTimes;
   int status;
   String createdAt;
   String updatedAt;
@@ -304,24 +371,24 @@ class Product {
 
   Product(
       {this.id,
-      this.title,
-      this.description,
-      this.image,
-      this.categoryId,
-      this.brandId,
-      this.price,
-      this.quantity,
-      this.quantityIncrement,
-      this.quantityUnitId,
-      this.orderedTimes,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.isDeleted,
-      this.imageUrl,
-      this.category,
-      this.brand,
-      this.quantityUnit});
+        this.title,
+        this.description,
+        this.image,
+        this.categoryId,
+        this.brandId,
+        this.price,
+        this.quantity,
+        this.quantityIncrement,
+        this.quantityUnitId,
+        this.orderedTimes,
+        this.status,
+        this.createdAt,
+        this.updatedAt,
+        this.isDeleted,
+        this.imageUrl,
+        this.category,
+        this.brand,
+        this.quantityUnit});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -393,14 +460,14 @@ class Category {
 
   Category(
       {this.id,
-      this.title,
-      this.image,
-      this.categoryId,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.isDeleted,
-      this.imageUrl});
+        this.title,
+        this.image,
+        this.categoryId,
+        this.status,
+        this.createdAt,
+        this.updatedAt,
+        this.isDeleted,
+        this.imageUrl});
 
   Category.fromJson(Map<String, dynamic> json) {
     id = json['id'];

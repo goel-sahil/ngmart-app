@@ -152,8 +152,8 @@ class Products {
   String image;
   int categoryId;
   int brandId;
-  int price;
-  int quantity;
+  num price;
+  num quantity;
   int quantityIncrement;
   int quantityUnitId;
   int orderedTimes;

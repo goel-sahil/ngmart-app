@@ -80,7 +80,7 @@ class Product {
   String image;
   int categoryId;
   int brandId;
-  int price;
+  num price;
   int quantity;
   int quantityIncrement;
   int quantityUnitId;

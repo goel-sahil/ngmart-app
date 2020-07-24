@@ -88,7 +88,7 @@ class DataOrderHistory {
   int id;
   int userId;
   int userAddressId;
-  int totalPrice;
+  num totalPrice;
   String image;
   String imageUrl;
   int type;
@@ -280,8 +280,8 @@ class Product {
   String image;
   int categoryId;
   int brandId;
-  int price;
-  int quantity;
+  num price;
+  num quantity;
   int quantityIncrement;
   int quantityUnitId;
   int orderedTimes;

@@ -8,11 +8,8 @@ import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
-import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
-import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
-import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:ngmartflutter/model/admin/order/AdminOrderResponse.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,8 +20,11 @@ class OrderDetailsScreen extends StatefulWidget {
   num total;
   String inVoiceUrl;
   int id;
+  UserAddress userAddress;
+  OrderUser user;
 
-  OrderDetailsScreen({this.cartList, this.total, this.inVoiceUrl, this.id});
+  OrderDetailsScreen(
+      {this.cartList, this.total, this.inVoiceUrl, this.id, this.userAddress, this.user});
 
   @override
   _OrderDetailsScreenState createState() => _OrderDetailsScreenState();
@@ -141,7 +141,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "${userInfo.data.user.firstName ?? ""} ${userInfo.data.user.lastName ?? ""}",
+                    "${widget.user.firstName ?? ""} ${widget.user.lastName ?? ""}",
                     style: CustomTextStyle.textFormFieldSemiBold
                         .copyWith(fontSize: 14),
                   ),
@@ -160,14 +160,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   )
                 ],
               ),
-//              createAddressText(
-//                  "${userInfo?.data?.user?.userAddresses?.first?.address ?? ""}",
-//                  16),
-//              createAddressText(
-//                  "${userInfo?.data.user?.userAddresses?.first?.city ?? ""} - ${userInfo?.data?.user?.userAddresses?.first?.pinCode ?? ""}",
-//                  6),
-//              createAddressText(
-//                  "${userInfo?.data?.user?.userAddresses?.first?.state ?? ""}", 6),
+              createAddressText(
+                  "${widget.userAddress.address ?? ""}",
+                  16),
+              createAddressText(
+                  "${widget.userAddress.city ?? ""} - ${widget.userAddress.pinCode ?? ""}",
+                  6),
+              createAddressText(
+                  "${widget.userAddress.state ?? ""}", 6),
               SizedBox(
                 height: 6,
               ),

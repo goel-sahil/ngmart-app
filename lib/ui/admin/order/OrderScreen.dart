@@ -197,6 +197,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                   total: dataList.totalPrice,
                   inVoiceUrl: dataList.invoiceUrl,
                   id: dataList.id,
+                  userAddress: dataList.userAddress,
+                  user: dataList.user,
                 )));
       },
       child: Slidable(
