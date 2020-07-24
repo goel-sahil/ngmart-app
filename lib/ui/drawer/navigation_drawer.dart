@@ -439,7 +439,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
               OrderByParchiScreen(
                 fromNavigation: true,
               ),
-              OrderHistory(),
+              OrderHistory(fromNotification: false,),
               Setting(),
               ContactUs(),
             ],

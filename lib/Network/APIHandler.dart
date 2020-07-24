@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:ngmartflutter/Network/LoginError.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
@@ -154,9 +155,10 @@ class APIHandler {
       print("Status code ${e.response?.statusCode}");
 
       if (e.response?.statusCode == 403) {
-        APIError apiError = new APIError(
+        LoginError apiError = new LoginError(
           error: parseError(e.response.data),
           status: 403,
+          id: e.response.data["data"]["user"]["id"],
           onAlertPop: () {},
         );
         completer.complete(apiError);

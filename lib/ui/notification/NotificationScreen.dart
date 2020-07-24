@@ -8,10 +8,10 @@ import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
-import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/NotificationResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
+import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
 import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -132,10 +132,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
               controller: scrollController,
               physics: ScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
-                String status =
-                    dataInner[index].message;
+                String status = dataInner[index].message;
                 return InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => OrderHistory(fromNotification: true,)));
+                  },
                   child: Slidable(
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,

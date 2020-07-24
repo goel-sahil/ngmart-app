@@ -16,6 +16,10 @@ import 'package:provider/provider.dart';
 import 'OrderHistoryItems.dart';
 
 class OrderHistory extends StatefulWidget {
+  bool fromNotification;
+
+  OrderHistory({this.fromNotification});
+
   @override
   _OrderHistoryState createState() => _OrderHistoryState();
 }
@@ -101,6 +105,12 @@ class _OrderHistoryState extends State<OrderHistory> {
     provider = Provider.of<DashboardProvider>(context);
     return Scaffold(
         key: _scaffoldKey,
+        appBar: widget.fromNotification
+            ? AppBar(
+                title: Text("Order History"),
+                centerTitle: true,
+              )
+            : null,
         backgroundColor: Colors.grey.shade100,
         body: Stack(
           children: <Widget>[

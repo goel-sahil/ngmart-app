@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:ngmartflutter/Network/APIHandler.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
+import 'package:ngmartflutter/Network/LoginError.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/ChangePasswordRequest.dart';
@@ -32,6 +33,9 @@ class LoginProvider with ChangeNotifier {
         additionalHeaders: headers);
     hideLoader();
     if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    }else if(response is LoginError){
       completer.complete(response);
       return completer.future;
     } else {

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ngmartflutter/Network/LoginError.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomBorder.dart';
@@ -12,6 +13,7 @@ import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
 import 'package:ngmartflutter/ui/admin/admin_navigation_drawer.dart';
 import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:ngmartflutter/ui/forgotPassword/ForgotPassword.dart';
+import 'package:ngmartflutter/ui/otp/otp_verification.dart';
 import 'package:ngmartflutter/ui/signUp/SignUpScreen.dart';
 import 'package:provider/provider.dart';
 
@@ -38,22 +40,31 @@ class _LoginState extends State<Login> {
     var response = await provider.login(request, context);
     if (response is APIError) {
       showInSnackBar(response.error);
+    } else if (response is LoginError) {
+      if (response.status == 403) {
+        Navigator.of(context).push(new CupertinoPageRoute(
+            builder: (context) => Otpverification(
+                  phone: _mobileNumberController.text,
+                  id: response.id,
+                  otpType: OTPType.REGISTER,
+                )));
+      }
     } else if (response is LoginResponse) {
-      if (response.data.user.roleId == 1){
+      if (response.data.user.roleId == 1) {
         Navigator.pushAndRemoveUntil(
           context,
           new CupertinoPageRoute(builder: (BuildContext context) {
             return new AdminNavigationDrawer();
           }),
-              (route) => false,
+          (route) => false,
         );
-      }else{
+      } else {
         Navigator.pushAndRemoveUntil(
           context,
           new CupertinoPageRoute(builder: (BuildContext context) {
             return new NavigationDrawer();
           }),
-              (route) => false,
+          (route) => false,
         );
       }
     }
