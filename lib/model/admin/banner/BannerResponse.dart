@@ -161,7 +161,7 @@ class Products {
   Category category;
   Brand brand;
   Brand quantityUnit;
-
+  bool isSelected=false;
   Products(
       {this.id,
       this.title,

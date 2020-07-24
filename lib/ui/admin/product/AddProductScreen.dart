@@ -13,6 +13,7 @@ import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CategoryModel.dart';
+import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/ToggleWidget.dart';
@@ -26,7 +27,7 @@ import 'SelectQuantitySecreen.dart';
 
 class AddProductScreen extends StatefulWidget {
   var fromProductScreen;
-  AdminProductList adminProductItem;
+  Products adminProductItem;
 
   AddProductScreen({this.fromProductScreen, this.adminProductItem});
 

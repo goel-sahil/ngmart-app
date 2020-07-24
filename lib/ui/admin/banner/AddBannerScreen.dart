@@ -45,20 +45,21 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
       new StreamController<bool>();
   final picker = ImagePicker();
   File _image;
-  List<AdminProductList> selectedProductList;
+  List<Products> selectedProductList=new List();
 
   @override
   void initState() {
     if (widget.fromProductScreen) {
       _titleController.text = widget.adminProductItem.title;
       _descController.text = widget.adminProductItem.description;
-
       if (widget?.adminProductItem?.products?.isNotEmpty == true) {
         var productString = List();
         for (int i = 0; i < widget.adminProductItem.products.length; i++) {
           productString.add(widget.adminProductItem.products[i].title);
         }
         _productController.text = productString.join(", ");
+
+        selectedProductList.addAll(widget?.adminProductItem?.products);
       }
       setState(() {});
     }

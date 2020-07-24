@@ -14,6 +14,7 @@ import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/product_response.dart';
@@ -26,7 +27,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class AdminProductDetailPage extends StatefulWidget {
   final String pageTitle;
-  final AdminProductList productData;
+  final Products productData;
 
   AdminProductDetailPage({Key key, this.pageTitle, this.productData})
       : super(key: key);
@@ -285,7 +286,7 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
         ));
   }
 
-  Widget foodItem(AdminProductList food,
+  Widget foodItem(Products food,
       {double imgWidth, onLike, onTapped, bool isProductPage = false}) {
     return Container(
       width: 180,

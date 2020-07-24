@@ -1,3 +1,5 @@
+import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
+
 class AdminProductResponse {
   Data data;
 
@@ -18,7 +20,7 @@ class AdminProductResponse {
 
 class Data {
   int currentPage;
-  List<AdminProductList> dataInner;
+  List<Products> dataInner;
   String firstPageUrl;
   int from;
   int lastPage;
@@ -47,9 +49,9 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      dataInner = new List<AdminProductList>();
+      dataInner = new List<Products>();
       json['data'].forEach((v) {
-        dataInner.add(new AdminProductList.fromJson(v));
+        dataInner.add(new Products.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -84,6 +86,7 @@ class Data {
   }
 }
 
+/*
 class AdminProductList {
   int id;
   String title;
@@ -183,6 +186,7 @@ class AdminProductList {
     return data;
   }
 }
+*/
 
 class Brand {
   int id;

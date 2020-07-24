@@ -11,6 +11,7 @@ import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
@@ -31,7 +32,7 @@ class _ProductScreenState extends State<ProductScreen> {
   bool _loadMore = false;
   bool isPullToRefresh = false;
   int _currentPageNumber = 1;
-  List<AdminProductList> productList = new List();
+  List<Products> productList = new List();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   TextEditingController _searchController = new TextEditingController();
@@ -193,7 +194,7 @@ class _ProductScreenState extends State<ProductScreen> {
         ));
   }
 
-  createCartListItem({AdminProductList productList, int index}) {
+  createCartListItem({Products productList, int index}) {
     return InkWell(
       onTap: () {
         Navigator.push(

@@ -7,13 +7,14 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:provider/provider.dart';
 
 class SelectProductScreen extends StatefulWidget {
-  List<AdminProductList> selectedProductList;
+  List<Products> selectedProductList;
 
   SelectProductScreen({this.selectedProductList});
 
@@ -28,8 +29,8 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
   bool _loadMore = false;
   bool isPullToRefresh = false;
   int _currentPageNumber = 1;
-  List<AdminProductList> productList = new List();
-  List<AdminProductList> selectedProductList = new List();
+  List<Products> productList = new List();
+  List<Products> selectedProductList = new List();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   TextEditingController _searchController = new TextEditingController();
@@ -223,7 +224,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
         ));
   }
 
-  createCartListItem({AdminProductList productList, int index}) {
+  createCartListItem({Products productList, int index}) {
     return InkWell(
         onTap: () {},
         child: new CheckboxListTile(
