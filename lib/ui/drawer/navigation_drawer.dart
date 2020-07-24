@@ -43,7 +43,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   final _pageController = PageController();
   int _selectionIndex = 0;
   bool _isLoggedIn = false;
-  bool showSearch = false;
+  bool showSearch = true;
   bool showNotification = true;
   var drawerItems = new List();
   LoginResponse userInfo;
@@ -61,7 +61,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       if (index == 0) {
         _title = "NGMart";
         _pageController.jumpToPage(0);
-        showSearch = false;
+        showSearch = true;
         showNotification = true;
       } else if (index == 1) {
         //show profile
@@ -107,8 +107,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       if (index == 0) {
         _pageController.jumpToPage(0);
         _title = "NGMart";
-        showSearch = false;
-        showNotification = true;
+        showSearch = true;
+        showNotification = false;
       } else if (index == 1) {
         //Show parchi screen
         _title = "Order by Parchi";
@@ -133,20 +133,6 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     setState(() {
       _selectionIndex = index;
     });
-  }
-
-  Future<void> init() async {
-    if (!_initialized) {
-      // For iOS request permission first.
-      _firebaseMessaging.requestNotificationPermissions();
-      _firebaseMessaging.configure();
-
-      // For testing purposes print the Firebase Messaging token
-      String token = await _firebaseMessaging.getToken();
-      print("FirebaseMessaging token: $token");
-
-      _initialized = true;
-    }
   }
 
   @override
@@ -177,6 +163,13 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     if (_isLoggedIn) {
       drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     }
+
+    if (_isLoggedIn) {
+      showNotification = true;
+    } else {
+      showNotification = false;
+    }
+    setState(() {});
     super.initState();
   }
 
@@ -234,10 +227,10 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     var response = await provider.updateToken(context, request);
     if (response != null && (response is CommonResponse)) {
       print(response.message);
-      showInSnackBar(response.message);
+//      showInSnackBar(response.message);
     } else {
       APIError apiError = response;
-      showInSnackBar(apiError.error);
+//      showInSnackBar(apiError.error);
     }
   }
 
@@ -475,7 +468,12 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   _setSelectedZero() {
     _title = "NGMart";
     _pageController.jumpToPage(0);
-    showNotification = true;
+    showSearch = true;
+    if (_isLoggedIn) {
+      showNotification = true;
+    } else {
+      showNotification = false;
+    }
     setState(() {
       _selectionIndex = 0;
     });

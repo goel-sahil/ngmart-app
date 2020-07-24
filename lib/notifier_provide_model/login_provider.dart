@@ -43,6 +43,11 @@ class LoginProvider with ChangeNotifier {
       MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
       MemoryManagement.setUserRole(role: loginResponseData.data.user.roleId);
       MemoryManagement.setLoggedInStatus(logInStatus: true);
+      if (loginResponseData?.data?.user?.pushNotification == 1) {
+        MemoryManagement.setNotificationOnOff(onoff: true);
+      } else {
+        MemoryManagement.setNotificationOnOff(onoff: false);
+      }
       completer.complete(loginResponseData);
       notifyListeners();
       return completer.future;
@@ -100,8 +105,8 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> verifyOtp(
-      OtpRequest request, BuildContext context, String url, OTPType otpType) async {
+  Future<dynamic> verifyOtp(OtpRequest request, BuildContext context,
+      String url, OTPType otpType) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {"Accept": "application/json"};
     print("Url==> $url");
@@ -118,7 +123,7 @@ class LoginProvider with ChangeNotifier {
     } else {
       LoginResponse loginResponseData = new LoginResponse.fromJson(response);
       print("response ${loginResponseData.toJson()}");
-      if(otpType==OTPType.REGISTER){
+      if (otpType == OTPType.REGISTER) {
         MemoryManagement.setAccessToken(
             accessToken: loginResponseData.data.token ?? "");
         MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
@@ -153,7 +158,6 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-
   Future<dynamic> changePhoneVerify(
       OtpRequest request, BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
@@ -180,7 +184,6 @@ class LoginProvider with ChangeNotifier {
       return completer.future;
     }
   }
-
 
   Future<dynamic> forgotPassword(
       LoginRequest request, BuildContext context) async {
@@ -228,7 +231,6 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-
   Future<dynamic> changePhoneNumber(
       LoginRequest request, BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
@@ -248,7 +250,7 @@ class LoginProvider with ChangeNotifier {
       return completer.future;
     } else {
       ForgotPasswordResponse loginResponseData =
-      new ForgotPasswordResponse.fromJson(response);
+          new ForgotPasswordResponse.fromJson(response);
       print("response ${loginResponseData.toJson()}");
       completer.complete(loginResponseData);
       notifyListeners();

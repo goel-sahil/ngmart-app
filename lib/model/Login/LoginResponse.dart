@@ -51,24 +51,27 @@ class User {
   String emailVerifiedAt;
   String createdAt;
   String updatedAt;
+  int pushNotification;
   List<UserAddresses> userAddresses;
 
   User(
       {this.id,
-        this.firstName,
-        this.lastName,
-        this.email,
-        this.phoneNumber,
-        this.roleId,
-        this.status,
-        this.emailVerifiedAt,
-        this.createdAt,
-        this.updatedAt,
-        this.userAddresses});
+      this.firstName,
+      this.lastName,
+      this.email,
+      this.phoneNumber,
+      this.roleId,
+      this.status,
+      this.emailVerifiedAt,
+      this.createdAt,
+      this.pushNotification,
+      this.updatedAt,
+      this.userAddresses});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['first_name'];
+    pushNotification = json['push_notifications'];
     lastName = json['last_name'];
     email = json['email'];
     phoneNumber = json['phone_number'];
@@ -90,6 +93,7 @@ class User {
     data['id'] = this.id;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
+    data['push_notifications'] = this.pushNotification;
     data['email'] = this.email;
     data['phone_number'] = this.phoneNumber;
     data['role_id'] = this.roleId;
@@ -118,14 +122,14 @@ class UserAddresses {
 
   UserAddresses(
       {this.id,
-        this.address,
-        this.city,
-        this.state,
-        this.country,
-        this.pinCode,
-        this.userId,
-        this.createdAt,
-        this.updatedAt});
+      this.address,
+      this.city,
+      this.state,
+      this.country,
+      this.pinCode,
+      this.userId,
+      this.createdAt,
+      this.updatedAt});
 
   UserAddresses.fromJson(Map<String, dynamic> json) {
     id = json['id'];

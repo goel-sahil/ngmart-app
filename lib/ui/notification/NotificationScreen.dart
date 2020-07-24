@@ -133,7 +133,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               physics: ScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 String status =
-                    dataInner[index].status == 1 ? "Active" : "In Active";
+                    dataInner[index].message;
                 return InkWell(
                   onTap: () {},
                   child: Slidable(
@@ -150,7 +150,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           ),
                         ),
                         title: Text(dataInner[index].title),
-                        subtitle: Text('Status: $status'),
+                        subtitle: Text('$status'),
                       ),
                     ),
                     secondaryActions: <Widget>[
