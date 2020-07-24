@@ -55,7 +55,7 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
     var request = AddBrandRequest(title: _titleController.text, status: status);
 
     var response =
-    await provider.updateQuantity(context, request, widget.brandId);
+        await provider.updateQuantity(context, request, widget.brandId);
     if (response is APIError) {
       showInSnackBar(response.error);
     } else {
@@ -107,32 +107,38 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
                         focusNodeCurrent: _titleField,
                         enablefield: true,
                         controller: _titleController,
-                        validators: (val) =>
-                            emptyValidator(
-                                value: val,
-                                txtMsg: "Please enter brand title."),
+                        validators: (val) => emptyValidator(
+                            value: val, txtMsg: "Please enter brand title."),
                       ),
                       getSpacer(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text("Manage Status"),
-                          ToggleWidget(
-                            activeBgColor: Colors.green,
-                            activeTextColor: Colors.white,
-                            inactiveBgColor: Colors.white,
-                            inactiveTextColor: Colors.black,
-                            labels: [
-                              'INACTIVE',
-                              'ACTIVE',
-                            ],
-                            initialLabel: status,
-                            onToggle: (index) {
-                              print("Index $index");
-                              status = index;
-                            },
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Status",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            ToggleWidget(
+                              activeBgColor: Colors.green,
+                              activeTextColor: Colors.white,
+                              inactiveBgColor: Colors.white,
+                              inactiveTextColor: Colors.black,
+                              labels: [
+                                'INACTIVE',
+                                'ACTIVE',
+                              ],
+                              initialLabel: status,
+                              onToggle: (index) {
+                                print("Index $index");
+                                status = index;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                       getSpacer(height: 20),
                       Container(
@@ -157,7 +163,7 @@ class _AddQuantityScreenState extends State<AddQuantityScreen> {
                           textColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(4))),
+                                  BorderRadius.all(Radius.circular(4))),
                         ),
                       ),
                     ],

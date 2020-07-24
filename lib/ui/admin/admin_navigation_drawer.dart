@@ -285,12 +285,19 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     );
   }
 
+  _setSelectedZero() {
+    _title = "Brands";
+    _pageController.jumpToPage(0);
+    showAddIcon = true;
+    setState(() {
+      _selectionIndex = 0;
+    });
+  }
+
   Future<bool> onWillPop() {
     DateTime now = DateTime.now();
     if (_pageController.page != 0) {
-      _pageController.jumpToPage(0);
-      _title = "Brands";
-      setState(() {});
+      _setSelectedZero();
       return Future.value(false);
     } else if (currentBackPressTime == null ||
         now.difference(currentBackPressTime) > Duration(seconds: 2)) {

@@ -203,7 +203,7 @@ class _BannerScreenState extends State<BannerScreen> {
           ),
           (dataInner.length == 0) && (adminProvider.getLoading() == false)
               ? Center(
-                  child: getNoDataView(msg: "No Brands found.", onRetry: null))
+                  child: getNoDataView(msg: "Banners not found.", onRetry: null))
               : Container()
         ],
       ),

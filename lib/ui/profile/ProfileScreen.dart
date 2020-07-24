@@ -16,12 +16,15 @@ import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   var fromAdmin;
+
   ProfileScreen({this.fromAdmin});
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin<ProfileScreen>{
+class _ProfileScreenState extends State<ProfileScreen>
+    with AutomaticKeepAliveClientMixin<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
   TextEditingController _firstNameController = new TextEditingController();
   TextEditingController _lastNameController = new TextEditingController();
@@ -50,8 +53,10 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
   FocusNode _stateField = new FocusNode();
   FocusNode _countryField = new FocusNode();
   LoginProvider provider;
+
   @override
   bool get wantKeepAlive => true;
+
   Future<void> _hitApi() async {
     bool gotInternetConnection = await hasInternetConnection(
       context: context,
@@ -61,8 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
         provider.hideLoader(); //hide loader
 //        showInSnackBar(Messages.noInternetError);
       },
-      onSuccess: () {
-      },
+      onSuccess: () {},
     );
 
     if (gotInternetConnection) {
@@ -100,15 +104,21 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
   }
 
   _setData({LoginResponse response}) {
-    _firstNameController.text="${response.data.user.firstName}";
-    _lastNameController.text="${response.data.user.lastName}";
-    _emailController.text="${response.data.user.email}";
-    _mobileNumberController.text="${response.data.user.phoneNumber}";
-//    _addressController.text="${response.data.user.userAddresses.first.address}";
-//    _cityController.text="${response.data.user.userAddresses.first.city}";
-//    _stateController.text="${response.data.user.userAddresses.first.state}";
-//    _countryController.text="${response.data.user.userAddresses.first.country}";
-//    _pinCodeController.text="${response.data.user.userAddresses.first.pinCode}";
+    print("Login Response==> ${response.toJson()}");
+    _firstNameController.text = "${response?.data?.user?.firstName ?? ""}";
+    _lastNameController.text = "${response?.data?.user?.lastName ?? ""}";
+    _emailController.text = "${response?.data?.user?.email ?? ""}";
+    _mobileNumberController.text = "${response?.data?.user?.phoneNumber ?? ""}";
+    _addressController.text =
+        "${response?.data?.user?.userAddresses?.first?.address ?? ""}";
+    _cityController.text =
+        "${response?.data?.user?.userAddresses?.first?.city ?? ""}";
+    _stateController.text =
+        "${response?.data?.user?.userAddresses?.first?.state ?? ""}";
+    _countryController.text =
+        "${response?.data?.user?.userAddresses?.first?.country ?? ""}";
+    _pinCodeController.text =
+        "${response?.data?.user?.userAddresses?.first?.pinCode ?? ""}";
   }
 
   @override
@@ -117,7 +127,12 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKeys,
-        appBar: widget.fromAdmin?AppBar(centerTitle: true,title: Text("My Profile"),):null,
+        appBar: widget.fromAdmin
+            ? AppBar(
+                centerTitle: true,
+                title: Text("My Profile"),
+              )
+            : null,
         body: Stack(
           children: <Widget>[
             SingleChildScrollView(
@@ -258,7 +273,8 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                           color: AppColors.kPrimaryBlue,
                           textColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(4))),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4))),
                         ),
                       ),
                       getSpacer(height: 20),

@@ -166,26 +166,34 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         ),
                       ),
                       getSpacer(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text("Manage Status"),
-                          ToggleWidget(
-                            activeBgColor: Colors.green,
-                            activeTextColor: Colors.white,
-                            inactiveBgColor: Colors.white,
-                            inactiveTextColor: Colors.black,
-                            labels: [
-                              'INACTIVE',
-                              'ACTIVE',
-                            ],
-                            initialLabel: status,
-                            onToggle: (index) {
-                              print("Index $index");
-                              status = index;
-                            },
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Status",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            ToggleWidget(
+                              activeBgColor: Colors.green,
+                              activeTextColor: Colors.white,
+                              inactiveBgColor: Colors.white,
+                              inactiveTextColor: Colors.black,
+                              labels: [
+                                'INACTIVE',
+                                'ACTIVE',
+                              ],
+                              initialLabel: status,
+                              onToggle: (index) {
+                                print("Index $index");
+                                status = index;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                       getSpacer(height: 20),
                       Container(
