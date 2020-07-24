@@ -181,7 +181,7 @@ class OrderUser {
   String emailVerifiedAt;
   String createdAt;
   String updatedAt;
-  Null deviceToken;
+  String deviceToken;
   int pushNotifications;
 
   OrderUser(

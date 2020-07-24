@@ -187,7 +187,7 @@ class AdminProvider with ChangeNotifier {
 
     var response = await APIHandler.get(
         context: context,
-        url: "${APIs.getCategoryList}?sub_category=true",
+        url: "${APIs.getCategoryList}?sub_category=1",
         additionalHeaders: headers);
 
     hideLoader();

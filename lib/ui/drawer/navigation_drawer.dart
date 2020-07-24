@@ -223,7 +223,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
       return;
     }
     print("SET TOKEN==> $token");
-    if (isConnected) {
+    if (isConnected && _isLoggedIn) {
       updateToken(token: token);
     }
   }
