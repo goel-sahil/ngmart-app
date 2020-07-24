@@ -105,8 +105,7 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
           ),
           (dataInner.length == 0) && (adminProvider.getLoading() == false)
               ? Center(
-                  child: getNoDataView(
-                      msg: "No Category list found.", onRetry: null))
+                  child: getNoDataView(msg: "No brand found.", onRetry: null))
               : Container()
         ],
       ),

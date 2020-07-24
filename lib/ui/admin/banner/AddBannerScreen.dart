@@ -52,6 +52,14 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
     if (widget.fromProductScreen) {
       _titleController.text = widget.adminProductItem.title;
       _descController.text = widget.adminProductItem.description;
+
+      if (widget?.adminProductItem?.products?.isNotEmpty == true) {
+        var productString = List();
+        for (int i = 0; i < widget.adminProductItem.products.length; i++) {
+          productString.add(widget.adminProductItem.products[i].title);
+        }
+        _productController.text = productString.join(", ");
+      }
       setState(() {});
     }
     super.initState();
@@ -194,7 +202,9 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
                           children: <Widget>[
                             Text(
                               "Status",
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                             ToggleWidget(
                               activeBgColor: Colors.green,

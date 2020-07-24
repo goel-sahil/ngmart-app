@@ -12,7 +12,6 @@ import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:ngmartflutter/ui/admin/banner/AddBannerScreen.dart';
-import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
 import 'package:provider/provider.dart';
 
 import '../../FullScreenImageScreen.dart';

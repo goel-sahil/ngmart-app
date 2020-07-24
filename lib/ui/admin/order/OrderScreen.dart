@@ -7,7 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
+import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/order/AdminOrderResponse.dart';
 import 'package:ngmartflutter/model/admin/order/OrderStatusRequest.dart';
@@ -202,70 +204,69 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                 )));
       },
       child: Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
-        child: Column(
-          children: <Widget>[
-            getSpacer(height: 10),
-            Row(
-              children: <Widget>[
-                getSpacer(width: 10),
-                CircleAvatar(
-                  backgroundColor: Colors.green,
-                  child: Text(dataList.id.toString() ?? "A"),
-                  foregroundColor: Colors.white,
-                ),
-                getSpacer(width: 16),
-                Column(
-                  children: <Widget>[
-                    Text(
-                      "Order Id ${dataList.id}",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text('Status: $status')
-                  ],
-                ),
-              ],
-            ),
-            getSpacer(height: 10)
-          ],
-        ),
-        secondaryActions: intStatus == 0 || intStatus == 2
-            ? <Widget>[
-                IconSlideAction(
-                  caption: 'Accept',
-                  color: Colors.green,
-                  icon: FontAwesomeIcons.check,
-                  onTap: () {
-                    _hitOrderStatusApi(
-                        id: dataList.id, position: position, status: 1);
-                  },
-                ),
-                IconSlideAction(
-                  caption: 'Reject',
-                  color: Colors.red,
-                  closeOnTap: true,
-                  icon: Icons.delete,
-                  onTap: () {
-                    _hitOrderStatusApi(
-                        id: dataList.id, position: position, status: 2);
-                  },
-                )
-              ]
-            : [
-                IconSlideAction(
-                  caption: 'Cancel',
-                  color: Colors.red,
-                  closeOnTap: true,
-                  icon: Icons.delete,
-                  onTap: () {
-                    _hitOrderStatusApi(
-                        id: dataList.id, position: position, status: 3);
-                  },
-                )
-              ],
-      ),
+          actionPane: SlidableDrawerActionPane(),
+          actionExtentRatio: 0.25,
+          child: createCartListItem(dataList, status),
+          secondaryActions: returnList(intStatus, dataList.id, position)),
     );
+  }
+
+  List<Widget> returnList(int intStatus, int id, int position) {
+    print("Sttaus==> $intStatus");
+    if (intStatus == 0) {
+      return [
+        IconSlideAction(
+          caption: 'Accept',
+          color: Colors.green,
+          icon: FontAwesomeIcons.check,
+          onTap: () {
+            _hitOrderStatusApi(id: id, position: position, status: 1);
+          },
+        ),
+        IconSlideAction(
+          caption: 'Reject',
+          color: Colors.red,
+          closeOnTap: true,
+          icon: Icons.delete,
+          onTap: () {
+            _hitOrderStatusApi(id: id, position: position, status: 2);
+          },
+        )
+      ];
+    } else if (intStatus == 1) {
+      return [
+        IconSlideAction(
+          caption: 'Cancel',
+          color: Colors.red,
+          closeOnTap: true,
+          icon: Icons.delete,
+          onTap: () {
+            _hitOrderStatusApi(id: id, position: position, status: 3);
+          },
+        ),
+        IconSlideAction(
+          caption: 'Deliver',
+          color: AppColors.kGrey,
+          closeOnTap: true,
+          icon: Icons.delete,
+          onTap: () {
+            _hitOrderStatusApi(id: id, position: position, status: 3);
+          },
+        )
+      ];
+    } else if (intStatus == 2) {
+      return [
+        IconSlideAction(
+          caption: 'Accept',
+          color: Colors.green,
+          icon: FontAwesomeIcons.check,
+          onTap: () {
+            _hitOrderStatusApi(id: id, position: position, status: 1);
+          },
+        ),
+      ];
+    }
+    return [];
   }
 
   _getDateRow() {
@@ -370,5 +371,92 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
 
   void showInSnackBar(String value) {
     Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(value)));
+  }
+
+  createCartListItem(DataInner productList, String status) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(16))),
+          child: Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(14)),
+                    color: Colors.blue.shade50,
+                    image: DecorationImage(
+                        image: NetworkImage(
+                          productList.type == 0
+                              ? productList
+                                      .orderItems?.first?.product?.imageUrl ??
+                                  ""
+                              : productList.imageUrl,
+                        ),
+                        fit: BoxFit.fill)),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(right: 8, top: 4),
+                            child: Text(
+                              "Order ID: ${productList.type == 0 ? productList.orderItems.first.orderId : productList.id}",
+                              maxLines: 2,
+                              softWrap: true,
+                              style: CustomTextStyle.textFormFieldSemiBold
+                                  .copyWith(fontSize: 14),
+                            ),
+                          ),
+                          Container(
+                              padding: EdgeInsets.only(right: 4, top: 4),
+                              child: Text(
+                                '$status',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ))
+                        ],
+                      ),
+                      getSpacer(height: 6),
+                      Text(
+                        "Price: ${getFormattedCurrency(productList.totalPrice.toDouble())}",
+                        style: CustomTextStyle.textFormFieldRegular.copyWith(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Date: ${getFormattedDateString(dateTime: getDateFromString(dateString: productList.createdAt))}",
+                              style: CustomTextStyle.textFormFieldBlack
+                                  .copyWith(color: AppColors.kPrimaryBlue),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                flex: 100,
+              )
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
