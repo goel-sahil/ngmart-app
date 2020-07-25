@@ -37,7 +37,7 @@ class AdminProductDetailPage extends StatefulWidget {
 }
 
 class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
-  int _quantity = 1;
+  num _quantity = 1;
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
   var _userLoggedIn = false;
@@ -102,7 +102,7 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
           elevation: 0,
           backgroundColor: AppColors.kPrimaryBlue,
           centerTitle: true,
-          title: Text(widget.productData.title,
+          title: Text(widget?.productData?.title,
               style: h4.copyWith(color: Colors.white)),
         ),
         body: Stack(
@@ -124,12 +124,12 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text("${widget.productData.title}", style: h3),
+                                Text("${widget?.productData?.title??""}", style: h3),
                                 getSpacer(height: 6),
-                                Text(widget.productData.brand.title, style: h4),
+                                Text(widget?.productData?.brand?.title??"", style: h4),
                                 getSpacer(height: 6),
                                 Text(
-                                    "${getFormattedCurrency(widget.productData.price.toDouble())} / ${widget.productData.quantity} ${widget.productData.quantityUnit.title}",
+                                    "${getFormattedCurrency(widget?.productData?.price?.toDouble())} / ${widget?.productData?.quantity} ${widget?.productData?.quantityUnit?.title}",
                                     style: h5),
                                 Container(
                                   margin: EdgeInsets.only(top: 5, bottom: 20),
@@ -142,13 +142,13 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
                                           height: 4,
                                         ),
                                         Text(
-                                            '${widget.productData.category.title}',
+                                            '${widget?.productData?.category?.title??""}',
                                             style: h5),
                                         SizedBox(
                                           height: 2,
                                         ),
                                         Text(
-                                            widget.productData.description ??
+                                            widget?.productData?.description ??
                                                 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages',
                                             maxLines: 7,
                                             overflow: TextOverflow.ellipsis,
@@ -157,97 +157,6 @@ class _AdminProductDetailPageState extends State<AdminProductDetailPage> {
                                     ),
                                   ),
                                 ),
-//                                Container(
-//                                  margin: EdgeInsets.only(top: 6, bottom: 25),
-//                                  child: Column(
-//                                    children: <Widget>[
-//                                      Container(
-//                                        child: Text('Quantity', style: h6),
-//                                        margin: EdgeInsets.only(bottom: 15),
-//                                      ),
-//                                      Row(
-//                                        mainAxisAlignment:
-//                                            MainAxisAlignment.center,
-//                                        crossAxisAlignment:
-//                                            CrossAxisAlignment.center,
-//                                        children: <Widget>[
-//                                          Container(
-//                                            width: 55,
-//                                            height: 55,
-//                                            child: OutlineButton(
-//                                              onPressed: () {
-//                                                setState(() {
-//                                                  _quantity += widget
-//                                                      .productData
-//                                                      .quantityIncrement;
-//                                                });
-//                                              },
-//                                              child: Icon(Icons.add),
-//                                            ),
-//                                          ),
-//                                          Container(
-//                                            margin: EdgeInsets.only(
-//                                                left: 20, right: 20),
-//                                            child: Text(_quantity.toString(),
-//                                                style: h3),
-//                                          ),
-//                                          Container(
-//                                            width: 55,
-//                                            height: 55,
-//                                            child: OutlineButton(
-//                                              onPressed: () {
-//                                                print("_quantity==>$_quantity");
-//                                                print(
-//                                                    "widget.productData.quantityIncrement==>${widget.productData.quantityIncrement}");
-//                                                setState(() {
-//                                                  if (_quantity ==
-//                                                      widget.productData
-//                                                          .quantityIncrement)
-//                                                    return;
-//                                                  _quantity -= widget
-//                                                      .productData
-//                                                      .quantityIncrement;
-//                                                });
-//                                              },
-//                                              child: Icon(Icons.remove),
-//                                            ),
-//                                          )
-//                                        ],
-//                                      )
-//                                    ],
-//                                  ),
-//                                ),
-//                                Container(
-//                                  width: 180,
-//                                  child: froyoOutlineBtn('Buy Now', () {
-//                                    if (_userLoggedIn) {
-//                                      _hitApi(
-//                                          productId: widget.productData.id,
-//                                          quantity: _quantity,
-//                                          fromBuyNow: true);
-//                                    } else {
-//                                      Navigator.push(
-//                                          context,
-//                                          CupertinoPageRoute(
-//                                              builder: (context) => Login()));
-//                                    }
-//                                  }),
-//                                ),
-//                                Container(
-//                                  width: 180,
-//                                  child: froyoFlatBtn('Add to Cart', () {
-//                                    if (_userLoggedIn) {
-//                                      _hitApi(
-//                                          productId: widget.productData.id,
-//                                          quantity: _quantity);
-//                                    } else {
-//                                      Navigator.push(
-//                                          context,
-//                                          CupertinoPageRoute(
-//                                              builder: (context) => Login()));
-//                                    }
-//                                  }),
-//                                )
                               ],
                             ),
                             decoration: BoxDecoration(

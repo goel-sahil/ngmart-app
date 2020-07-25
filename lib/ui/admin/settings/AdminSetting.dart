@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
+import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
+import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/cms/CmsResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/changePassword/ChangePasswordScreen.dart';
@@ -25,11 +27,13 @@ class AdminSettingScreen extends StatefulWidget {
 class _AdminSettingScreenState extends State<AdminSettingScreen> {
   DashboardProvider provider;
   bool isLoggedIn = false;
+  bool isSwitched = true;
 
   @override
   void initState() {
     MemoryManagement.init();
     isLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
+    isSwitched = MemoryManagement.getNotificationOnOff() ?? false;
     super.initState();
   }
 
@@ -70,6 +74,41 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
             child: Container(
               child: new Column(
                 children: <Widget>[
+                  Container(
+                    margin:
+                        new EdgeInsets.only(left: 30.0, right: 20.0, top: 10.0),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        new Text(
+                          "Push Notification",
+                          style: new TextStyle(
+                              color: AppColors.kAppBlack,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17.0),
+                        ),
+                        Switch(
+                          value: isSwitched != null ? isSwitched : false,
+                          onChanged: (value) {
+                            setState(() {
+                              isSwitched = value;
+                              notificationApi();
+                            });
+                          },
+                          activeTrackColor: AppColors.kPrimaryBlue,
+                          activeColor: AppColors.kPrimaryBlue,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: new EdgeInsets.symmetric(horizontal: 30),
+                    child: new Container(
+                      height: 1.0,
+                      color: Colors.black45,
+                      margin: new EdgeInsets.only(top: 10.0),
+                    ),
+                  ),
                   getView("Review Us", 1),
                   getView("Rate Our App", 2),
                   getView("Profile", 9),
@@ -104,7 +143,9 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
               Navigator.push(
                   context,
                   CupertinoPageRoute(
-                      builder: (context) => ProfileScreen(fromAdmin: true,)));
+                      builder: (context) => ProfileScreen(
+                            fromAdmin: true,
+                          )));
             }
             break;
           case 3:
@@ -182,6 +223,28 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
       await launch(url);
     } else {
       throw 'Could not launch $url';
+    }
+  }
+
+  void notificationApi() async {
+    bool isConnected = await isConnectedToInternet();
+    if (!isConnected) {
+      showAlertDialog(
+          context: context, title: "Error", message: Messages.noInternetError);
+      return;
+    }
+    provider.setLoading();
+    if (isConnected) {
+      var response = await provider.notification(context);
+      //logged in successfully
+      if (response != null && (response is CommonResponse)) {
+        print(response.message);
+        MemoryManagement.setNotificationOnOff(onoff: isSwitched);
+        //showInSnackBar(response.message);
+      } else {
+        APIError apiError = response;
+        //showInSnackBar(apiError.error);
+      }
     }
   }
 }

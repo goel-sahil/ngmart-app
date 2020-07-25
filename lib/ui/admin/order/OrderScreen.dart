@@ -44,6 +44,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   AdminProvider adminProvider;
+  String url;
 
   @override
   void initState() {
@@ -127,7 +128,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
-//      showInSnackBar(response.message);
+      showInSnackBar(response.message);
       dataList[position].status = status;
       setState(() {});
     }
@@ -137,6 +138,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   Widget build(BuildContext context) {
     adminProvider = Provider.of<AdminProvider>(context);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: widget.fromNotification
           ? AppBar(
               title: Text("Orders"),
@@ -167,17 +169,21 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                         if (dataList[index].status == 0) {
                           status = "Pending";
                         } else if (dataList[index].status == 1) {
-                          status = "Accept";
+                          status = "Accepted";
                         } else if (dataList[index].status == 2) {
-                          status = "Reject";
+                          status = "Rejected";
                         } else if (dataList[index].status == 3) {
-                          status = "Cancel";
+                          status = "Cancelled";
                         } else if (dataList[index].status == 4) {
                           status = "Delivered";
                         }
 
-                        return buildItem(dataList[index], status,
-                            dataList[index].status, index);
+                        return buildItem(
+                            dataList[index],
+                            status,
+                            dataList[index].status,
+                            index,
+                            dataList[index].type);
                       },
                     ),
                   ),
@@ -200,7 +206,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     );
   }
 
-  buildItem(DataInner dataList, String status, int intStatus, int position) {
+  buildItem(DataInner dataList, String status, int intStatus, int position,
+      int type) {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(new CupertinoPageRoute(
@@ -211,6 +218,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                   id: dataList.id,
                   userAddress: dataList.userAddress,
                   user: dataList.user,
+                  type: type,
+                  dataItem: dataList,
                 )));
       },
       child: Slidable(
@@ -222,7 +231,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   }
 
   List<Widget> returnList(int intStatus, int id, int position) {
-    print("Sttaus==> $intStatus");
     if (intStatus == 0) {
       return [
         IconSlideAction(
@@ -424,7 +432,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                           Container(
                             padding: EdgeInsets.only(right: 8, top: 4),
                             child: Text(
-                              "Order ID: ${productList.type == 0 ? productList.orderItems.first.orderId : productList.id}",
+                              "Order ID: ${productList.type == 0 ? productList?.orderItems?.first?.orderId : productList?.id}",
                               maxLines: 2,
                               softWrap: true,
                               style: CustomTextStyle.textFormFieldSemiBold

@@ -224,6 +224,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 _currentPageNumber = 1;
                 _loadMore = false;
                 _hitApi();
+                _searchController.clear();
               }
             },
           ),

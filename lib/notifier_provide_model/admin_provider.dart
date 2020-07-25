@@ -274,7 +274,7 @@ class AdminProvider with ChangeNotifier {
 
     var response = await APIHandler.post(
         context: context,
-        url: "${APIs.getProducts}?page=$currentPageNumber",
+        url: "${APIs.products}?page=$currentPageNumber",
         requestBody: adminProductRequest.toJson(),
         additionalHeaders: headers);
 

@@ -181,8 +181,10 @@ class LoginProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      CommonResponse loginResponseData = new CommonResponse.fromJson(response);
+      LoginResponse loginResponseData = new LoginResponse.fromJson(response);
       print("response ${loginResponseData.toJson()}");
+      MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
+      MemoryManagement.setLoggedInStatus(logInStatus: true);
       completer.complete(loginResponseData);
       notifyListeners();
       return completer.future;

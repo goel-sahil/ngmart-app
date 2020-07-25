@@ -16,15 +16,24 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ngmartflutter/model/admin/InvoiceResponse.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
-  List<OrderItems> cartList;
   num total;
   String inVoiceUrl;
   int id;
   UserAddress userAddress;
   OrderUser user;
+  var type;
+  List<OrderItems> cartList;
+  DataInner dataItem;
 
   OrderDetailsScreen(
-      {this.cartList, this.total, this.inVoiceUrl, this.id, this.userAddress, this.user});
+      {this.cartList,
+      this.total,
+      this.inVoiceUrl,
+      this.id,
+      this.userAddress,
+      this.user,
+      this.type,
+      this.dataItem});
 
   @override
   _OrderDetailsScreenState createState() => _OrderDetailsScreenState();
@@ -40,6 +49,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     MemoryManagement.init();
     var info = MemoryManagement.getUserInfo();
     userInfo = LoginResponse.fromJson(jsonDecode(info));
+    if (widget.type == 0) {
+    } else {
+      widget.cartList.add(OrderItems());
+    }
     super.initState();
   }
 
@@ -160,14 +173,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   )
                 ],
               ),
-              createAddressText(
-                  "${widget.userAddress.address ?? ""}",
-                  16),
+              createAddressText("${widget.userAddress.address ?? ""}", 16),
               createAddressText(
                   "${widget.userAddress.city ?? ""} - ${widget.userAddress.pinCode ?? ""}",
                   6),
-              createAddressText(
-                  "${widget.userAddress.state ?? ""}", 6),
+              createAddressText("${widget.userAddress.state ?? ""}", 6),
               SizedBox(
                 height: 6,
               ),
@@ -186,12 +196,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               SizedBox(
                 height: 16,
               ),
-//              Container(
-//                color: Colors.grey.shade300,
-//                height: 1,
-//                width: double.infinity,
-//              ),
-              //addressAction()
             ],
           ),
         ),
@@ -318,7 +322,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             itemBuilder: (context, position) {
               return checkoutListItem(widget.cartList[position]);
             },
-            itemCount: widget.cartList.length,
+            itemCount: widget.type == 0 ? widget.cartList.length : 1,
             shrinkWrap: true,
             primary: false,
             scrollDirection: Axis.vertical,
@@ -329,16 +333,25 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   checkoutListItem(OrderItems cartList) {
+    var title;
+    var qty;
+    var url;
+    if (widget.type == 0) {
+      title = "${cartList.product.title} | ${cartList.product?.brand?.title}";
+      qty = "  Qty:${cartList.quantity}";
+      url = widget.cartList?.first?.product?.imageUrl ?? "";
+    } else {
+      title = "Ordered by parchi";
+      qty = "";
+      url = widget.dataItem?.imageUrl;
+    }
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: <Widget>[
           Container(
             child: getCachedNetworkImage(
-                url: cartList.product.imageUrl ?? "",
-                height: 35,
-                width: 35,
-                fit: BoxFit.fitHeight),
+                url: url, height: 35, width: 35, fit: BoxFit.fitHeight),
             decoration:
                 BoxDecoration(border: Border.all(color: Colors.grey, width: 1)),
           ),
@@ -348,12 +361,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           RichText(
             text: TextSpan(children: [
               TextSpan(
-                  text:
-                      "${cartList.product.title} | ${cartList.product?.brand?.title ?? ""}   ",
+                  text: title,
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12)),
               TextSpan(
-                  text: "  Qty:${cartList.quantity}",
+                  text: qty,
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12, fontWeight: FontWeight.w600))
             ]),

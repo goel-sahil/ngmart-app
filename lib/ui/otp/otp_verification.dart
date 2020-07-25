@@ -13,7 +13,9 @@ import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/Login/LoginRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/model/forgotPassword/ForgotPassword.dart';
 import 'package:ngmartflutter/model/otp/otp_request.dart';
 import 'package:ngmartflutter/notifier_provide_model/login_provider.dart';
 import 'package:ngmartflutter/ui/admin/admin_navigation_drawer.dart';
@@ -212,6 +214,8 @@ class _OtpverificationState extends State<Otpverification> {
                             startTimer();
                             if (widget.otpType == OTPType.REGISTER) {
                               _hitResendApi(url: APIs.resendOtp);
+                            } else if (widget.otpType == OTPType.CHANGE_PHONE) {
+                              _hitResendChangePasswordApi();
                             } else {
                               _hitResendApi(url: APIs.forgotPasswordResendOtp);
                             }
@@ -231,7 +235,9 @@ class _OtpverificationState extends State<Otpverification> {
                             startTimer();
                             if (widget.otpType == OTPType.REGISTER) {
                               _hitResendApi(url: APIs.resendOtp);
-                            } else {
+                            } else if (widget.otpType == OTPType.CHANGE_PHONE) {
+                              _hitResendChangePasswordApi();
+                            }  else {
                               _hitResendApi(url: APIs.forgotPasswordResendOtp);
                             }
                           }
@@ -376,7 +382,7 @@ class _OtpverificationState extends State<Otpverification> {
       if (response is APIError) {
         showInSnackBar(response.error);
       } else {
-        CommonResponse commonResponse = response;
+        LoginResponse commonResponse = response;
         showInSnackBar(commonResponse.message);
         var role = MemoryManagement?.getUserRole() ?? 0;
         if (role == 1) {
@@ -403,5 +409,19 @@ class _OtpverificationState extends State<Otpverification> {
   void showInSnackBar(String value) {
     _scaffoldKeys.currentState
         .showSnackBar(new SnackBar(content: new Text(value)));
+  }
+
+  Future<void> _hitResendChangePasswordApi() async {
+    provider.setLoading();
+    var mobileNumber = widget.phone;
+    var request = LoginRequest(phoneNumber: mobileNumber);
+
+    var response = await provider.changePhoneNumber(request, context);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else {
+      ForgotPasswordResponse forgotPasswordResponse = response;
+      showInSnackBar(forgotPasswordResponse.message);
+    }
   }
 }
