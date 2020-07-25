@@ -151,7 +151,7 @@ class AdminProvider with ChangeNotifier {
   }
 
   Future<dynamic> getCategoryList(
-      BuildContext context, int catId, bool forUpdate) async {
+      BuildContext context, String catId, bool forUpdate) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
       "Accept": "application/json",

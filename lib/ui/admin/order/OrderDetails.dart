@@ -154,7 +154,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "${widget.user.firstName ?? ""} ${widget.user.lastName ?? ""}",
+                    "${widget?.user?.firstName ?? ""} ${widget?.user?.lastName ?? ""}",
                     style: CustomTextStyle.textFormFieldSemiBold
                         .copyWith(fontSize: 14),
                   ),
@@ -173,11 +173,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   )
                 ],
               ),
-              createAddressText("${widget.userAddress.address ?? ""}", 16),
+              createAddressText("${widget?.userAddress?.address ?? ""}", 16),
               createAddressText(
-                  "${widget.userAddress.city ?? ""} - ${widget.userAddress.pinCode ?? ""}",
+                  "${widget?.userAddress?.city ?? ""} - ${widget?.userAddress?.pinCode ?? ""}",
                   6),
-              createAddressText("${widget.userAddress.state ?? ""}", 6),
+              createAddressText("${widget?.userAddress?.state ?? ""}", 6),
               SizedBox(
                 height: 6,
               ),
@@ -188,7 +188,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       style: CustomTextStyle.textFormFieldMedium
                           .copyWith(fontSize: 12, color: Colors.grey.shade800)),
                   TextSpan(
-                      text: "${userInfo?.data?.user?.phoneNumber ?? ""}",
+                      text: "${widget?.user?.phoneNumber ?? ""}",
                       style: CustomTextStyle.textFormFieldBold
                           .copyWith(color: Colors.black, fontSize: 12)),
                 ]),

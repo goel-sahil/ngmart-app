@@ -1,4 +1,4 @@
-package com.example.ngmartflutter
+package com.ngmartflutter
 
 import io.flutter.embedding.android.FlutterActivity
 

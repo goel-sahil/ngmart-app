@@ -58,6 +58,7 @@ class _LoginState extends State<Login> {
           }),
           (route) => false,
         );
+        print("In admin===>");
       } else {
         Navigator.pushAndRemoveUntil(
           context,

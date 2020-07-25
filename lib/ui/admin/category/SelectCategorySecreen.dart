@@ -13,7 +13,7 @@ import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
 import 'package:provider/provider.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
-  int catId;
+  String catId;
   bool forUpdate;
   SelectCategoryScreen({this.catId, this.forUpdate});
   @override

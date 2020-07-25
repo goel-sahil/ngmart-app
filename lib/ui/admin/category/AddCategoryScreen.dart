@@ -37,15 +37,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   FocusNode _titleField = new FocusNode();
   FocusNode _categoryField = new FocusNode();
   AdminProvider provider;
-  String catId = "";
+  String catId;
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
   File _image;
-
   int status = 1;
-  int cat;
-
   @override
   void initState() {
     if (widget.fromCategoryScreen) {
@@ -54,7 +51,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         _categoryController.text = widget.dataCategory.category.title;
       }
       status = widget.dataCategory.status;
-      cat = widget.dataCategory.id;
+      catId = widget.dataCategory.categoryId.toString();
+      print("Cat id during edit==> ${widget.dataCategory.id}");
       setState(() {});
     }
     super.initState();
@@ -150,10 +148,11 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => SelectCategoryScreen(
-                                        catId: cat,
+                                        catId: catId,
                                         forUpdate: widget.fromCategoryScreen,
                                       )));
-                          if (catModel != null) {
+                          if (catModel != null && catModel.fromItem) {
+                            print("Inside==>");
                             _categoryController.text = catModel.title;
                             catId = catModel.id;
                           }
@@ -297,7 +296,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       request.fields['status'] = status.toString();
     }
 
-    print("${request.fields.toString()}");
+    print("ADD category ${request.fields.toString()}");
 
     http.StreamedResponse response = await request.send();
     _loaderStreamController.add(false); //show loader
@@ -314,9 +313,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       Map data = jsonDecode(respStr);
       print("Response==> $data");
       showInSnackBar("${data["message"]}");
-      Timer(Duration(milliseconds: 500), () {
-        Navigator.pop(context, true);
-      });
+//      Timer(Duration(milliseconds: 500), () {
+//        Navigator.pop(context, true);
+//      });
     }
   }
 

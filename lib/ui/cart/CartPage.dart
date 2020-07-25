@@ -88,7 +88,10 @@ class _CartPageState extends State<CartPage>
           },
         );
       }
-    } else if (response is CommonResponse) {}
+    } else if (response is CommonResponse) {
+
+    }
+
   }
 
   Future<void> _hitRemoveItemFromCart({int cartId, int position}) async {

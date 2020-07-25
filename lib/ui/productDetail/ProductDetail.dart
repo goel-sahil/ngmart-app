@@ -21,7 +21,6 @@ import 'package:ngmartflutter/ui/cart/CartPage.dart';
 import 'package:ngmartflutter/ui/checkout/CheckOutPage.dart';
 import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String pageTitle;

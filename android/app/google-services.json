@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "1000608129878",
-    "firebase_url": "https://ngmart-dc53c.firebaseio.com",
-    "project_id": "ngmart-dc53c",
-    "storage_bucket": "ngmart-dc53c.appspot.com"
+    "project_number": "241919682323",
+    "firebase_url": "https://ngmart-fea73.firebaseio.com",
+    "project_id": "ngmart-fea73",
+    "storage_bucket": "ngmart-fea73.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1000608129878:android:793547348a0db112eeecf7",
+        "mobilesdk_app_id": "1:241919682323:android:d2161fdd053dc57cb29ce6",
         "android_client_info": {
-          "package_name": "com.example.ngmartflutter"
+          "package_name": "com.ngmartflutter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1000608129878-fap70v0qslp5gtb1d9v1voug0tdk46s3.apps.googleusercontent.com",
+          "client_id": "241919682323-a3le34qcgtfrir0e3ou2gv4djbatsfeq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDCQuzNtV5OWWPDEurm_QyGLzfOH8RklBI"
+          "current_key": "AIzaSyCJnpub-qoFiO93QNl0imtG8OmbIW-6FK0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1000608129878-fap70v0qslp5gtb1d9v1voug0tdk46s3.apps.googleusercontent.com",
+              "client_id": "241919682323-a3le34qcgtfrir0e3ou2gv4djbatsfeq.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

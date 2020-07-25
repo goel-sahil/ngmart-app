@@ -34,6 +34,7 @@ import 'banner/BannerScreen.dart';
 import 'brand/BrandScreen.dart';
 import 'category/AddCategoryScreen.dart';
 import 'category/CategoryScreen.dart';
+import 'package:package_info/package_info.dart';
 
 class AdminNavigationDrawer extends StatefulWidget {
   _AdminNavigationDrawerState createState() => _AdminNavigationDrawerState();
@@ -55,8 +56,21 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   bool showNotification = true;
   DashboardProvider provider;
 
+  printPackage() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+    print("appName===>$appName");
+    print("packageName===>$packageName");
+    print("version===>$version");
+    print("buildNumber===>$buildNumber");
+  }
+
   @override
   void initState() {
+    printPackage();
     _body = CommingSoonScreen();
     MemoryManagement.init();
     _firebaseMessaging = FirebaseMessaging();
@@ -152,7 +166,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
       },
       onLaunch: (Map<String, dynamic> message) async {
         int type = int.tryParse(message["data"]["type"]);
-         moveToScreenFromPush(type);
+        moveToScreenFromPush(type);
       },
     );
 
@@ -191,10 +205,8 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     var response = await provider.updateToken(context, request);
     if (response != null && (response is CommonResponse)) {
       print(response.message);
-//      showInSnackBar(response.message);
     } else {
       APIError apiError = response;
-//      showInSnackBar(apiError.error);
     }
   }
 
@@ -214,7 +226,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   Future onSelectNotification(String payload) async {
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
-        moveToScreenFromPush(int.tryParse(payload)); //when click in push
+      //moveToScreenFromPush(int.tryParse(payload)); //when click in push
     }
   }
 
@@ -501,7 +513,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   moveToScreenFromPush(int type) {
     print("Type==> $type");
     if (MemoryManagement.getUserRole() == 1) {
-      if (type == 0) {
+      if (type == 5) {
         Navigator.push(
             context,
             CupertinoPageRoute(
