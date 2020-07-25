@@ -68,6 +68,7 @@ class _BannerProductScreenState extends State<BannerProductScreen> {
               },
               itemCount: widget.products.length ?? 0,
               controller: scrollController,
+              physics: AlwaysScrollableScrollPhysics(),
             ),
             new Center(
               child: getHalfScreenProviderLoader(

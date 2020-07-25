@@ -35,7 +35,7 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  int _quantity = 1;
+  num _quantity = 1;
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
   var _userLoggedIn = false;
@@ -48,12 +48,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
       if (fromBuyNow) {
-        var brand = CartBrand(title: widget.productData.brand.title);
+        var price=((widget.productData.price/widget.productData.quantity)*_quantity);
+        var brand = CartBrand(title: widget?.productData?.brand?.title??"");
         var product = Product(
-            title: widget.productData.title,
+            title: widget?.productData?.title??"",
             brand: brand,
             quantity: _quantity,
-            imageUrl: widget.productData.imageUrl);
+            imageUrl: widget?.productData?.imageUrl??"");
         var cartData = CartData(
             productId: widget.productData.id,
             product: product,
@@ -65,40 +66,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             CupertinoPageRoute(
                 builder: (context) => CheckOutPage(
                       cartList: list,
-                      total: widget.productData.price,
+                      total: price,
                     )));
       } else {
         showInSnackBar(response.message);
       }
     }
   }
-
-/*  Future<void> _hitPlaceOrderApi({int addressId}) async {
-    provider.setLoading();
-    var response = await provider.placeOrder(context, addressId);
-    if (response is APIError) {
-      showInSnackBar(response.error);
-    } else if (response is CommonResponse) {
-      //showInSnackBar(response.message);
-      Alert(
-        context: context,
-        type: AlertType.success,
-        buttons: [
-          DialogButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ],
-        title: 'Order Successfully placed.',
-        desc:
-            "Your order has been placed. We we reach out to you shortly with your order.",
-        image: Image.asset("images/tick.png"),
-      ).show();
-    }
-  }*/
 
   void showInSnackBar(String value) {
     _scaffoldKeys.currentState.showSnackBar(new SnackBar(
@@ -109,7 +83,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   void initState() {
-    _quantity = widget.productData.quantity;
+    _quantity = widget?.productData?.quantity??"";
     // TODO: implement initState
     MemoryManagement.init();
     _userLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
@@ -236,7 +210,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           Container(
                                             margin: EdgeInsets.only(
                                                 left: 20, right: 20),
-                                            child: Text(_quantity.toString(),
+                                            child: Text(_quantity.toStringAsFixed(2),
                                                 style: h3),
                                           ),
                                           Container(
@@ -244,9 +218,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             height: 55,
                                             child: OutlineButton(
                                               onPressed: () {
-                                                print("_quantity==>$_quantity");
-                                                print(
-                                                    "widget.productData.quantityIncrement==>${widget.productData.quantityIncrement}");
                                                 setState(() {
                                                   if (_quantity ==
                                                       widget.productData

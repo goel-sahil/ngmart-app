@@ -30,7 +30,8 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
   bool isPullToRefresh = false;
   int _currentPageNumber = 1;
   List<Products> productList = new List();
-  List<Products> selectedProductList = new List();
+
+//  List<Products> selectedProductList = new List();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   TextEditingController _searchController = new TextEditingController();
@@ -107,10 +108,10 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
   }
 
   _compareLists() {
-    if (selectedProductList.isNotEmpty) {
+    if (widget?.selectedProductList?.isNotEmpty == true) {
       for (int i = 0; i < productList.length; i++) {
-        for (int j = 0; j < selectedProductList.length; j++) {
-          if (productList[i].id == selectedProductList[j].id) {
+        for (int j = 0; j < widget.selectedProductList.length; j++) {
+          if (productList[i].id == widget.selectedProductList[j].id) {
             productList[i].isSelected = true;
           }
         }
@@ -131,15 +132,14 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
           actions: <Widget>[
             InkWell(
               onTap: () {
-                selectedProductList.clear();
-                for (int i = 0; i < productList.length; i++) {
-                  if (productList[i].isSelected) {
-                    print("Selected item==>  ${productList[i].title}");
-                    selectedProductList.add(productList[i]);
-                  }
-                }
-                print("List size==> ${selectedProductList.length}");
-                Navigator.pop(context, selectedProductList);
+//                for (int i = 0; i < productList.length; i++) {
+//                  if (productList[i].isSelected) {
+//                    print("Selected item==>  ${productList[i].title}");
+//                    selectedProductList.add(productList[i]);
+//                  }
+//                }
+//                print("List size==> ${selectedProductList.length}");
+                Navigator.pop(context, widget.selectedProductList);
               },
               child: Padding(
                 padding: const EdgeInsets.only(top: 18, right: 10),
@@ -197,7 +197,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
                           },
                           itemCount: productList.length ?? 0,
                           controller: scrollController,
-                          physics: ScrollPhysics(),
+                          physics: AlwaysScrollableScrollPhysics(),
                         ),
                       ),
                     ],
@@ -232,9 +232,18 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
           title: new Text(productList.title),
           value: productList.isSelected,
           onChanged: (bool value) {
-            setState(() {
-              productList.isSelected = value;
-            });
+            if (value == true) {
+              widget.selectedProductList.add(productList);
+            } else {
+              for (int i = 0; i < widget.selectedProductList.length; i++) {
+                if (widget.selectedProductList[i].id == productList.id) {
+                  widget.selectedProductList.removeAt(i);
+                }
+              }
+            }
+            productList.isSelected = value;
+            print("List size===> ${widget.selectedProductList.length}");
+            setState(() {});
           },
         ));
   }

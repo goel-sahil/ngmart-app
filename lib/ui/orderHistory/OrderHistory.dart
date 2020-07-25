@@ -123,16 +123,17 @@ class _OrderHistoryState extends State<OrderHistory> {
               },
               child: ListView.builder(
                 controller: scrollController,
+                physics: AlwaysScrollableScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   String status;
                   if (dataList[index].status == 0) {
                     status = "Pending";
                   } else if (dataList[index].status == 1) {
-                    status = "Accept";
+                    status = "Accepted";
                   } else if (dataList[index].status == 2) {
-                    status = "Reject";
+                    status = "Rejected";
                   } else if (dataList[index].status == 3) {
-                    status = "Cancel";
+                    status = "Cancelled";
                   } else if (dataList[index].status == 4) {
                     status = "Delivered";
                   }
@@ -211,6 +212,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Container(
                               padding: EdgeInsets.only(right: 8, top: 4),

@@ -28,8 +28,8 @@ class _CartPageState extends State<CartPage>
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<CartData> cartList = new List();
-  int _quantity = 1;
-  int _perQuantity = 1;
+  num _quantity = 1;
+  num _perQuantity = 1;
   num total = 0.0;
 
   @override
@@ -272,6 +272,7 @@ class _CartPageState extends State<CartPage>
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
+      physics: AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, position) {
         _quantity = cartList[position].quantity;
         _perQuantity = cartList[position].initialQuantity;
@@ -329,7 +330,7 @@ class _CartPageState extends State<CartPage>
                       ),
                       getSpacer(height: 6),
                       Text(
-                        listData.product.brand.title ?? "",
+                        listData.product?.brand?.title ?? "",
                         style: CustomTextStyle.textFormFieldRegular
                             .copyWith(color: Colors.grey, fontSize: 14),
                       ),
@@ -387,7 +388,7 @@ class _CartPageState extends State<CartPage>
                                     padding: const EdgeInsets.only(
                                         bottom: 2, right: 12, left: 12),
                                     child: Text(
-                                      _quantity.toString() ?? "1",
+                                      _quantity.toStringAsFixed(2) ?? "1",
                                       style: CustomTextStyle
                                           .textFormFieldSemiBold,
                                     ),

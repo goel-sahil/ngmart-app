@@ -81,8 +81,8 @@ class Product {
   int categoryId;
   int brandId;
   num price;
-  int quantity;
-  int quantityIncrement;
+  num quantity;
+  num quantityIncrement;
   int quantityUnitId;
   int orderedTimes;
   int status;

@@ -167,6 +167,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           },
                           itemCount: productList.length ?? 0,
                           controller: scrollController,
+                          physics: AlwaysScrollableScrollPhysics(),
                         ),
                       ),
                     ],

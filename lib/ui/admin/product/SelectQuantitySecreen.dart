@@ -71,6 +71,7 @@ class _SelectQuantityUnitScreenState extends State<SelectQuantityUnitScreen> {
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
+              physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {

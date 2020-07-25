@@ -126,6 +126,7 @@ class _QuantityScreenState extends State<QuantityScreen> {
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
+              physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 String status =
                     dataInner[index].status == 1 ? "Active" : "In Active";

@@ -1,6 +1,6 @@
 class AddToCartRequest {
   int productId;
-  int quantity;
+  num quantity;
 
   AddToCartRequest({this.productId, this.quantity});
 

@@ -164,6 +164,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                     child: ListView.builder(
                       itemCount: dataList.length ?? 0,
                       controller: scrollController,
+                      physics: AlwaysScrollableScrollPhysics(),
                       itemBuilder: (BuildContext context, int index) {
                         String status;
                         if (dataList[index].status == 0) {

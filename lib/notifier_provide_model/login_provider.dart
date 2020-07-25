@@ -132,6 +132,11 @@ class LoginProvider with ChangeNotifier {
             accessToken: loginResponseData.data.token ?? "");
         MemoryManagement.setUserInfo(userInfo: json.encode(loginResponseData));
         MemoryManagement.setLoggedInStatus(logInStatus: true);
+        if (loginResponseData?.data?.user?.pushNotification == 1) {
+          MemoryManagement.setNotificationOnOff(onoff: true);
+        } else {
+          MemoryManagement.setNotificationOnOff(onoff: false);
+        }
       }
       completer.complete(loginResponseData);
       notifyListeners();

@@ -45,7 +45,7 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
       new StreamController<bool>();
   final picker = ImagePicker();
   File _image;
-  List<Products> selectedProductList=new List();
+  List<Products> selectedProductList = new List();
 
   @override
   void initState() {
@@ -58,7 +58,6 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
           productString.add(widget.adminProductItem.products[i].title);
         }
         _productController.text = productString.join(", ");
-
         selectedProductList.addAll(widget?.adminProductItem?.products);
       }
       setState(() {});
@@ -299,7 +298,6 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
 
-    var list = [5, 10];
     http.MultipartRequest request =
         new http.MultipartRequest("POST", url); //changed
 

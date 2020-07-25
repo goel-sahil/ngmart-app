@@ -98,14 +98,14 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
           children: <Widget>[
             getSpacer(height: 20),
             getCachedNetworkImage(
-                url: categories.imageUrl, height: 100, width: 100),
+                url: categories?.imageUrl??"", height: 100, width: 100),
             getSpacer(height: 10),
             Container(
               color: Colors.black26,
               width: double.infinity,
               alignment: Alignment.center,
               child: Text(
-                categories.title ?? "",
+                categories?.title ?? "",
                 style: h7,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

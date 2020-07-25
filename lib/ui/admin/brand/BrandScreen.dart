@@ -126,7 +126,7 @@ class _BrandScreenState extends State<BrandScreen> {
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
-              physics: ScrollPhysics(),
+              physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 String status =dataInner[index].status==1?"Active":"In Active";
                 return InkWell(

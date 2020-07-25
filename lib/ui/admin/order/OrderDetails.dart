@@ -325,6 +325,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             itemCount: widget.type == 0 ? widget.cartList.length : 1,
             shrinkWrap: true,
             primary: false,
+            physics: AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
           ),
         ),

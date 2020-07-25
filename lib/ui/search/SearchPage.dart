@@ -201,6 +201,7 @@ class _SearchPageState extends State<SearchPage> {
               primary: false,
               controller: scrollController,
               scrollDirection: Axis.vertical,
+              physics: AlwaysScrollableScrollPhysics(),
             ),
           )
         ],
@@ -355,6 +356,7 @@ class _SearchPageState extends State<SearchPage> {
                 itemCount: 10,
                 primary: false,
                 scrollDirection: Axis.horizontal,
+                physics: AlwaysScrollableScrollPhysics(),
               ),
             ),
           )

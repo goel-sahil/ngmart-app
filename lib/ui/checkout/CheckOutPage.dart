@@ -393,6 +393,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             itemCount: widget.cartList.length,
             shrinkWrap: true,
             primary: false,
+            physics: AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
           ),
         ),
@@ -426,7 +427,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12)),
               TextSpan(
-                  text: "  Qty:${cartList?.quantity}",
+                  text: "  Qty: ${cartList?.quantity?.toStringAsFixed(2)}",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12, fontWeight: FontWeight.w600))
             ]),

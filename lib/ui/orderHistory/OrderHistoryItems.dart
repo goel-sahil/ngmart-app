@@ -39,6 +39,7 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                 return createCartListItem(widget.dataList[index]);
               },
               itemCount: widget.dataList.length ?? 0,
+              physics: AlwaysScrollableScrollPhysics(),
             ),
             new Center(
               child: getHalfScreenProviderLoader(

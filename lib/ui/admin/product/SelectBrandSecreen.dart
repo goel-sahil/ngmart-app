@@ -82,6 +82,7 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
+              physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {

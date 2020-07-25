@@ -135,7 +135,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,
               controller: scrollController,
-              physics: ScrollPhysics(),
+              physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 String status = dataInner[index].message;
                 return InkWell(
