@@ -239,7 +239,7 @@ class _SearchPageState extends State<SearchPage> {
                         borderRadius: BorderRadius.all(Radius.circular(14)),
                         color: Colors.blue.shade50,
                         image: DecorationImage(
-                            image: NetworkImage(productList.imageUrl))),
+                            image: NetworkImage(productList?.imageUrl??""))),
                   ),
                 ),
                 Expanded(
@@ -252,7 +252,7 @@ class _SearchPageState extends State<SearchPage> {
                         Container(
                           padding: EdgeInsets.only(right: 8, top: 4),
                           child: Text(
-                            productList.title,
+                            productList?.title??"",
                             maxLines: 2,
                             softWrap: true,
                             style: CustomTextStyle.textFormFieldSemiBold
@@ -261,7 +261,7 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                         getSpacer(height: 6),
                         Text(
-                          productList.brand.title ?? "",
+                          productList.brand?.title ?? "",
                           style: CustomTextStyle.textFormFieldRegular.copyWith(
                             color: Colors.grey,
                             fontSize: 14,

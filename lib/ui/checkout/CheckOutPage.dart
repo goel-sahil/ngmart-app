@@ -213,7 +213,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "${userInfo.data.user.firstName ?? ""} ${userInfo.data.user.lastName ?? ""}",
+                    "${userInfo?.data?.user?.firstName ?? ""} ${userInfo?.data?.user?.lastName ?? ""}",
                     style: CustomTextStyle.textFormFieldSemiBold
                         .copyWith(fontSize: 14),
                   ),
@@ -233,13 +233,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 ],
               ),
               createAddressText(
-                  "${userInfo.data.user.userAddresses.first.address ?? ""}",
+                  "${userInfo?.data.user?.userAddresses?.first?.address ?? ""}",
                   16),
               createAddressText(
-                  "${userInfo.data.user.userAddresses.first.city ?? ""} - ${userInfo.data.user.userAddresses.first.pinCode ?? ""}",
+                  "${userInfo?.data?.user?.userAddresses?.first?.city ?? ""} - ${userInfo?.data?.user?.userAddresses?.first?.pinCode ?? ""}",
                   6),
               createAddressText(
-                  "${userInfo.data.user.userAddresses.first.state ?? ""}", 6),
+                  "${userInfo?.data?.user?.userAddresses?.first?.state ?? ""}", 6),
               SizedBox(
                 height: 6,
               ),
@@ -250,7 +250,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       style: CustomTextStyle.textFormFieldMedium
                           .copyWith(fontSize: 12, color: Colors.grey.shade800)),
                   TextSpan(
-                      text: "${userInfo.data.user.phoneNumber ?? ""}",
+                      text: "${userInfo?.data?.user?.phoneNumber ?? ""}",
                       style: CustomTextStyle.textFormFieldBold
                           .copyWith(color: Colors.black, fontSize: 12)),
                 ]),
@@ -408,7 +408,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
         children: <Widget>[
           Container(
             child: getCachedNetworkImage(
-                url: cartList.product.imageUrl ?? "",
+                url: cartList?.product?.imageUrl ?? "",
                 height: 35,
                 width: 35,
                 fit: BoxFit.fitHeight),
@@ -422,11 +422,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
             text: TextSpan(children: [
               TextSpan(
                   text:
-                      "${cartList.product.title} | ${cartList.product?.brand?.title ?? ""}   ",
+                      "${cartList?.product?.title} | ${cartList?.product?.brand?.title ?? ""}   ",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12)),
               TextSpan(
-                  text: "  Qty:${cartList.quantity}",
+                  text: "  Qty:${cartList?.quantity}",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(fontSize: 12, fontWeight: FontWeight.w600))
             ]),
@@ -484,7 +484,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
 //                  "Tax", getFormattedCurrency(96), Colors.grey.shade700),
               createPriceItem(
                   "Order Total",
-                  getFormattedCurrency(widget.total.toDouble()),
+                  getFormattedCurrency(widget?.total?.toDouble()),
                   Colors.grey.shade700),
               createPriceItem(
                   "Delievery Charges", "FREE", Colors.teal.shade300),
@@ -510,7 +510,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         .copyWith(color: Colors.black, fontSize: 12),
                   ),
                   Text(
-                    getFormattedCurrency(widget.total.toDouble()),
+                    getFormattedCurrency(widget?.total?.toDouble()),
                     style: CustomTextStyle.textFormFieldMedium
                         .copyWith(color: Colors.black, fontSize: 12),
                   )

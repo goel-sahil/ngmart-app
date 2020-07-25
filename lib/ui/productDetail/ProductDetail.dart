@@ -172,12 +172,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text("${widget.productData.title}", style: h3),
+                                Text("${widget?.productData?.title??""}", style: h3),
                                 getSpacer(height: 6),
-                                Text(widget.productData.brand.title, style: h4),
+                                Text(widget?.productData?.brand?.title??"", style: h4),
                                 getSpacer(height: 6),
                                 Text(
-                                    "${getFormattedCurrency(widget.productData.price.toDouble())} / ${widget.productData.quantity} ${widget.productData.quantityUnit.title}",
+                                    "${getFormattedCurrency(widget?.productData?.price?.toDouble())} / ${widget?.productData?.quantity} ${widget?.productData?.quantityUnit?.title}",
                                     style: h5),
                                 Container(
                                   margin: EdgeInsets.only(top: 5, bottom: 20),
@@ -190,13 +190,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           height: 4,
                                         ),
                                         Text(
-                                            '${widget.productData.category.title}',
+                                            '${widget?.productData?.category?.title}',
                                             style: h5),
                                         SizedBox(
                                           height: 2,
                                         ),
                                         Text(
-                                            widget.productData.description ??
+                                            widget?.productData?.description ??
                                                 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages',
                                             maxLines: 7,
                                             overflow: TextOverflow.ellipsis,
@@ -360,20 +360,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       tag: food.title,
                       child: Image.network(food.imageUrl,
                           width: (imgWidth != null) ? imgWidth : 100)))),
-//        Positioned(
-//          bottom: (isProductPage) ? 10 : 70,
-//          right: 0,
-//          child: FlatButton(
-//            padding: EdgeInsets.all(20),
-//            shape: CircleBorder(),
-//            onPressed: onLike,
-//            child: Icon(
-//              (food.userLiked) ? Icons.favorite : Icons.favorite_border,
-//              color: (food.userLiked) ? primaryColor : darkText,
-//              size: 30,
-//            ),
-//          ),
-//        ),
+
           Positioned(
             bottom: 0,
             left: 0,
@@ -388,22 +375,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   )
                 : Text(' '),
           ),
-          /* Positioned(
-              top: 10,
-              left: 10,
-              child: (food.price != null)
-                  ? Container(
-                      padding: EdgeInsets.only(
-                          top: 5, left: 10, right: 10, bottom: 5),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[600],
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Text('-' + food.price.toString() + '%',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700)),
-                    )
-                  : SizedBox(width: 0))*/
+
         ],
       ),
     );

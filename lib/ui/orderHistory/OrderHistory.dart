@@ -215,7 +215,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                             Container(
                               padding: EdgeInsets.only(right: 8, top: 4),
                               child: Text(
-                                "Order ID: ${type == 0 ? productList.orderItems.first.orderId : productList.id}",
+                                "Order ID: ${type == 0 ? productList?.orderItems?.first?.orderId??"" : productList?.id??""}",
                                 maxLines: 2,
                                 softWrap: true,
                                 style: CustomTextStyle.textFormFieldSemiBold
@@ -232,7 +232,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                         ),
                         getSpacer(height: 6),
                         Text(
-                          "Price: ${getFormattedCurrency(productList.totalPrice.toDouble())}",
+                          "Price: ${getFormattedCurrency(productList?.totalPrice?.toDouble())}",
                           style: CustomTextStyle.textFormFieldRegular.copyWith(
                             color: Colors.grey,
                             fontSize: 14,
@@ -243,7 +243,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "Date: ${getFormattedDateString(dateTime: getDateFromString(dateString: productList.createdAt))}",
+                                "Date: ${getFormattedDateString(dateTime: getDateFromString(dateString: productList?.createdAt))}",
                                 style: CustomTextStyle.textFormFieldBlack
                                     .copyWith(color: AppColors.kPrimaryBlue),
                               ),

@@ -75,7 +75,7 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(14)),
                       color: Colors.blue.shade50,
                       image: DecorationImage(
-                          image: NetworkImage(productList.product.imageUrl))),
+                          image: NetworkImage(productList?.product?.imageUrl??""))),
                 ),
                 Expanded(
                   child: Container(
@@ -87,7 +87,7 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                         Container(
                           padding: EdgeInsets.only(right: 8, top: 4),
                           child: Text(
-                            "${productList.product.title}",
+                            "${productList?.product?.title??""}",
                             maxLines: 2,
                             softWrap: true,
                             style: CustomTextStyle.textFormFieldSemiBold
@@ -96,7 +96,7 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                         ),
                         getSpacer(height: 6),
                         Text(
-                          "${productList.product.brand.title}",
+                          "${productList?.product?.brand?.title??""}",
                           style: CustomTextStyle.textFormFieldRegular.copyWith(
                             color: Colors.grey,
                             fontSize: 14,
@@ -107,7 +107,7 @@ class _OrderItemsScreenState extends State<OrderItemsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "${getFormattedCurrency(productList.totalPrice.toDouble())} / ${productList.quantity} ${productList.product.quantityUnit.title}",
+                                "${getFormattedCurrency(productList?.totalPrice?.toDouble())} / ${productList?.quantity??""} ${productList?.product?.quantityUnit?.title??""}",
                                 style: CustomTextStyle.textFormFieldBlack
                                     .copyWith(color: AppColors.kPrimaryBlue),
                               ),

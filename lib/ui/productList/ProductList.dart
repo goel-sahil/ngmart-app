@@ -104,7 +104,7 @@ class _ProductScreenState extends State<ProductScreen> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text(widget.title ?? "Products"),
+          title: Text(widget?.title ?? "Products"),
           centerTitle: true,
           actions: <Widget>[
             IconButton(
@@ -182,7 +182,7 @@ class _ProductScreenState extends State<ProductScreen> {
               children: <Widget>[
                 Hero(
                   transitionOnUserGestures: true,
-                  tag: productList.title,
+                  tag: productList?.title??"",
                   child: Container(
                     margin:
                         EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
@@ -192,7 +192,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(14)),
                         color: Colors.blue.shade50,
                         image: DecorationImage(
-                            image: NetworkImage(productList.imageUrl))),
+                            image: NetworkImage(productList?.imageUrl??""))),
                   ),
                 ),
                 Expanded(
@@ -205,7 +205,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         Container(
                           padding: EdgeInsets.only(right: 8, top: 4),
                           child: Text(
-                            productList.title,
+                            productList?.title??"",
                             maxLines: 2,
                             softWrap: true,
                             style: CustomTextStyle.textFormFieldSemiBold
@@ -214,7 +214,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                         getSpacer(height: 6),
                         Text(
-                          productList.brand.title ?? "",
+                          productList?.brand?.title ?? "",
                           style: CustomTextStyle.textFormFieldRegular.copyWith(
                             color: Colors.grey,
                             fontSize: 14,
@@ -225,7 +225,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "${getFormattedCurrency(productList.price.toDouble())} / ${productList.quantity} ${productList.quantityUnit.title}",
+                                "${getFormattedCurrency(productList?.price?.toDouble())} / ${productList?.quantity??""} ${productList?.quantityUnit?.title}",
                                 style: CustomTextStyle.textFormFieldBlack
                                     .copyWith(color: AppColors.kPrimaryBlue),
                               ),

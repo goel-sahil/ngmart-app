@@ -170,7 +170,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             child: Text(dataInner[index].title[0]),
                           ),
                         ),
-                        title: Text(dataInner[index].title),
+                        title: Text(dataInner[index]?.title??""),
                         subtitle: Text('$status'),
                       ),
                     ),
