@@ -61,14 +61,14 @@ class _HomeScreenState extends State<HomeScreen>
           children: <Widget>[
             getSpacer(height: 20),
             getCachedNetworkImage(
-                url: categoryList.imageUrl, height: 100, width: 100),
+                url: categoryList?.imageUrl??"", height: 100, width: 100),
             getSpacer(height: 10),
             Container(
               color: Colors.black26,
               width: getScreenSize(context: context).width,
               alignment: Alignment.center,
               child: Text(
-                categoryList.title ?? "",
+                categoryList?.title ?? "",
                 style: h7,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
