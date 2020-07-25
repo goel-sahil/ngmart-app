@@ -111,6 +111,7 @@ class _CartPageState extends State<CartPage>
       }
     } else if (response is CommonResponse) {
       showInSnackBar(response.message);
+      total= total- (cartList[position].quantity*cartList[position].pricePerUnit);
       cartList.removeAt(position);
       setState(() {});
     }

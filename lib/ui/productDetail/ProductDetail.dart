@@ -48,25 +48,32 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
       if (fromBuyNow) {
-        var price=((widget.productData.price/widget.productData.quantity)*_quantity);
-        var brand = CartBrand(title: widget?.productData?.brand?.title??"");
-        var product = Product(
-            title: widget?.productData?.title??"",
-            brand: brand,
-            quantity: _quantity,
-            imageUrl: widget?.productData?.imageUrl??"");
-        var cartData = CartData(
-            productId: widget.productData.id,
-            product: product,
-            quantity: _quantity);
-        var list = List<CartData>();
-        list.add(cartData);
+//        var price=((widget.productData.price/widget.productData.quantity)*_quantity);
+//        var brand = CartBrand(title: widget?.productData?.brand?.title??"");
+//        var product = Product(
+//            title: widget?.productData?.title??"",
+//            brand: brand,
+//            quantity: _quantity,
+//            imageUrl: widget?.productData?.imageUrl??"");
+//        var cartData = CartData(
+//            productId: widget.productData.id,
+//            product: product,
+//            quantity: _quantity);
+//        var list = List<CartData>();
+//        list.add(cartData);
+//        Navigator.push(
+//            context,
+//            CupertinoPageRoute(
+//                builder: (context) => CheckOutPage(
+//                      cartList: list,
+//                      total: price,
+//                    )));
+
         Navigator.push(
             context,
             CupertinoPageRoute(
-                builder: (context) => CheckOutPage(
-                      cartList: list,
-                      total: price,
+                builder: (context) => CartPage(
+                      fromNavigationDrawer: false,
                     )));
       } else {
         showInSnackBar(response.message);
@@ -83,7 +90,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   void initState() {
-    _quantity = widget?.productData?.quantity??"";
+    _quantity = widget?.productData?.quantity ?? "";
     // TODO: implement initState
     MemoryManagement.init();
     _userLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
@@ -146,9 +153,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text("${widget?.productData?.title??""}", style: h3),
+                                Text("${widget?.productData?.title ?? ""}",
+                                    style: h3),
                                 getSpacer(height: 6),
-                                Text(widget?.productData?.brand?.title??"", style: h4),
+                                Text(widget?.productData?.brand?.title ?? "",
+                                    style: h4),
                                 getSpacer(height: 6),
                                 Text(
                                     "${getFormattedCurrency(widget?.productData?.price?.toDouble())} / ${widget?.productData?.quantity} ${widget?.productData?.quantityUnit?.title}",
@@ -210,7 +219,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           Container(
                                             margin: EdgeInsets.only(
                                                 left: 20, right: 20),
-                                            child: Text(_quantity.toStringAsFixed(2),
+                                            child: Text(
+                                                _quantity.toStringAsFixed(2),
                                                 style: h3),
                                           ),
                                           Container(
@@ -331,7 +341,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       tag: food.title,
                       child: Image.network(food.imageUrl,
                           width: (imgWidth != null) ? imgWidth : 100)))),
-
           Positioned(
             bottom: 0,
             left: 0,
@@ -346,7 +355,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   )
                 : Text(' '),
           ),
-
         ],
       ),
     );
