@@ -125,7 +125,7 @@ class _ContactScreenState extends State<ContactScreen> {
                           foregroundColor: Colors.white,
                         ),
                         title: Text(dataInner[index].title),
-                        subtitle: Text('Status: $status'),
+//                        subtitle: Text('Status: $status'),
                       ),
                     ),
                     secondaryActions: <Widget>[

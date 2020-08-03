@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:html_editor/html_editor.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
@@ -30,12 +31,17 @@ class _UpdateCmsScreenState extends State<UpdateCmsScreen> {
   FocusNode _titleField = new FocusNode();
   FocusNode _descField = new FocusNode();
   AdminProvider provider;
-
+  GlobalKey<HtmlEditorState> keyEditor = GlobalKey();
+  String result = "";
   int status = 1;
 
   Future<void> _hitUpdateCmsApi({int id}) async {
     provider.setLoading();
-    var request = CmsRequest(title: _titleController.text, status: status, description: _descController.text);
+    final txt = await keyEditor.currentState.getText();
+    setState(() {
+      result = txt;
+    });
+    var request = CmsRequest(title: _titleController.text, description: result);
 
     var response = await provider.updateCms(context, request, id);
     if (response is APIError) {
@@ -51,9 +57,15 @@ class _UpdateCmsScreenState extends State<UpdateCmsScreen> {
 
   @override
   void initState() {
+    setData();
+    super.initState();
+  }
+
+  setData() {
     _titleController.text = widget.cmsResponse.title;
     _descController.text = widget.cmsResponse.description;
-    super.initState();
+    result = widget.cmsResponse.description;
+    setState(() {});
   }
 
   @override
@@ -89,49 +101,55 @@ class _UpdateCmsScreenState extends State<UpdateCmsScreen> {
                             value: val, txtMsg: "Please enter brand title."),
                       ),
                       getSpacer(height: 20),
-                      getTextField(
-                        context: context,
-                        labelText: "Description",
-                        obsectextType: false,
-                        textType: TextInputType.text,
-                        focusNodeNext: _descField,
-                        focusNodeCurrent: _descField,
-                        enablefield: true,
-                        maxLines: 4,
-                        controller: _descController,
-                        validators: (val) => emptyValidator(
-                            value: val, txtMsg: "Please enter description."),
+                      HtmlEditor(
+                        value: result,
+                        key: keyEditor,
+                        height: 400,
                       ),
-                      getSpacer(height: 20),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "Status",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            ToggleWidget(
-                              activeBgColor: Colors.green,
-                              activeTextColor: Colors.white,
-                              inactiveBgColor: Colors.white,
-                              inactiveTextColor: Colors.black,
-                              labels: [
-                                'INACTIVE',
-                                'ACTIVE',
-                              ],
-                              initialLabel: status,
-                              onToggle: (index) {
-                                print("Index $index");
-                                status = index;
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
+//                      getTextField(
+//                        context: context,
+//                        labelText: "Description",
+//                        obsectextType: false,
+//                        textType: TextInputType.text,
+//                        focusNodeNext: _descField,
+//                        focusNodeCurrent: _descField,
+//                        enablefield: true,
+//                        maxLines: 4,
+//                        controller: _descController,
+//                        validators: (val) => emptyValidator(
+//                            value: val, txtMsg: "Please enter description."),
+//                      ),
+
+//                      getSpacer(height: 20),
+//                      Padding(
+//                        padding: EdgeInsets.symmetric(horizontal: 10),
+//                        child: Row(
+//                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                          children: <Widget>[
+//                            Text(
+//                              "Status",
+//                              style: TextStyle(
+//                                  color: Colors.black,
+//                                  fontWeight: FontWeight.bold),
+//                            ),
+//                            ToggleWidget(
+//                              activeBgColor: Colors.green,
+//                              activeTextColor: Colors.white,
+//                              inactiveBgColor: Colors.white,
+//                              inactiveTextColor: Colors.black,
+//                              labels: [
+//                                'INACTIVE',
+//                                'ACTIVE',
+//                              ],
+//                              initialLabel: status,
+//                              onToggle: (index) {
+//                                print("Index $index");
+//                                status = index;
+//                              },
+//                            ),
+//                          ],
+//                        ),
+//                      ),
                       getSpacer(height: 20),
                       Container(
                         width: getScreenSize(context: context).width,
