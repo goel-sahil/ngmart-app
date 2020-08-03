@@ -339,7 +339,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       transitionOnUserGestures: true,
                       tag: food.title,
                       child: Image.network(food.imageUrl,
-                          width: (imgWidth != null) ? imgWidth : 100)))),
+                          width: (imgWidth != null) ? imgWidth : 100,fit: BoxFit.cover,)))),
           Positioned(
             bottom: 0,
             left: 0,

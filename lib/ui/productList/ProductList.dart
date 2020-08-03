@@ -193,7 +193,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(14)),
                         color: Colors.blue.shade50,
                         image: DecorationImage(
-                            image: NetworkImage(productList?.imageUrl??""))),
+                            image: NetworkImage(productList?.imageUrl??""),fit: BoxFit.cover)),
                   ),
                 ),
                 Expanded(

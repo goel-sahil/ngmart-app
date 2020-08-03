@@ -88,10 +88,7 @@ class _CartPageState extends State<CartPage>
           },
         );
       }
-    } else if (response is CommonResponse) {
-
-    }
-
+    } else if (response is CommonResponse) {}
   }
 
   Future<void> _hitRemoveItemFromCart({int cartId, int position}) async {
@@ -114,7 +111,8 @@ class _CartPageState extends State<CartPage>
       }
     } else if (response is CommonResponse) {
       showInSnackBar(response.message);
-      total= total- (cartList[position].quantity*cartList[position].pricePerUnit);
+      total = total -
+          (cartList[position].quantity * cartList[position].pricePerUnit);
       cartList.removeAt(position);
       setState(() {});
     }
@@ -131,8 +129,6 @@ class _CartPageState extends State<CartPage>
   Widget build(BuildContext context) {
     provider = Provider.of<DashboardProvider>(context);
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey.shade100,
       key: _scaffoldKey,
       appBar: widget.fromNavigationDrawer
@@ -144,17 +140,16 @@ class _CartPageState extends State<CartPage>
       body: Stack(
         children: <Widget>[
           cartList.isNotEmpty
-              ? Builder(
-                  builder: (context) {
-                    return ListView(
-                      children: <Widget>[
-                        createHeader(),
-                        createSubTitle(),
-                        createCartList(),
-                        footer(context)
-                      ],
-                    );
-                  },
+              ? SingleChildScrollView(
+                  physics: ScrollPhysics(),
+                  child: Column(
+                    children: <Widget>[
+                      createHeader(),
+                      createSubTitle(),
+                      createCartList(),
+                      footer(context)
+                    ],
+                  ),
                 )
               : Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30),
@@ -275,8 +270,7 @@ class _CartPageState extends State<CartPage>
   createCartList() {
     return ListView.builder(
       shrinkWrap: true,
-      primary: false,
-      physics: AlwaysScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, position) {
         _quantity = cartList[position].quantity;
         _perQuantity = cartList[position].initialQuantity;
@@ -288,7 +282,8 @@ class _CartPageState extends State<CartPage>
         print(
             "${cartList[position].product.title}==> ${cartList[position].toJson()}");
 
-        return createCartListItem(listData: cartList[position], pos: position);
+        return createCartListItem(
+            listData: cartList[position], pos: position);
       },
       itemCount: cartList.length ?? 0,
     );
@@ -346,7 +341,8 @@ class _CartPageState extends State<CartPage>
                               "${getFormattedCurrency((listData.pricePerUnit * listData.quantity).toDouble())}",
                               style: CustomTextStyle.textFormFieldBlack
                                   .copyWith(
-                                      color: AppColors.kPrimaryBlue, fontSize: 14),
+                                      color: AppColors.kPrimaryBlue,
+                                      fontSize: 14),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -360,15 +356,13 @@ class _CartPageState extends State<CartPage>
                                       print(
                                           "listData.product.quantityIncrement==>${listData.product.quantityIncrement}");
                                       if (listData.quantity !=
-                                              listData.product
-                                                  .quantityIncrement ||
+                                              listData
+                                                  .product.quantityIncrement ||
                                           _quantity == 0) {
-                                        _quantity -= listData
-                                            .product.quantityIncrement;
-                                        listData.quantity =
-                                            (listData.quantity -
-                                                listData.product
-                                                    .quantityIncrement);
+                                        _quantity -=
+                                            listData.product.quantityIncrement;
+                                        listData.quantity = (listData.quantity -
+                                            listData.product.quantityIncrement);
                                         //hit APi
                                         _hitUpdateQuantity(
                                             quantity: listData.quantity,
@@ -393,19 +387,17 @@ class _CartPageState extends State<CartPage>
                                         bottom: 2, right: 12, left: 12),
                                     child: Text(
                                       _quantity.toStringAsFixed(2) ?? "1",
-                                      style: CustomTextStyle
-                                          .textFormFieldSemiBold,
+                                      style:
+                                          CustomTextStyle.textFormFieldSemiBold,
                                     ),
                                   ),
                                   InkWell(
                                     onTap: () {
                                       setState(() {
-                                        _quantity += listData
-                                            .product.quantityIncrement;
-                                        listData.quantity =
-                                            (listData.quantity +
-                                                listData.product
-                                                    .quantityIncrement);
+                                        _quantity +=
+                                            listData.product.quantityIncrement;
+                                        listData.quantity = (listData.quantity +
+                                            listData.product.quantityIncrement);
                                       });
                                       _hitUpdateQuantity(
                                           quantity: listData.quantity,

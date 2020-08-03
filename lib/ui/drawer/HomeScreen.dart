@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen>
           children: <Widget>[
             getSpacer(height: 20),
             getCachedNetworkImage(
-                url: categoryList?.imageUrl??"", height: 100, width: 100),
+                url: categoryList?.imageUrl ?? "", height: 100, width: 100),
             getSpacer(height: 10),
             Container(
               color: Colors.black26,
@@ -225,13 +225,15 @@ class _HomeScreenState extends State<HomeScreen>
             decoration: BoxDecoration(color: Colors.white),
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => BannerProductScreen(
-                              title: bannerList[itemIndex].title,
-                              products: bannerList[itemIndex].products,
-                            )));
+                if (bannerList[itemIndex].products.isNotEmpty) {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => BannerProductScreen(
+                                title: bannerList[itemIndex].title,
+                                products: bannerList[itemIndex].products,
+                              )));
+                }
               },
               child: getNetworkImage(
                   url: bannerList[itemIndex].imageUrl,

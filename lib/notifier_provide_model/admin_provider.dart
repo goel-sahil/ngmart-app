@@ -12,6 +12,8 @@ import 'package:ngmartflutter/model/admin/brand/AdminBrandList.dart';
 import 'package:ngmartflutter/model/admin/brand/BrandResponse.dart';
 import 'package:ngmartflutter/model/admin/category/AdminCategoryResponse.dart';
 import 'package:ngmartflutter/model/admin/category/CategoryListResponse.dart';
+import 'package:ngmartflutter/model/admin/cms/CmsRequest.dart';
+import 'package:ngmartflutter/model/admin/cms/CmsResponse.dart';
 import 'package:ngmartflutter/model/admin/order/OrderStatusRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductRequest.dart';
 import 'package:ngmartflutter/model/admin/product/AdminProductResponse.dart';
@@ -322,6 +324,31 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> getCms(
+    BuildContext context,
+  ) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    var response = await APIHandler.get(
+        context: context, url: "${APIs.cms}", additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CmsResponse adminCategoryResponse = new CmsResponse.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
   Future<dynamic> deleteBrand(BuildContext context, int id) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
@@ -566,6 +593,33 @@ class AdminProvider with ChangeNotifier {
     } else {
       AddBrandResponse productResponse =
           new AddBrandResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+
+  Future<dynamic> updateCms(
+      BuildContext context, CmsRequest request, int id) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.put(
+        context: context,
+        url: "${APIs.cms}/$id",
+        additionalHeaders: headers,
+        requestBody: request);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      AddBrandResponse productResponse =
+      new AddBrandResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;

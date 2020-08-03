@@ -53,51 +53,42 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ),
         body: Stack(
           children: <Widget>[
-            Builder(builder: (context) {
-              return Column(
+            SingleChildScrollView(
+              physics: ScrollPhysics(),
+              child: Column(
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: ListView(
-                        children: <Widget>[
-                          selectedAddressSection(),
-                          standardDelivery(),
-                          checkoutItem(),
-                          priceSection()
-                        ],
-                      ),
-                    ),
-                    flex: 90,
-                  ),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                      child: RaisedButton(
-                        onPressed: () {
-                          /*Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (context) => OrderPlacePage()));*/
-                          //showThankYouBottomSheet(context);
-                          _hitPlaceOrderApi(
-                              addressId:
-                                  userInfo.data.user.userAddresses.first.id);
-                        },
-                        child: Text(
-                          "Place Order",
-                          style: CustomTextStyle.textFormFieldMedium.copyWith(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                  Column(
+                    children: <Widget>[
+                      selectedAddressSection(),
+                      standardDelivery(),
+                      checkoutItem(),
+                      priceSection(),
+                      Container(
+                        width: double.infinity,
+                        margin:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        child: RaisedButton(
+                          onPressed: () {
+                            _hitPlaceOrderApi(
+                                addressId:
+                                    userInfo.data.user.userAddresses.first.id);
+                          },
+                          child: Text(
+                            "Place Order",
+                            style: CustomTextStyle.textFormFieldMedium.copyWith(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          color: AppColors.kPrimaryBlue,
+                          textColor: Colors.white,
                         ),
-                        color: AppColors.kPrimaryBlue,
-                        textColor: Colors.white,
-                      ),
-                    ),
-                    flex: 10,
-                  )
+                      )
+                    ],
+                  ),
                 ],
-              );
-            }),
+              ),
+            ),
             new Center(
               child: getHalfScreenProviderLoader(
                 status: provider.getLoading(),
@@ -239,7 +230,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   "${userInfo?.data?.user?.userAddresses?.first?.city ?? ""} - ${userInfo?.data?.user?.userAddresses?.first?.pinCode ?? ""}",
                   6),
               createAddressText(
-                  "${userInfo?.data?.user?.userAddresses?.first?.state ?? ""}", 6),
+                  "${userInfo?.data?.user?.userAddresses?.first?.state ?? ""}",
+                  6),
               SizedBox(
                 height: 6,
               ),
@@ -393,7 +385,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             itemCount: widget.cartList.length,
             shrinkWrap: true,
             primary: false,
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
           ),
         ),

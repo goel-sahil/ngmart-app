@@ -18,6 +18,7 @@ import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/admin/banner/AddBannerScreen.dart';
 import 'package:ngmartflutter/ui/admin/brand/AddBrandScreen.dart';
+import 'package:ngmartflutter/ui/admin/cms/CmsScreen.dart';
 import 'package:ngmartflutter/ui/admin/product/AddProductScreen.dart';
 import 'package:ngmartflutter/ui/admin/product/ProductList.dart';
 import 'package:ngmartflutter/ui/admin/quantity/AddQuantityScreen.dart';
@@ -90,6 +91,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     drawerItems.add(DrawerItem("Banners", FontAwesomeIcons.firstOrder));
     drawerItems.add(DrawerItem("Orders", FontAwesomeIcons.history));
     drawerItems.add(DrawerItem("Settings", FontAwesomeIcons.cogs));
+    drawerItems.add(DrawerItem("CMS", FontAwesomeIcons.userSecret));
     drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
     super.initState();
   }
@@ -97,7 +99,6 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
   _onSelectItem(int index) {
     FocusScope.of(context).unfocus();
     Navigator.pop(context);
-    if (_isLoggedIn) {
       if (index == 0) {
         //show profile
         _pageController.jumpToPage(0);
@@ -141,11 +142,15 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         showAddIcon = false;
         showNotification = false;
       } else if (index == 7) {
-        onLogoutSuccess(context: context);
+        //show setting
+        _title = "CMS";
         _pageController.jumpToPage(7);
+        showAddIcon = false;
+        showNotification = false;
+      } else if (index == 8) {
+        onLogoutSuccess(context: context);
+        _pageController.jumpToPage(8);
       }
-    }
-
     setState(() {
       _selectionIndex = index;
     });
@@ -214,7 +219,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+    AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = InitializationSettings(
@@ -230,13 +235,13 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     }
   }
 
-  void showNotificationBar(
-      String title, String body, Map<String, dynamic> data) async {
+  void showNotificationBar(String title, String body,
+      Map<String, dynamic> data) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
-        new AndroidNotificationDetails(
-            'your channel id', 'your channel name', 'your channel description');
+    new AndroidNotificationDetails(
+        'your channel id', 'your channel name', 'your channel description');
     IOSNotificationDetails iOSPlatformChannelSpecifics =
-        new IOSNotificationDetails();
+    new IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     int type = int.tryParse(data["data"]["type"]);
@@ -245,24 +250,25 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         payload: type.toString());
   }
 
-  Future onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) async {
+  Future onDidReceiveLocalNotification(int id, String title, String body,
+      String payload) async {
     // display a dialog with the notification details, tap ok to go to another page
     showDialog(
       context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: [
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: Text('Ok'),
-            onPressed: () async {
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-          )
-        ],
-      ),
+      builder: (BuildContext context) =>
+          CupertinoAlertDialog(
+            title: Text(title),
+            content: Text(body),
+            actions: [
+              CupertinoDialogAction(
+                isDefaultAction: true,
+                child: Text('Ok'),
+                onPressed: () async {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              )
+            ],
+          ),
     );
   }
 
@@ -292,94 +298,100 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: showAddIcon
                   ? IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: () async {
-                        if (_pageController.page == 0) {
-                          bool isWOrkDone = await Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => AddBrandScreen(
-                                        fromBrandScreen: false,
-                                        title: "",
-                                        brandId: 1,
-                                      )));
-                          print("Page controller==> $isWOrkDone");
-                          if (isWOrkDone) {
-                            _pageController.jumpToPage(1);
-                            Timer(Duration(milliseconds: 300), () {
-                              _pageController.jumpToPage(0);
-                            });
-                          }
-                        } else if (_pageController.page == 1) {
-                          bool isWOrkDone = await Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => AddQuantityScreen(
-                                        fromBrandScreen: false,
-                                        title: "",
-                                        brandId: 1,
-                                      )));
-                          if (isWOrkDone) {
-                            _pageController.jumpToPage(2);
-                            Timer(Duration(milliseconds: 300), () {
-                              _pageController.jumpToPage(1);
-                            });
-                          }
-                        } else if (_pageController.page == 2) {
-                          bool isWOrkDone = await Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => AddCategoryScreen(
-                                        fromCategoryScreen: false,
-                                      )));
-                          if (isWOrkDone != null && isWOrkDone) {
-                            _pageController.jumpToPage(3);
-                            Timer(Duration(milliseconds: 300), () {
-                              _pageController.jumpToPage(2);
-                            });
-                          }
-                        } else if (_pageController.page == 3) {
-                          bool isWOrkDone = await Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => AddProductScreen(
-                                        fromProductScreen: false,
-                                      )));
-                          if (isWOrkDone != null && isWOrkDone) {
-                            _pageController.jumpToPage(4);
-                            Timer(Duration(milliseconds: 300), () {
-                              _pageController.jumpToPage(3);
-                            });
-                          }
-                        } else if (_pageController.page == 4) {
-                          bool isWOrkDone = await Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => AddBannerScreen(
-                                        fromProductScreen: false,
-                                      )));
-                          if (isWOrkDone != null && isWOrkDone) {
-                            _pageController.jumpToPage(3);
-                            Timer(Duration(milliseconds: 300), () {
-                              _pageController.jumpToPage(4);
-                            });
-                          }
-                        }
-                      })
+                  icon: Icon(Icons.add),
+                  onPressed: () async {
+                    if (_pageController.page == 0) {
+                      bool isWOrkDone = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  AddBrandScreen(
+                                    fromBrandScreen: false,
+                                    title: "",
+                                    brandId: 1,
+                                  )));
+                      print("Page controller==> $isWOrkDone");
+                      if (isWOrkDone) {
+                        _pageController.jumpToPage(1);
+                        Timer(Duration(milliseconds: 300), () {
+                          _pageController.jumpToPage(0);
+                        });
+                      }
+                    } else if (_pageController.page == 1) {
+                      bool isWOrkDone = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  AddQuantityScreen(
+                                    fromBrandScreen: false,
+                                    title: "",
+                                    brandId: 1,
+                                  )));
+                      if (isWOrkDone) {
+                        _pageController.jumpToPage(2);
+                        Timer(Duration(milliseconds: 300), () {
+                          _pageController.jumpToPage(1);
+                        });
+                      }
+                    } else if (_pageController.page == 2) {
+                      bool isWOrkDone = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  AddCategoryScreen(
+                                    fromCategoryScreen: false,
+                                  )));
+                      if (isWOrkDone != null && isWOrkDone) {
+                        _pageController.jumpToPage(3);
+                        Timer(Duration(milliseconds: 300), () {
+                          _pageController.jumpToPage(2);
+                        });
+                      }
+                    } else if (_pageController.page == 3) {
+                      bool isWOrkDone = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  AddProductScreen(
+                                    fromProductScreen: false,
+                                  )));
+                      if (isWOrkDone != null && isWOrkDone) {
+                        _pageController.jumpToPage(4);
+                        Timer(Duration(milliseconds: 300), () {
+                          _pageController.jumpToPage(3);
+                        });
+                      }
+                    } else if (_pageController.page == 4) {
+                      bool isWOrkDone = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  AddBannerScreen(
+                                    fromProductScreen: false,
+                                  )));
+                      if (isWOrkDone != null && isWOrkDone) {
+                        _pageController.jumpToPage(3);
+                        Timer(Duration(milliseconds: 300), () {
+                          _pageController.jumpToPage(4);
+                        });
+                      }
+                    }
+                  })
                   : Container()),
           showNotification
               ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: IconButton(
-                      icon: Icon(Icons.notifications),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => NotificationScreen(
-                                      fromAdmin: true,
-                                    )));
-                      }))
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: IconButton(
+                  icon: Icon(Icons.notifications),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) =>
+                                NotificationScreen(
+                                  fromAdmin: true,
+                                )));
+                  }))
               : Container()
         ],
       ),
@@ -403,7 +415,8 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                       children: <Widget>[
                         Text(
                           _isLoggedIn
-                              ? "${userInfo.data.user.firstName} ${userInfo.data.user.lastName}"
+                              ? "${userInfo.data.user.firstName} ${userInfo.data
+                              .user.lastName}"
                               : "LogIn",
                           style: TextStyle(fontSize: 20),
                         ),
@@ -418,11 +431,11 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                 accountEmail: Text(_isLoggedIn ? userInfo.data.user.email : ""),
                 currentAccountPicture: _isLoggedIn
                     ? CircleAvatar(
-                        child: Text(
-                          userInfo.data.user.firstName[0] ?? "N",
-                          style: TextStyle(fontSize: 40.0),
-                        ),
-                      )
+                  child: Text(
+                    userInfo.data.user.firstName[0] ?? "N",
+                    style: TextStyle(fontSize: 40.0),
+                  ),
+                )
                     : Container(),
               ),
               Column(
@@ -446,6 +459,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                 fromNotification: false,
               ),
               AdminSettingScreen(),
+              CmsScreen(),
               CommingSoonScreen(),
             ],
             physics: NeverScrollableScrollPhysics()),
@@ -517,7 +531,8 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
         Navigator.push(
             context,
             CupertinoPageRoute(
-                builder: (context) => AdminOrdersScreen(
+                builder: (context) =>
+                    AdminOrdersScreen(
                       fromNotification: true,
                     )));
       }
