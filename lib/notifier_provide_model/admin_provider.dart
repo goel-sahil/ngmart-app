@@ -5,6 +5,7 @@ import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/admin/ContactUs/ContactResponse.dart';
 import 'package:ngmartflutter/model/admin/banner/BannerResponse.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandRequest.dart';
 import 'package:ngmartflutter/model/admin/brand/AddBrandResponse.dart';
@@ -349,6 +350,32 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> getContacts(
+      BuildContext context,
+      ) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    var response = await APIHandler.get(
+        context: context, url: "${APIs.contacts}", additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      ContactResponse adminCategoryResponse = new ContactResponse.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+
   Future<dynamic> deleteBrand(BuildContext context, int id) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     Map<String, String> headers = {
@@ -408,6 +435,30 @@ class AdminProvider with ChangeNotifier {
     var response = await APIHandler.delete(
         context: context,
         url: "${APIs.getBanners}/$id",
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> deleteContact(BuildContext context, int id) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response = await APIHandler.delete(
+        context: context,
+        url: "${APIs.contacts}/$id",
         additionalHeaders: headers);
 
     hideLoader();
