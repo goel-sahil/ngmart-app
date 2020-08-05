@@ -82,22 +82,6 @@ class _ContactDetailState extends State<ContactDetail> {
                           Row(
                             children: <Widget>[
                               Text(
-                                "Name:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                              getSpacer(width: 10),
-                              Text(
-                                "${widget.contactData.user.firstName} ${widget.contactData.user.lastName}",
-                                style: TextStyle(
-                                    color: AppColors.kGrey, fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          getSpacer(height: 10),
-                          Row(
-                            children: <Widget>[
-                              Text(
                                 "Email:",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
