@@ -1,3 +1,5 @@
+import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+
 class ContactResponse {
   DataOutter dataOutter;
 
@@ -90,11 +92,11 @@ class Data {
   int id;
   String title;
   String description;
-  Null userId;
+  int userId;
   int status;
   String createdAt;
   String updatedAt;
-  Null user;
+  User user;
 
   Data(
       {this.id,

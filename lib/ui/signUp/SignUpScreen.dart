@@ -146,7 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               emptyValidator(
                                   txtMsg: "Please enter last name.", value: val)),
                       getSpacer(height: 20),
-                      getTextField(
+                      getTextFieldWithoutValidation(
                           context: context,
                           labelText: "Email",
                           obsectextType: false,
@@ -154,8 +154,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           focusNodeNext: _passwordField,
                           focusNodeCurrent: _emailField,
                           enablefield: true,
-                          controller: _emailController,
-                          validators: (val) => validatorEmail(val)),
+                          controller: _emailController,),
                       getSpacer(height: 20),
                       getTextField(
                           context: context,

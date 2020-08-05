@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:html_editor/html_editor.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
@@ -10,8 +9,8 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/admin/cms/CmsRequest.dart';
 import 'package:ngmartflutter/model/admin/cms/CmsResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
-import 'package:ngmartflutter/ui/ToggleWidget.dart';
 import 'package:provider/provider.dart';
+import 'package:html_editor/html_editor.dart';
 
 class UpdateCmsScreen extends StatefulWidget {
   CmsData cmsResponse;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
@@ -6,6 +8,7 @@ import 'package:ngmartflutter/helper/CustomBorder.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
@@ -30,12 +33,18 @@ class _ContactUsState extends State<ContactUs> {
   FocusNode _descriptionField = new FocusNode();
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKeys = new GlobalKey<ScaffoldState>();
+  LoginResponse userInfo;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> _hitApi() async {
     provider.setLoading();
     var request = ContactUsRequest(
         title: _subjectController.text,
-        description: _descriptionController.text);
+        description: _descriptionController.text,);
 
     var response = await provider.contactUs(request, context);
     if (response is APIError) {

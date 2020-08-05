@@ -11,6 +11,7 @@ import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/admin/ContactUs/ContactResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/admin_provider.dart';
+import 'package:ngmartflutter/ui/admin/Contact/ContactDetail.dart';
 import 'package:provider/provider.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -112,7 +113,15 @@ class _ContactScreenState extends State<ContactScreen> {
                 String status =
                     dataInner[index].status == 1 ? "Active" : "In Active";
                 return InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    print("Contact data==> ${dataInner[index].user}");
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => ContactDetail(
+                                  contactData: dataInner[index],
+                                )));
+                  },
                   child: Slidable(
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
