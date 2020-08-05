@@ -11,7 +11,6 @@ class Messages {
   static const String unAuthorizedError="Unauthorized accesss";
   // Success messages
   static const String profileUpdateSuccess = "Profile updated successfully";
-
   // Question messages
   static const String foundQuoteFormDataQuestion = "Previous details have not yet been completed, do you want to continue or create a new request?";
 

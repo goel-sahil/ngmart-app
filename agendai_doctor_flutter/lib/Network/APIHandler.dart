@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:agendaidoctor/Network/LoginError.dart';
-import 'package:agendaidoctor/Network/api_error.dart';
-import 'package:agendaidoctor/helper/Messages.dart';
-import 'package:agendaidoctor/helper/UniversalFunctions.dart';
-import 'package:agendaidoctor/helper/UniversalProperties.dart';
+import 'package:agendaiDoctor/Network/api_error.dart';
+import 'package:agendaiDoctor/helper/Messages.dart';
+import 'package:agendaiDoctor/helper/UniversalFunctions.dart';
+import 'package:agendaiDoctor/helper/UniversalProperties.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+
+import 'LoginError.dart';
 
 
 enum MethodType { POST, GET, PUT, DELETE }

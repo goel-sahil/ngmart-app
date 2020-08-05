@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:agendaidoctor/helper/styles.dart';
+import 'package:agendaiDoctor/helper/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,6 @@ import 'AssetStrings.dart';
 import 'Messages.dart';
 import 'UniversalProperties.dart';
 import 'memory_management.dart';
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
 // Todo: actual
 
@@ -577,18 +576,18 @@ String formatAmount(String amount) {
 }
 
 
-String getFormattedCurrency(double amount) {
-  FlutterMoneyFormatter fmf = new FlutterMoneyFormatter(
-      amount: amount,
-      settings: MoneyFormatterSettings(
-        symbol: '₹',
-        thousandSeparator: ',',
-        decimalSeparator: '.',
-        symbolAndNumberSeparator: ' ',
-      ));
-
-  return fmf.output.symbolOnLeft;
-}
+//String getFormattedCurrency(double amount) {
+//  FlutterMoneyFormatter fmf = new FlutterMoneyFormatter(
+//      amount: amount,
+//      settings: MoneyFormatterSettings(
+//        symbol: '₹',
+//        thousandSeparator: ',',
+//        decimalSeparator: '.',
+//        symbolAndNumberSeparator: ' ',
+//      ));
+//
+//  return fmf.output.symbolOnLeft;
+//}
 
 Future<bool> isConnectedToInternet() async {
   try {
