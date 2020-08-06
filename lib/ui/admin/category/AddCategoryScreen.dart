@@ -37,12 +37,13 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   FocusNode _titleField = new FocusNode();
   FocusNode _categoryField = new FocusNode();
   AdminProvider provider;
-  String catId;
+  String catId = "";
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
   File _image;
   int status = 1;
+
   @override
   void initState() {
     if (widget.fromCategoryScreen) {
@@ -154,7 +155,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           if (catModel != null && catModel.fromItem) {
                             print("Inside==>");
                             _categoryController.text = catModel.title;
-                            catId = catModel.id;
+                            catId = catModel.id ?? "";
                           }
                         },
                         child: getTextFieldWithoutValidation(
@@ -282,7 +283,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       var bytes = await _image.readAsBytes();
 
       request.fields['title'] = _titleController.text;
-      request.fields['category_id'] = catId;
+      request.fields['category_id'] = catId ?? "";
       request.fields['status'] = status.toString();
 
       request.files.add(new http.MultipartFile.fromBytes(
@@ -292,7 +293,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       ));
     } else {
       request.fields['title'] = _titleController.text;
-      request.fields['category_id'] = catId;
+      request.fields['category_id'] = catId ?? "";
       request.fields['status'] = status.toString();
     }
 
