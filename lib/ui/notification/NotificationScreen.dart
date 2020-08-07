@@ -8,6 +8,7 @@ import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/NotificationResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
@@ -92,6 +93,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       } else {
         _loadMore = true;
       }
+      unreadNotificationsCount = 0;
+      setState(() {});
     }
   }
 
@@ -141,13 +144,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 return InkWell(
                   onTap: () {
                     if (widget.fromAdmin) {
-
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
                               builder: (context) => AdminOrdersScreen(
-                                fromNotification: true,
-                              )));
+                                    fromNotification: true,
+                                  )));
                     } else {
                       Navigator.push(
                           context,
@@ -170,7 +172,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             child: Text(dataInner[index].title[0]),
                           ),
                         ),
-                        title: Text(dataInner[index]?.title??""),
+                        title: Text(dataInner[index]?.title ?? ""),
                         subtitle: Text('$status'),
                       ),
                     ),
