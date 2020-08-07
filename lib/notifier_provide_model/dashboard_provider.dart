@@ -16,6 +16,7 @@ import 'package:ngmartflutter/model/cms/CmsResponse.dart';
 import 'package:ngmartflutter/model/contactUs/ContactUsRequest.dart';
 import 'package:ngmartflutter/model/orderHistory/orderHistory.dart';
 import 'package:ngmartflutter/model/placeOrder/PlaceOrderRequest.dart';
+import 'package:ngmartflutter/model/placeOrder/PlaceSingleOrder.dart';
 import 'package:ngmartflutter/model/product/search_product_request.dart';
 import 'package:ngmartflutter/model/product_request.dart';
 import 'package:ngmartflutter/model/product_response.dart';
@@ -100,6 +101,34 @@ class DashboardProvider with ChangeNotifier {
     var response = await APIHandler.post(
         context: context,
         url: APIs.addToCart,
+        requestBody: request,
+        additionalHeaders: headers);
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+  Future<dynamic> placeSingleOrder(
+      BuildContext context, num quantity, int productId, int addressId) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    MemoryManagement.init();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var request = PlaceSingleOrder(
+        quantity: quantity, productId: productId, addressId: addressId);
+    var response = await APIHandler.post(
+        context: context,
+        url: APIs.placeSingleOrder,
         requestBody: request,
         additionalHeaders: headers);
     hideLoader();

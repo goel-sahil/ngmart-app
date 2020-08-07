@@ -11,6 +11,7 @@ import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
+import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/drawer/navigation_drawer.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +19,16 @@ import 'package:provider/provider.dart';
 class CheckOutPage extends StatefulWidget {
   List<CartData> cartList;
   num total;
+  bool fromBuyNow;
+  num productId;
+  num quantity;
 
-  CheckOutPage({this.cartList, this.total});
+  CheckOutPage(
+      {this.cartList,
+      this.total,
+      this.fromBuyNow,
+      this.productId,
+      this.quantity});
 
   @override
   _CheckOutPageState createState() => _CheckOutPageState();
@@ -36,6 +45,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
     var info = MemoryManagement.getUserInfo();
     userInfo = LoginResponse.fromJson(jsonDecode(info));
     super.initState();
+  }
+
+  Future<void> _hitPlaceSingleOrderApi({num quantity, int productId}) async {
+    int addressId = userInfo.data.user.userAddresses.first.id;
+    provider.setLoading();
+    var response = await provider.placeSingleOrder(
+        context, quantity, productId, addressId);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+      showInSnackBar(response.message);
+    }
   }
 
   @override
@@ -69,6 +90,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                         child: RaisedButton(
                           onPressed: () {
+                            if (widget.fromBuyNow) {
+                              _hitPlaceSingleOrderApi(
+                                  quantity: widget.quantity,
+                                  productId: widget.productId);
+                            } else {}
                             _hitPlaceOrderApi(
                                 addressId:
                                     userInfo.data.user.userAddresses.first.id);

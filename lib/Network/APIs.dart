@@ -21,6 +21,7 @@ class APIs {
   static const String getProducts = "$baseUrl/products";
   static const String getOrders = "$baseUrl/orders";
   static const String cancelOrder = "$baseUrl/order";
+  static const String placeSingleOrder = "$baseUrl/single-order";
   static const String addToCart = "$baseUrl/cart";
   static const String placeOrder = "$baseUrl/order";
   static const String contactUs = "$baseUrl/contact-us";

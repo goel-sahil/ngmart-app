@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:ngmartflutter/helper/colors.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
-import 'package:ngmartflutter/model/Login/LoginResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
@@ -46,37 +44,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     if (response is APIError) {
       showInSnackBar(response.error);
     } else if (response is CommonResponse) {
-      if (fromBuyNow) {
-//        var price=((widget.productData.price/widget.productData.quantity)*_quantity);
-//        var brand = CartBrand(title: widget?.productData?.brand?.title??"");
-//        var product = Product(
-//            title: widget?.productData?.title??"",
-//            brand: brand,
-//            quantity: _quantity,
-//            imageUrl: widget?.productData?.imageUrl??"");
-//        var cartData = CartData(
-//            productId: widget.productData.id,
-//            product: product,
-//            quantity: _quantity);
-//        var list = List<CartData>();
-//        list.add(cartData);
-//        Navigator.push(
-//            context,
-//            CupertinoPageRoute(
-//                builder: (context) => CheckOutPage(
-//                      cartList: list,
-//                      total: price,
-//                    )));
-
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => CartPage(
-                      fromNavigationDrawer: false,
-                    )));
-      } else {
-        showInSnackBar(response.message);
-      }
+      showInSnackBar(response.message);
     }
   }
 
@@ -249,10 +217,39 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   width: 180,
                                   child: froyoOutlineBtn('Buy Now', () {
                                     if (_userLoggedIn) {
-                                      _hitApi(
-                                          productId: widget.productData.id,
+                                      var price = ((widget.productData.price /
+                                              widget.productData.quantity) *
+                                          _quantity);
+                                      var brand = CartBrand(
+                                          title: widget
+                                                  ?.productData?.brand?.title ??
+                                              "");
+                                      var product = Product(
+                                          title:
+                                              widget?.productData?.title ?? "",
+                                          brand: brand,
                                           quantity: _quantity,
-                                          fromBuyNow: true);
+                                          imageUrl:
+                                              widget?.productData?.imageUrl ??
+                                                  "");
+                                      var cartData = CartData(
+                                          productId: widget.productData.id,
+                                          product: product,
+                                          quantity: _quantity);
+                                      var list = List<CartData>();
+                                      list.add(cartData);
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  CheckOutPage(
+                                                    cartList: list,
+                                                    total: price,
+                                                    fromBuyNow: true,
+                                                    productId:
+                                                        widget.productData.id,
+                                                    quantity: _quantity,
+                                                  )));
                                     } else {
                                       Navigator.push(
                                           context,
@@ -338,8 +335,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   child: Hero(
                       transitionOnUserGestures: true,
                       tag: food.title,
-                      child: Image.network(food.imageUrl,
-                          width: (imgWidth != null) ? imgWidth : 100,fit: BoxFit.cover,)))),
+                      child: Image.network(
+                        food.imageUrl,
+                        width: (imgWidth != null) ? imgWidth : 100,
+                        fit: BoxFit.cover,
+                      )))),
           Positioned(
             bottom: 0,
             left: 0,

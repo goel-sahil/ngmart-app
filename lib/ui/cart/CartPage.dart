@@ -224,6 +224,7 @@ class _CartPageState extends State<CartPage>
                       builder: (context) => CheckOutPage(
                             cartList: cartList,
                             total: total,
+                            fromBuyNow: false,
                           )));
             },
             color: AppColors.kPrimaryBlue,
@@ -282,8 +283,7 @@ class _CartPageState extends State<CartPage>
         print(
             "${cartList[position].product.title}==> ${cartList[position].toJson()}");
 
-        return createCartListItem(
-            listData: cartList[position], pos: position);
+        return createCartListItem(listData: cartList[position], pos: position);
       },
       itemCount: cartList.length ?? 0,
     );
