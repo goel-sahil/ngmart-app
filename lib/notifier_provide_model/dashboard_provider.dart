@@ -382,6 +382,31 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> cancelOrder(BuildContext context, int id) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    MemoryManagement.init();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var url = "${APIs.cancelOrder}/$id";
+    print("Url==> $url");
+    var response = await APIHandler.put(
+        context: context, url: url, additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
   void hideLoader() {
     _isLoading = false;
     notifyListeners();

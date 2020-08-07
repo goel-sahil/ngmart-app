@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
+import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/orderHistory/orderHistory.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/FullScreenImageScreen.dart';
@@ -100,6 +103,23 @@ class _OrderHistoryState extends State<OrderHistory> {
     }
   }
 
+  List<Widget> returnList(int id, int position, int status) {
+    if (status == 0 || status == 1) {
+      return [
+        IconSlideAction(
+          caption: 'Cancel',
+          color: Colors.red,
+          closeOnTap: true,
+          icon: Icons.delete,
+          onTap: () {
+            _hitCancelOrderApi(id: id, position: position);
+          },
+        )
+      ];
+    }
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<DashboardProvider>(context);
@@ -137,8 +157,13 @@ class _OrderHistoryState extends State<OrderHistory> {
                   } else if (dataList[index].status == 4) {
                     status = "Delivered";
                   }
-                  return createCartListItem(
-                      dataList[index], dataList[index].type,status);
+                  return Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: createCartListItem(
+                          dataList[index], dataList[index].type, status),
+                      secondaryActions: returnList(
+                          dataList[index].id, index, dataList[index].status));
                 },
                 itemCount: dataList.length ?? 0,
               ),
@@ -217,7 +242,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                             Container(
                               padding: EdgeInsets.only(right: 8, top: 4),
                               child: Text(
-                                "Order ID: ${type == 0 ? productList?.orderItems?.first?.orderId??"" : productList?.id??""}",
+                                "Order ID: ${type == 0 ? productList?.orderItems?.first?.orderId ?? "" : productList?.id ?? ""}",
                                 maxLines: 2,
                                 softWrap: true,
                                 style: CustomTextStyle.textFormFieldSemiBold
@@ -270,5 +295,23 @@ class _OrderHistoryState extends State<OrderHistory> {
       content: new Text(value),
       duration: Duration(seconds: 1),
     ));
+  }
+
+  _hitCancelOrderApi({int id, int position, int status}) async {
+    bool isConnected = await isConnectedToInternet();
+    if (!isConnected) {
+      showAlertDialog(
+          context: context, title: "Error", message: Messages.noInternetError);
+      return;
+    }
+    provider.setLoading();
+    var response = await provider.cancelOrder(context, id);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+      showInSnackBar(response.message);
+      dataList[position].status = 3;
+      setState(() {});
+    }
   }
 }
