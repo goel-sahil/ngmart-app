@@ -18,6 +18,7 @@ class APIs {
   static const String forgotPasswordOtpVerify =
       "$baseUrl/forget-password/verify";
   static const String getCategories = "$baseUrl/categories";
+  static const String getStats = "$baseUrl/stats";
   static const String getProducts = "$baseUrl/products";
   static const String getOrders = "$baseUrl/orders";
   static const String cancelOrder = "$baseUrl/order";
@@ -43,6 +44,7 @@ class APIs {
   static const String getSelectBrandList = "$baseUrl/admin/brands/list";
   static const String getQuantityUnitList = "$baseUrl/admin/quantity-units/list";
   static const String products = "$baseUrl/admin/products/list";
+  static const String bannerProducts = "$baseUrl/admin/banner/products";
   static const String product = "$baseUrl/admin/products";
   static const String addBrand = "$baseUrl/admin/brands";
   static const String adminOrders = "$baseUrl/admin/orders";

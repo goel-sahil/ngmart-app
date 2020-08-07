@@ -7,11 +7,13 @@ import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/buttons.dart';
 import 'package:ngmartflutter/helper/colors.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/cart/AddToCartResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
@@ -43,8 +45,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     var response = await provider.addToCart(context, quantity, productId);
     if (response is APIError) {
       showInSnackBar(response.error);
-    } else if (response is CommonResponse) {
+    } else if (response is AddToCartResponse) {
       showInSnackBar(response.message);
+      cartCount = response.data.totalCartItems;
+      setState(() {});
     }
   }
 
@@ -77,6 +81,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           title: Text(widget.productData.title,
               style: h4.copyWith(color: Colors.white)),
           actions: <Widget>[
+            getCartWidget(
+                count: cartCount,
+                onClick: () {
+                  if (_userLoggedIn) {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => CartPage(
+                                  fromNavigationDrawer: false,
+                                )));
+                  } else {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) => Login()));
+                  }
+                })
+/*
             Padding(
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
@@ -99,6 +119,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
             )
+*/
           ],
         ),
         body: Stack(

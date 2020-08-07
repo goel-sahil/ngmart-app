@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'AppColors.dart';
 
-
 // Keeps record whether user is signed in or not
 bool isUserSignedIn = false;
 
@@ -14,6 +13,7 @@ String authAccessToken = "";
 
 // Stores unreadNotification count
 int unreadNotificationsCount;
+int cartCount;
 
 // On notification,
 bool updateHomeTabOnBuild = false;
@@ -51,7 +51,7 @@ const TextStyle appBarTitleTextStyle = const TextStyle(
 const TextStyle tabBarTitleTextStyle = const TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.w600,
- /* letterSpacing: appHeadingTitleSpacing,
+  /* letterSpacing: appHeadingTitleSpacing,
   fontFamily: appHeadingTitleFont,*/
   fontSize: 12.0,
 );

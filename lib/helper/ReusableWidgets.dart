@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
 
 import 'AppColors.dart';
@@ -101,35 +102,66 @@ getProfileAndCoverPicWidget(String url, File localImage) {
   }
 }
 
-getChatWidget({@required int count, @required Function onClick}) {
+getNotiWidget({@required int count, @required Function onClick}) {
   return Stack(
     children: <Widget>[
       Center(
-          child: InkWell(
-        onTap: () {
+          child: IconButton(
+        icon: new Icon(
+          Icons.notifications,
+          size: 25.0,
+          color: Colors.white,
+        ),
+        onPressed: () {
           onClick();
         },
-        child: new Icon(Icons.chat, size: 25.0, color: Colors.black87),
       )),
-      Align(
-        alignment: Alignment.topRight,
+      new Positioned(
+        // draw a red marble
+        top: 10.0,
+        right: 10.0,
         child: getNotificationCount(count),
       )
     ],
   );
 }
 
+getCartWidget({@required int count, @required Function onClick}) {
+  return Stack(
+    children: <Widget>[
+      Center(
+          child: IconButton(
+            icon: new Icon(
+              FontAwesomeIcons.shoppingCart,
+              size: 25.0,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              onClick();
+            },
+          )),
+      new Positioned(
+        // draw a red marble
+        top: 10.0,
+        right: 10.0,
+        child: getNotificationCount(count),
+      )
+    ],
+  );
+}
+
+
 getNotificationCount(int count) {
-  return (count > 0)
+  return (count != null && count > 0)
       ? ClipOval(
           child: Container(
             color: Colors.red,
-            height: 22.0, // height of the button
-            width: 22.0, // width of the button
+            height: 20.0, // height of the button
+            width: 20.0, // width of the button
             child: Center(
               child: Text(
-                (count < 10) ? "$count" : "9+",
-                style: TextStyle(fontSize: 10),
+                (count < 99) ? "$count" : "99+",
+                style: TextStyle(fontSize: 9),
               ),
             ),
           ),
@@ -365,7 +397,7 @@ Widget getTextField(
     bool obsectextType,
     TextInputType textType,
     int length,
-      int maxLines=1,
+    int maxLines = 1,
     bool enablefield}) {
   return Container(
     margin: new EdgeInsets.only(left: 10.0, right: 10.0),
@@ -397,18 +429,16 @@ Widget getTextField(
   );
 }
 
-
-
 Widget getTextFieldWithoutValidation(
     {BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      FocusNode focusNodeCurrent,
-      FocusNode focusNodeNext,
-      bool obsectextType,
-      TextInputType textType,
-      int length,
-      bool enablefield}) {
+    String labelText,
+    TextEditingController controller,
+    FocusNode focusNodeCurrent,
+    FocusNode focusNodeNext,
+    bool obsectextType,
+    TextInputType textType,
+    int length,
+    bool enablefield}) {
   return Container(
     margin: new EdgeInsets.only(left: 10.0, right: 10.0),
     child: new TextFormField(
@@ -437,8 +467,6 @@ Widget getTextFieldWithoutValidation(
     ),
   );
 }
-
-
 
 Widget getImage(File _image, String _profileThumbImage) {
   return new CircleAvatar(

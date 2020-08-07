@@ -9,6 +9,7 @@ import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/colors.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/product_response.dart';
@@ -107,25 +108,40 @@ class _ProductScreenState extends State<ProductScreen> {
           title: Text(widget?.title ?? "Products"),
           centerTitle: true,
           actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                FontAwesomeIcons.shoppingCart,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                if (_userLoggedIn) {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => CartPage(
-                                fromNavigationDrawer: false,
-                              )));
-                } else {
-                  Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => Login()));
-                }
-              },
-            ),
+            getCartWidget(
+                onClick: () {
+                  if (_userLoggedIn) {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => CartPage(
+                                  fromNavigationDrawer: false,
+                                )));
+                  } else {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) => Login()));
+                  }
+                },
+                count: cartCount),
+//            IconButton(
+//              icon: Icon(
+//                FontAwesomeIcons.shoppingCart,
+//                color: Colors.white,
+//              ),
+//              onPressed: () {
+//                if (_userLoggedIn) {
+//                  Navigator.push(
+//                      context,
+//                      CupertinoPageRoute(
+//                          builder: (context) => CartPage(
+//                                fromNavigationDrawer: false,
+//                              )));
+//                } else {
+//                  Navigator.push(context,
+//                      CupertinoPageRoute(builder: (context) => Login()));
+//                }
+//              },
+//            ),
           ],
         ),
         backgroundColor: Colors.grey.shade100,
@@ -183,7 +199,7 @@ class _ProductScreenState extends State<ProductScreen> {
               children: <Widget>[
                 Hero(
                   transitionOnUserGestures: true,
-                  tag: productList?.title??"",
+                  tag: productList?.title ?? "",
                   child: Container(
                     margin:
                         EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
@@ -193,7 +209,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(14)),
                         color: Colors.blue.shade50,
                         image: DecorationImage(
-                            image: NetworkImage(productList?.imageUrl??""),fit: BoxFit.cover)),
+                            image: NetworkImage(productList?.imageUrl ?? ""),
+                            fit: BoxFit.cover)),
                   ),
                 ),
                 Expanded(
@@ -206,7 +223,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         Container(
                           padding: EdgeInsets.only(right: 8, top: 4),
                           child: Text(
-                            productList?.title??"",
+                            productList?.title ?? "",
                             maxLines: 2,
                             softWrap: true,
                             style: CustomTextStyle.textFormFieldSemiBold
@@ -226,7 +243,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "${getFormattedCurrency(productList?.price?.toDouble())} / ${productList?.quantity??""} ${productList?.quantityUnit?.title}",
+                                "${getFormattedCurrency(productList?.price?.toDouble())} / ${productList?.quantity ?? ""} ${productList?.quantityUnit?.title}",
                                 style: CustomTextStyle.textFormFieldBlack
                                     .copyWith(color: AppColors.kPrimaryBlue),
                               ),

@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
@@ -40,25 +42,38 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
             title: Text(widget.catName ?? "SubCategory"),
             centerTitle: true,
             actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.shoppingCart,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  if (_userLoggedIn) {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => CartPage(
-                                  fromNavigationDrawer: false,
-                                )));
-                  } else {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) => Login()));
-                  }
-                },
-              ),
+              getCartWidget(count: cartCount, onClick: (){
+                if (_userLoggedIn) {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => CartPage(
+                            fromNavigationDrawer: false,
+                          )));
+                } else {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => Login()));
+                }
+              })
+//              IconButton(
+//                icon: Icon(
+//                  FontAwesomeIcons.shoppingCart,
+//                  color: Colors.white,
+//                ),
+//                onPressed: () {
+//                  if (_userLoggedIn) {
+//                    Navigator.push(
+//                        context,
+//                        CupertinoPageRoute(
+//                            builder: (context) => CartPage(
+//                                  fromNavigationDrawer: false,
+//                                )));
+//                  } else {
+//                    Navigator.push(context,
+//                        CupertinoPageRoute(builder: (context) => Login()));
+//                  }
+//                },
+//              ),
             ],
           ),
           body: _buildGridItem(),

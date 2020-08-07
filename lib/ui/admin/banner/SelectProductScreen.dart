@@ -73,7 +73,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
       _currentPageNumber = 1;
     }
     AdminProductRequest adminProductRequest = AdminProductRequest(search: text);
-    var response = await provider.getProducts(
+    var response = await provider.bannerProducts(
         context, _currentPageNumber, adminProductRequest);
     if (response is APIError) {
       showInSnackBar(response.error);

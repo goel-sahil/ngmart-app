@@ -7,8 +7,11 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/cart/AddToCartRequest.dart';
+import 'package:ngmartflutter/model/cart/AddToCartResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/checkout/CheckOutPage.dart';
@@ -109,11 +112,12 @@ class _CartPageState extends State<CartPage>
       } else {
         showInSnackBar(response.error);
       }
-    } else if (response is CommonResponse) {
+    } else if (response is AddToCartResponse) {
       showInSnackBar(response.message);
       total = total -
           (cartList[position].quantity * cartList[position].pricePerUnit);
       cartList.removeAt(position);
+      cartCount = response.data.totalCartItems;
       setState(() {});
     }
   }

@@ -295,6 +295,36 @@ class AdminProvider with ChangeNotifier {
     }
   }
 
+
+  Future<dynamic> bannerProducts(BuildContext context, int currentPageNumber,
+      AdminProductRequest adminProductRequest) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    print("Token==> ${MemoryManagement.getAccessToken()}");
+
+    var response = await APIHandler.post(
+        context: context,
+        url: "${APIs.bannerProducts}?page=$currentPageNumber",
+        requestBody: adminProductRequest.toJson(),
+        additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      AdminProductResponse adminCategoryResponse =
+      new AdminProductResponse.fromJson(response);
+      completer.complete(adminCategoryResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
   Future<dynamic> getInvoice(
     BuildContext context,
     int id,

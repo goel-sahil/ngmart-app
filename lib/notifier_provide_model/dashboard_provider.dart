@@ -8,8 +8,10 @@ import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/DeviceTokenRequest.dart';
 import 'package:ngmartflutter/model/NotificationResponse.dart';
+import 'package:ngmartflutter/model/TotalNotificationResponse.dart';
 import 'package:ngmartflutter/model/bannerResponse/bannerResponse.dart';
 import 'package:ngmartflutter/model/cart/AddToCartRequest.dart';
+import 'package:ngmartflutter/model/cart/AddToCartResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/categories_response.dart';
 import 'package:ngmartflutter/model/cms/CmsResponse.dart';
@@ -50,6 +52,30 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     }
   }
+
+  Future<dynamic> getNotificationCartItemCount(BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+    var response =
+    await APIHandler.get(context: context, url: APIs.getStats,additionalHeaders: headers);
+
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      print("Response==> $response");
+      TotalNotificationResponse categoriesResponse =
+      new TotalNotificationResponse.fromJson(response);
+      completer.complete(categoriesResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
 
   Future<dynamic> getProducts(
       BuildContext context, int catId, int currentPageNumber) async {
@@ -109,7 +135,7 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     } else {
       print("Response==> $response");
-      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      AddToCartResponse productResponse = new AddToCartResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;
@@ -206,7 +232,7 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     } else {
       print("Response==> $response");
-      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      AddToCartResponse productResponse = new AddToCartResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;

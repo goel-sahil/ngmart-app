@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -12,11 +13,14 @@ import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/Messages.dart';
+import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/DeviceTokenRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/model/TotalNotificationResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
 import 'package:ngmartflutter/ui/contactUs/Contact_us.dart';
@@ -53,7 +57,17 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   DashboardProvider provider;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _initialized = false;
+
+  Future<void> _hitNotificationApi() async {
+    var response = await provider.getNotificationCartItemCount(context);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is TotalNotificationResponse) {
+      unreadNotificationsCount = response.data.totalNotifications;
+      cartCount = response.data.totalCartItems;
+      setState(() {});
+    }
+  }
 
   _onSelectItem(int index) {
     Navigator.pop(context);
@@ -147,6 +161,9 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     if (_isLoggedIn) {
       var infoData = jsonDecode(MemoryManagement.getUserInfo());
       userInfo = LoginResponse.fromJson(infoData);
+      Timer(Duration(milliseconds: 500), () {
+        _hitNotificationApi();
+      });
     }
     drawerItems.add(DrawerItem("Shop Now", FontAwesomeIcons.cartPlus));
     if (_isLoggedIn) {
@@ -334,23 +351,21 @@ class _NavigationDrawerState extends State<NavigationDrawer>
                 : Container(),
           ),
           showNotification
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: IconButton(
-                      icon: Icon(Icons.notifications),
-                      onPressed: () {
-                        if (!_isLoggedIn) {
-                          Navigator.of(context).push(new CupertinoPageRoute(
-                              builder: (context) => Login()));
-                        } else {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => NotificationScreen(
-                                        fromAdmin: false,
-                                      )));
-                        }
-                      }))
+              ? getNotiWidget(
+                  count: unreadNotificationsCount,
+                  onClick: () {
+                    if (!_isLoggedIn) {
+                      Navigator.of(context).push(new CupertinoPageRoute(
+                          builder: (context) => Login()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => NotificationScreen(
+                                    fromAdmin: false,
+                                  )));
+                    }
+                  })
               : Container()
         ],
       ),
