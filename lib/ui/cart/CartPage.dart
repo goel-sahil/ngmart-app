@@ -75,7 +75,7 @@ class _CartPageState extends State<CartPage>
     }
   }
 
-  Future<void> _hitUpdateQuantity({num quantity, int productId}) async {
+  Future<void> _hitUpdateQuantity({num quantity, int productId, bool fromAdd}) async {
     provider?.setLoading();
     var response = await provider.addToCart(context, quantity, productId);
     if (response is APIError) {

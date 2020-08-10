@@ -249,12 +249,14 @@ Widget getHalfAppThemedLoader({
   Color color,
   double strokeWidth,
 }) {
-  return new Container(
-    height: 50,
-    width: getScreenSize(context: context).width,
-    child: getChildLoader(
-      color: color ?? AppColors.kPrimaryBlue,
-      strokeWidth: strokeWidth,
+  return AbsorbPointer(
+    child: new Container(
+      height: getScreenSize(context: context).height,
+      width: getScreenSize(context: context).width,
+      child: getChildLoader(
+        color: color ?? AppColors.kPrimaryBlue,
+        strokeWidth: strokeWidth,
+      ),
     ),
   );
 }

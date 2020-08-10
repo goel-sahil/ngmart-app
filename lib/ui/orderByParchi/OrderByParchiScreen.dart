@@ -148,9 +148,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
               ),
             ),
           ),
-          new Center(
-            child: _getLoader,
-          ),
+          _getLoader
         ],
       ),
     );
