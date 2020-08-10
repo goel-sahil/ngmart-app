@@ -28,6 +28,7 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
   DashboardProvider provider;
   bool isLoggedIn = false;
   bool isSwitched = true;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
   Widget build(BuildContext context) {
     provider = Provider.of<DashboardProvider>(context);
     return Scaffold(
+      key: _scaffoldKey,
       body: Stack(
         children: <Widget>[
           new SingleChildScrollView(
@@ -109,7 +111,7 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
                       margin: new EdgeInsets.only(top: 10.0),
                     ),
                   ),
-                 // getView("Review Us", 1),
+                  // getView("Review Us", 1),
                   getView("Rate Our App", 2),
                   getView("Profile", 9),
                   isLoggedIn ? getView("Change Mobile Number", 3) : Container(),
@@ -117,7 +119,7 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
                   getView("Terms & Conditions", 4),
                   getView("About Us", 5),
                   getView("Privacy Policy", 6),
-                 // getView("Share App", 7),
+                  // getView("Share App", 7),
                 ],
               ),
             ),
@@ -240,11 +242,18 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
       if (response != null && (response is CommonResponse)) {
         print(response.message);
         MemoryManagement.setNotificationOnOff(onoff: isSwitched);
-        //showInSnackBar(response.message);
+        showInSnackBar(response.message);
       } else {
         APIError apiError = response;
-        //showInSnackBar(apiError.error);
+        showInSnackBar(apiError.error);
       }
     }
+  }
+
+  void showInSnackBar(String value) {
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: new Text(value),
+      duration: Duration(seconds: 1),
+    ));
   }
 }

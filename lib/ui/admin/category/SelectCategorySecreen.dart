@@ -93,7 +93,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                 return InkWell(
                   onTap: () {
                     CategoryModel catModel = CategoryModel(
-                        id: dataInner[index].id ?? "",
+                        id: dataInner[index].id.toString(),
                         title: dataInner[index].title,
                         fromItem: true);
                     Navigator.pop(context, catModel);

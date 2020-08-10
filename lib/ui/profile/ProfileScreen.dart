@@ -167,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           validators: (val) => emptyValidator(
                               txtMsg: "Please enter last name.", value: val)),
                       getSpacer(height: 20),
-                      getTextField(
+                      getTextFieldWithoutValidation(
                           context: context,
                           labelText: "Email",
                           obsectextType: false,
@@ -175,8 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           focusNodeNext: _passwordField,
                           focusNodeCurrent: _emailField,
                           enablefield: true,
-                          controller: _emailController,
-                          validators: (val) => validatorEmail(val)),
+                          controller: _emailController),
                       getSpacer(height: 20),
                       getTextField(
                         context: context,
