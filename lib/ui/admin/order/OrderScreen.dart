@@ -152,6 +152,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
             onRefresh: () async {
               isPullToRefresh = true;
               _loadMore = false;
+              _dateFromController.clear();
+              _dateToController.clear();
               await _hitApi(isFilter: false);
             },
             child: Padding(

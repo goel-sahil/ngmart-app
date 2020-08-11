@@ -44,6 +44,19 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
     super.initState();
   }
 
+
+  Future<bool> _willPopCallback() async {
+    print("Popscope called==>");
+    Navigator.pushAndRemoveUntil(
+      context,
+      new CupertinoPageRoute(builder: (BuildContext context) {
+        return new NavigationDrawer();
+      }),
+      (route) => false,
+    );
+    return true; // return true if the route to be popped
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -278,75 +291,79 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
     showModalBottomSheet(
         context: context,
         isDismissible: false,
+        useRootNavigator: true,
         builder: (builder) {
-          return Container(
-            height: (getScreenSize(context: context).height / 2) + 400,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey.shade200, width: 2),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16))),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Image(
-                      image: AssetImage("images/ic_thank_you.png"),
-                      width: 300,
+          return WillPopScope(
+            onWillPop: _willPopCallback,
+            child: Container(
+              height: (getScreenSize(context: context).height / 2) + 400,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey.shade200, width: 2),
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(16),
+                      topLeft: Radius.circular(16))),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Image(
+                        image: AssetImage("images/ic_thank_you.png"),
+                        width: 300,
+                      ),
                     ),
                   ),
-                ),
-                //Your order has been placed. We we reach out to you shortly with your order.
-                Container(
-                  margin: EdgeInsets.only(left: 16, right: 16),
-                  child: Column(
-                    children: <Widget>[
-                      RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text:
-                                  "\n\nThank you for your purchase. Our company values each and every customer."
-                                  " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
-                                  "If you have any questions or feedback, please don’t hesitate to reach out.",
-                              style: CustomTextStyle.textFormFieldMedium
-                                  .copyWith(
-                                      fontSize: 14,
-                                      color: Colors.grey.shade800),
-                            )
-                          ])),
-                      SizedBox(
-                        height: 24,
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            new CupertinoPageRoute(
-                                builder: (BuildContext context) {
-                              return new NavigationDrawer();
-                            }),
-                            (route) => false,
-                          );
-                        },
-                        padding: EdgeInsets.only(left: 48, right: 48),
-                        child: Text(
-                          "Close",
-                          style: CustomTextStyle.textFormFieldMedium
-                              .copyWith(color: Colors.white),
+                  //Your order has been placed. We we reach out to you shortly with your order.
+                  Container(
+                    margin: EdgeInsets.only(left: 16, right: 16),
+                    child: Column(
+                      children: <Widget>[
+                        RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(children: [
+                              TextSpan(
+                                text:
+                                    "\n\nThank you for your purchase. Our company values each and every customer."
+                                    " We strive to provide state-of-the-art devices that respond to our clients’ individual needs. "
+                                    "If you have any questions or feedback, please don’t hesitate to reach out.",
+                                style: CustomTextStyle.textFormFieldMedium
+                                    .copyWith(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade800),
+                              )
+                            ])),
+                        SizedBox(
+                          height: 24,
                         ),
-                        color: AppColors.kPrimaryBlue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(24))),
-                      )
-                    ],
-                  ),
-                )
-              ],
+                        RaisedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              new CupertinoPageRoute(
+                                  builder: (BuildContext context) {
+                                return new NavigationDrawer();
+                              }),
+                              (route) => false,
+                            );
+                          },
+                          padding: EdgeInsets.only(left: 48, right: 48),
+                          child: Text(
+                            "Close",
+                            style: CustomTextStyle.textFormFieldMedium
+                                .copyWith(color: Colors.white),
+                          ),
+                          color: AppColors.kPrimaryBlue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(24))),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         });

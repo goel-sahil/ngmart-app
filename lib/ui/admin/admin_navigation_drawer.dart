@@ -10,11 +10,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Messages.dart';
+import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/DeviceTokenRequest.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
+import 'package:ngmartflutter/model/TotalNotificationResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/admin/Contact/ContactScreen.dart';
 import 'package:ngmartflutter/ui/admin/banner/AddBannerScreen.dart';
@@ -95,6 +98,11 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     drawerItems.add(DrawerItem("CMS", FontAwesomeIcons.userSecret));
     drawerItems.add(DrawerItem("Contact Request", FontAwesomeIcons.compress));
     drawerItems.add(DrawerItem("Log out", FontAwesomeIcons.signOutAlt));
+
+    Timer(Duration(milliseconds: 500), () {
+      _hitNotificationApi();
+    });
+
     super.initState();
   }
 
@@ -279,6 +287,17 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     );
   }
 
+  Future<void> _hitNotificationApi() async {
+    var response = await provider.getNotificationCartItemCount(context);
+    if (response is APIError) {
+//      showInSnackBar(response.error);
+    } else if (response is TotalNotificationResponse) {
+      unreadNotificationsCount = response.data.totalNotifications;
+//      cartCount = response.data.totalCartItems;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<DashboardProvider>(context);
@@ -381,7 +400,17 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                       })
                   : Container()),
           showNotification
-              ? Padding(
+              ? getNotiWidget(
+                  count: unreadNotificationsCount,
+                  onClick: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => NotificationScreen(
+                                  fromAdmin: true,
+                                )));
+                  })
+              /*Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: IconButton(
                       icon: Icon(Icons.notifications),
@@ -392,7 +421,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                                 builder: (context) => NotificationScreen(
                                       fromAdmin: true,
                                     )));
-                      }))
+                      }))*/
               : Container()
         ],
       ),
@@ -428,7 +457,8 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                     ),
                   ),
                 ),
-                accountEmail: Text(_isLoggedIn ? userInfo.data.user.email : ""),
+                accountEmail:
+                    Text(_isLoggedIn ? userInfo?.data?.user?.email ?? "" : ""),
                 currentAccountPicture: _isLoggedIn
                     ? CircleAvatar(
                         child: Text(

@@ -123,25 +123,6 @@ class _ProductScreenState extends State<ProductScreen> {
                   }
                 },
                 count: cartCount),
-//            IconButton(
-//              icon: Icon(
-//                FontAwesomeIcons.shoppingCart,
-//                color: Colors.white,
-//              ),
-//              onPressed: () {
-//                if (_userLoggedIn) {
-//                  Navigator.push(
-//                      context,
-//                      CupertinoPageRoute(
-//                          builder: (context) => CartPage(
-//                                fromNavigationDrawer: false,
-//                              )));
-//                } else {
-//                  Navigator.push(context,
-//                      CupertinoPageRoute(builder: (context) => Login()));
-//                }
-//              },
-//            ),
           ],
         ),
         backgroundColor: Colors.grey.shade100,

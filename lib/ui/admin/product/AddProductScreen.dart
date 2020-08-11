@@ -248,7 +248,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         ),
                       ),
                       getSpacer(height: 20),
-                      getTextField(
+                      getTextFieldAdmin(
                         context: context,
                         labelText: "Quantity",
                         obsectextType: false,
@@ -262,7 +262,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             txtMsg: "Please enter product quantity."),
                       ),
                       getSpacer(height: 20),
-                      getTextField(
+                      getTextFieldAdmin(
                         context: context,
                         labelText: "Price",
                         obsectextType: false,
@@ -275,7 +275,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             value: val, txtMsg: "Please enter product price."),
                       ),
                       getSpacer(height: 20),
-                      getTextField(
+                      getTextFieldAdmin(
                         context: context,
                         labelText: "Quantity Increment",
                         obsectextType: false,

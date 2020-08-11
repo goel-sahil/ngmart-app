@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
+import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/Messages.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
@@ -93,8 +94,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       } else {
         _loadMore = true;
       }
-      unreadNotificationsCount = 0;
-      setState(() {});
+//      unreadNotificationsCount = 0;
+//      setState(() {});
     }
   }
 
@@ -116,6 +117,47 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
+  _hitMarkNotificationAsReadApi({int id, int position}) async {
+    bool isConnected = await isConnectedToInternet();
+    if (!isConnected) {
+      showAlertDialog(
+          context: context, title: "Error", message: Messages.noInternetError);
+      return;
+    }
+//    provider?.setLoading();
+    var response = await provider.markNotiAsRead(context, id);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+//      showInSnackBar(response.message);
+      dataInner[position].status = 1;
+      if (unreadNotificationsCount > 0) unreadNotificationsCount--;
+      setState(() {});
+    }
+  }
+
+  _hitMarkAllNotificationAsReadApi() async {
+    bool isConnected = await isConnectedToInternet();
+    if (!isConnected) {
+      showAlertDialog(
+          context: context, title: "Error", message: Messages.noInternetError);
+      return;
+    }
+    provider?.setLoading();
+    var response = await provider.markAllNotificationRead(context);
+    if (response is APIError) {
+      showInSnackBar(response.error);
+    } else if (response is CommonResponse) {
+      _currentPageNumber = 1;
+      isPullToRefresh = true;
+      _loadMore = false;
+      _hitApi();
+      unreadNotificationsCount = 0;
+      showInSnackBar(response.message);
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<DashboardProvider>(context);
@@ -123,6 +165,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
       appBar: AppBar(
         title: Text("Notification"),
         centerTitle: true,
+        actions: <Widget>[
+          InkWell(
+              onTap: () {
+                _hitMarkAllNotificationAsReadApi();
+              },
+              child: Padding(
+                  padding: EdgeInsets.only(top: 20, right: 10),
+                  child: Text("Mark all read")))
+        ],
       ),
       backgroundColor: Colors.white,
       key: _scaffoldKey,
@@ -143,6 +194,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 String status = dataInner[index].message;
                 return InkWell(
                   onTap: () {
+                    _hitMarkNotificationAsReadApi(
+                        id: dataInner[index].id, position: index);
                     if (widget.fromAdmin) {
                       Navigator.push(
                           context,
@@ -159,11 +212,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   )));
                     }
                   },
+                  //status=0 unread
+                  //status=1 read
                   child: Slidable(
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     child: Container(
-                      color: Colors.white,
+                      color: dataInner[index].status == 0
+                          ? AppColors.kDisabledButtonColor
+                          : Colors.white,
                       child: ListTile(
                         leading: InkWell(
                           onTap: () {},

@@ -96,30 +96,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         CupertinoPageRoute(builder: (context) => Login()));
                   }
                 })
-/*
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: IconButton(
-                onPressed: () {
-                  if (_userLoggedIn) {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => CartPage(
-                                  fromNavigationDrawer: false,
-                                )));
-                  } else {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) => Login()));
-                  }
-                },
-                icon: Icon(
-                  FontAwesomeIcons.shoppingCart,
-                  color: Colors.white,
-                ),
-              ),
-            )
-*/
           ],
         ),
         body: Stack(

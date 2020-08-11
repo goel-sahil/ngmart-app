@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
+import 'package:ngmartflutter/helper/DecimalInputFormatter.dart';
 
 import 'AppColors.dart';
 import 'AssetStrings.dart';
@@ -131,15 +132,15 @@ getCartWidget({@required int count, @required Function onClick}) {
     children: <Widget>[
       Center(
           child: IconButton(
-            icon: new Icon(
-              FontAwesomeIcons.shoppingCart,
-              size: 25.0,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              onClick();
-            },
-          )),
+        icon: new Icon(
+          FontAwesomeIcons.shoppingCart,
+          size: 25.0,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          onClick();
+        },
+      )),
       new Positioned(
         // draw a red marble
         top: 10.0,
@@ -149,7 +150,6 @@ getCartWidget({@required int count, @required Function onClick}) {
     ],
   );
 }
-
 
 getNotificationCount(int count) {
   return (count != null && count > 0)
@@ -406,6 +406,49 @@ Widget getTextField(
       controller: controller,
       maxLines: maxLines,
       keyboardType: textType,
+      obscureText: obsectextType,
+      focusNode: focusNodeCurrent,
+      enabled: enablefield,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        focusNodeCurrent.unfocus();
+        FocusScope.of(context).autofocus(focusNodeNext);
+      },
+      maxLength: length,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(16, 16, 16, 12),
+          border: CustomBorder.enabledBorder,
+          labelText: labelText,
+          focusedBorder: CustomBorder.focusBorder,
+          errorBorder: CustomBorder.errorBorder,
+          enabledBorder: CustomBorder.enabledBorder,
+          labelStyle: CustomTextStyle.textFormFieldMedium.copyWith(
+              fontSize: MediaQuery.of(context).textScaleFactor * 16,
+              color: Colors.black)),
+    ),
+  );
+}
+
+Widget getTextFieldAdmin(
+    {BuildContext context,
+    String labelText,
+    Function validators,
+    TextEditingController controller,
+    FocusNode focusNodeCurrent,
+    FocusNode focusNodeNext,
+    bool obsectextType,
+    TextInputType textType,
+    int length,
+    int maxLines = 1,
+    bool enablefield}) {
+  return Container(
+    margin: new EdgeInsets.only(left: 10.0, right: 10.0),
+    child: new TextFormField(
+      validator: validators,
+      controller: controller,
+      maxLines: maxLines,
+      inputFormatters: [DecimalTextInputFormatter(decimalRange: 2)],
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
       obscureText: obsectextType,
       focusNode: focusNodeCurrent,
       enabled: enablefield,

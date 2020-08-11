@@ -186,6 +186,13 @@ class _AdminSettingScreenState extends State<AdminSettingScreen> {
                       builder: (context) => ChangePasswordScreen()));
             }
             break;
+          case 2:
+            {
+              _launchURL(
+                  url:
+                      "https://play.google.com/store/apps/details?id=com.ngmartflutter");
+            }
+            break;
         }
       },
       child: new Container(

@@ -83,6 +83,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           RefreshIndicator(
             key: _refreshIndicatorKey,
             onRefresh: () async {
+              dataInner?.clear();
               await _hitApi();
             },
             child: ListView.builder(

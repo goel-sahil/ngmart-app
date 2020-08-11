@@ -391,6 +391,54 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> markNotiAsRead(BuildContext context, int id) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    var response = await APIHandler.put(
+        context: context,
+        url: "${APIs.getNotifications}/$id",
+        additionalHeaders: headers);
+    print("Notification==> ${APIs.getNotifications}");
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+  Future<dynamic> markAllNotificationRead(BuildContext context) async {
+    Completer<dynamic> completer = new Completer<dynamic>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
+    };
+
+    var response = await APIHandler.put(
+        context: context,
+        url: "${APIs.getNotifications}",
+        additionalHeaders: headers);
+    print("Notification==> ${APIs.getNotifications}");
+    hideLoader();
+    if (response is APIError) {
+      completer.complete(response);
+      return completer.future;
+    } else {
+      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      completer.complete(productResponse);
+      notifyListeners();
+      return completer.future;
+    }
+  }
+
+
   Future<dynamic> notification(BuildContext context) async {
     Completer<dynamic> completer = new Completer<dynamic>();
     MemoryManagement.init();

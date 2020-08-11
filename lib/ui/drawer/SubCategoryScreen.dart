@@ -42,38 +42,21 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
             title: Text(widget.catName ?? "SubCategory"),
             centerTitle: true,
             actions: <Widget>[
-              getCartWidget(count: cartCount, onClick: (){
-                if (_userLoggedIn) {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => CartPage(
-                            fromNavigationDrawer: false,
-                          )));
-                } else {
-                  Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => Login()));
-                }
-              })
-//              IconButton(
-//                icon: Icon(
-//                  FontAwesomeIcons.shoppingCart,
-//                  color: Colors.white,
-//                ),
-//                onPressed: () {
-//                  if (_userLoggedIn) {
-//                    Navigator.push(
-//                        context,
-//                        CupertinoPageRoute(
-//                            builder: (context) => CartPage(
-//                                  fromNavigationDrawer: false,
-//                                )));
-//                  } else {
-//                    Navigator.push(context,
-//                        CupertinoPageRoute(builder: (context) => Login()));
-//                  }
-//                },
-//              ),
+              getCartWidget(
+                  count: cartCount,
+                  onClick: () {
+                    if (_userLoggedIn) {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => CartPage(
+                                    fromNavigationDrawer: false,
+                                  )));
+                    } else {
+                      Navigator.push(context,
+                          CupertinoPageRoute(builder: (context) => Login()));
+                    }
+                  })
             ],
           ),
           body: _buildGridItem(),
@@ -99,21 +82,24 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
   Widget prepareList(int k, Categories categories) {
     return Card(
       child: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          bool update = await Navigator.push(
               context,
               CupertinoPageRoute(
                   builder: (context) => ProductScreen(
                         id: categories.id,
                         title: categories.title,
                       )));
+//          if (update != null) {
+            setState(() {});
+//          }
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             getSpacer(height: 20),
             getCachedNetworkImage(
-                url: categories?.imageUrl??"", height: 100, width: 100),
+                url: categories?.imageUrl ?? "", height: 100, width: 100),
             getSpacer(height: 10),
             Container(
               color: Colors.black26,
