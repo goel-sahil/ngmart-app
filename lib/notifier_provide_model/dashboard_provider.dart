@@ -385,7 +385,7 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      MarkNotificationResponse productResponse = new MarkNotificationResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;

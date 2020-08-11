@@ -6,6 +6,7 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
@@ -48,25 +49,40 @@ class _BannerProductScreenState extends State<BannerProductScreen> {
           title: Text(widget?.title ?? "Products"),
           centerTitle: true,
           actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                FontAwesomeIcons.shoppingCart,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                if (_userLoggedIn) {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => CartPage(
-                            fromNavigationDrawer: false,
-                          )));
-                } else {
-                  Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => Login()));
-                }
-              },
-            ),
+            getCartWidget(
+                onClick: () {
+                  if (_userLoggedIn) {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => CartPage(
+                              fromNavigationDrawer: false,
+                            )));
+                  } else {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) => Login()));
+                  }
+                },
+                count: cartCount),
+//            IconButton(
+//              icon: Icon(
+//                FontAwesomeIcons.shoppingCart,
+//                color: Colors.white,
+//              ),
+//              onPressed: () {
+//                if (_userLoggedIn) {
+//                  Navigator.push(
+//                      context,
+//                      CupertinoPageRoute(
+//                          builder: (context) => CartPage(
+//                            fromNavigationDrawer: false,
+//                          )));
+//                } else {
+//                  Navigator.push(context,
+//                      CupertinoPageRoute(builder: (context) => Login()));
+//                }
+//              },
+//            ),
           ],
         ),
         backgroundColor: Colors.grey.shade100,

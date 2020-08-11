@@ -30,22 +30,25 @@ class _SelectCategoryForProductScreenState
   @protected
   void initState() {
     Timer(Duration(milliseconds: 500), () {
-      _hitApi();
+      _hitApi(fromPullToRefresh: false);
     });
     super.initState();
   }
 
-  Future<void> _hitApi() async {
+  Future<void> _hitApi({bool fromPullToRefresh = false}) async {
     bool isConnected = await isConnectedToInternet();
     if (!isConnected) {
       showAlertDialog(
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
-    adminProvider.setLoading(); //show loader
+    if (!fromPullToRefresh) {
+      adminProvider.setLoading(); //show loader
+    }
     var response = await adminProvider.getSubCategoryList(context);
     if (response is APIError) {
     } else if (response is CategoryListResponse) {
+      dataInner?.clear();
       dataInner.addAll(response.data);
     }
   }
@@ -67,7 +70,7 @@ class _SelectCategoryForProductScreenState
           RefreshIndicator(
             key: _refreshIndicatorKey,
             onRefresh: () async {
-              await _hitApi();
+              await _hitApi(fromPullToRefresh: true);
             },
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,

@@ -28,22 +28,25 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
   @protected
   void initState() {
     Timer(Duration(milliseconds: 500), () {
-      _hitApi();
+      _hitApi(fromPulToRefresh: false);
     });
     super.initState();
   }
 
-  Future<void> _hitApi() async {
+  Future<void> _hitApi({bool fromPulToRefresh = false}) async {
     bool isConnected = await isConnectedToInternet();
     if (!isConnected) {
       showAlertDialog(
           context: context, title: "Error", message: Messages.noInternetError);
       return;
     }
-    adminProvider.setLoading(); //show loader
+    if (!fromPulToRefresh) {
+      adminProvider.setLoading(); //show loader
+    }
     var response = await adminProvider.getBrandList(context);
     if (response is APIError) {
     } else if (response is AdminBrandList) {
+      dataInner?.clear();
       dataInner.addAll(response.data);
     }
   }
@@ -63,7 +66,7 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
             child: InkWell(
                 onTap: () {
                   CategoryModel catModel =
-                  CategoryModel(id: "", title: "", fromItem: true);
+                      CategoryModel(id: "", title: "", fromItem: true);
                   Navigator.pop(context, catModel);
                 },
                 child: Text("Clear")),
@@ -77,7 +80,7 @@ class _SelectBrandScreenState extends State<SelectBrandScreen> {
           RefreshIndicator(
             key: _refreshIndicatorKey,
             onRefresh: () async {
-              await _hitApi();
+              await _hitApi(fromPulToRefresh: true);
             },
             child: ListView.builder(
               itemCount: dataInner.length ?? 0,

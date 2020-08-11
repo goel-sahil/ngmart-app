@@ -112,7 +112,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
     var response = await provider.deleteNotification(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);
-    } else if (response is CommonResponse) {
+    } else if (response is MarkNotificationResponse) {
+      unreadNotificationsCount=response.data.totalCartItems;
       showInSnackBar(response.message);
       dataInner.removeAt(position);
       setState(() {});

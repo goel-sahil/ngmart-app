@@ -64,7 +64,12 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
         if (dataList.length >= (PAGINATION_SIZE * _currentPageNumber) &&
             _loadMore) {
           isPullToRefresh = true;
-          _hitApi(isFilter: false);
+          if (_dateFromController.text.isNotEmpty &&
+              _dateToController.text.isNotEmpty) {
+            _hitApi(isFilter: true);
+          } else {
+            _hitApi(isFilter: false);
+          }
           showInSnackBar("Loading data...");
         }
       }
