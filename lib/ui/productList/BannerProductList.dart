@@ -6,9 +6,11 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/cart/CartPage.dart';
+import 'package:ngmartflutter/ui/login/login_screen.dart';
 import 'package:ngmartflutter/ui/productDetail/ProductDetail.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +30,12 @@ class _BannerProductScreenState extends State<BannerProductScreen> {
   ScrollController scrollController = new ScrollController();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
+  var _userLoggedIn = false;
 
   @override
   void initState() {
+    MemoryManagement.init();
+    _userLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
     super.initState();
   }
 
@@ -49,12 +54,17 @@ class _BannerProductScreenState extends State<BannerProductScreen> {
                 color: Colors.white,
               ),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => CartPage(
-                              fromNavigationDrawer: false,
-                            )));
+                if (_userLoggedIn) {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => CartPage(
+                            fromNavigationDrawer: false,
+                          )));
+                } else {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => Login()));
+                }
               },
             ),
           ],
