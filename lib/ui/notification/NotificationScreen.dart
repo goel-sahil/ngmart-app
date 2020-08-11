@@ -11,7 +11,9 @@ import 'package:ngmartflutter/helper/ReusableWidgets.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
 import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
+import 'package:ngmartflutter/model/MarkNotificationResponse.dart';
 import 'package:ngmartflutter/model/NotificationResponse.dart';
+import 'package:ngmartflutter/model/cart/AddToCartResponse.dart';
 import 'package:ngmartflutter/notifier_provide_model/dashboard_provider.dart';
 import 'package:ngmartflutter/ui/admin/order/OrderScreen.dart';
 import 'package:ngmartflutter/ui/orderHistory/OrderHistory.dart';
@@ -128,10 +130,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
     var response = await provider.markNotiAsRead(context, id);
     if (response is APIError) {
       showInSnackBar(response.error);
-    } else if (response is CommonResponse) {
+    } else if (response is MarkNotificationResponse) {
 //      showInSnackBar(response.message);
+    unreadNotificationsCount=response.data.totalCartItems;
       dataInner[position].status = 1;
-      if (unreadNotificationsCount > 0) unreadNotificationsCount--;
       setState(() {});
     }
   }

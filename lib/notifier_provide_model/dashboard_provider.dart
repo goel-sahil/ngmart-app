@@ -7,6 +7,7 @@ import 'package:ngmartflutter/Network/api_error.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/DeviceTokenRequest.dart';
+import 'package:ngmartflutter/model/MarkNotificationResponse.dart';
 import 'package:ngmartflutter/model/NotificationResponse.dart';
 import 'package:ngmartflutter/model/TotalNotificationResponse.dart';
 import 'package:ngmartflutter/model/bannerResponse/bannerResponse.dart';
@@ -408,7 +409,7 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      CommonResponse productResponse = new CommonResponse.fromJson(response);
+      MarkNotificationResponse productResponse = new MarkNotificationResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
       return completer.future;

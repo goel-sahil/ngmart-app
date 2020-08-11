@@ -177,6 +177,7 @@ class _ProductScreenState extends State<ProductScreen> {
               onRefresh: () async {
                 isPullToRefresh = true;
                 _loadMore = false;
+                _searchController.clear();
                 await _hitApi();
               },
             ),
@@ -272,7 +273,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           Container(
                             padding: EdgeInsets.only(right: 8, top: 4),
                             child: Text(
-                              productList?.title??"",
+                              productList?.title ?? "",
                               maxLines: 2,
                               softWrap: true,
                               style: CustomTextStyle.textFormFieldSemiBold
