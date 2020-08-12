@@ -70,6 +70,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
   }
 
   _onSelectItem(int index) {
+    FocusScope.of(context).requestFocus(new FocusNode());
     Navigator.pop(context);
     if (_isLoggedIn) {
       if (index == 0) {
@@ -161,6 +162,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     if (_isLoggedIn) {
       var infoData = jsonDecode(MemoryManagement.getUserInfo());
       userInfo = LoginResponse.fromJson(infoData);
+      userEmail = userInfo?.data?.user?.email ?? "";
       Timer(Duration(milliseconds: 500), () {
         _hitNotificationApi();
       });
@@ -244,10 +246,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>
     var response = await provider.updateToken(context, request);
     if (response != null && (response is CommonResponse)) {
       print(response.message);
-//      showInSnackBar(response.message);
     } else {
       APIError apiError = response;
-//      showInSnackBar(apiError.error);
     }
   }
 
@@ -389,7 +389,7 @@ class _NavigationDrawerState extends State<NavigationDrawer>
                       children: <Widget>[
                         Text(
                           _isLoggedIn
-                              ? "${userInfo.data.user.firstName} ${userInfo.data.user.lastName}"
+                              ? "${userInfo?.data?.user?.firstName ?? ""} ${userInfo?.data?.user?.lastName ?? ""}"
                               : "LogIn",
                           style: TextStyle(fontSize: 20),
                         ),
@@ -401,11 +401,11 @@ class _NavigationDrawerState extends State<NavigationDrawer>
                     ),
                   ),
                 ),
-                accountEmail: Text(_isLoggedIn ? userInfo.data.user.email : ""),
+                accountEmail: Text(_isLoggedIn ? userEmail : ""),
                 currentAccountPicture: _isLoggedIn
                     ? CircleAvatar(
                         child: Text(
-                          userInfo.data.user.firstName[0] ?? "N",
+                          userInfo?.data?.user?.firstName[0] ?? "N",
                           style: TextStyle(fontSize: 40.0),
                         ),
                       )

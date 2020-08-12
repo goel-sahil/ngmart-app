@@ -14,6 +14,7 @@ String authAccessToken = "";
 // Stores unreadNotification count
 int unreadNotificationsCount;
 int cartCount;
+String userEmail;
 
 // On notification,
 bool updateHomeTabOnBuild = false;
