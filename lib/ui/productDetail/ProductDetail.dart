@@ -12,7 +12,6 @@ import 'package:ngmartflutter/helper/buttons.dart';
 import 'package:ngmartflutter/helper/colors.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
-import 'package:ngmartflutter/model/CommonResponse.dart';
 import 'package:ngmartflutter/model/cart/AddToCartResponse.dart';
 import 'package:ngmartflutter/model/cart/CartResponse.dart';
 import 'package:ngmartflutter/model/product_response.dart';
@@ -62,7 +61,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   void initState() {
     _quantity = widget?.productData?.quantity ?? "";
-    // TODO: implement initState
     MemoryManagement.init();
     _userLoggedIn = MemoryManagement.getLoggedInStatus() ?? false;
     super.initState();
@@ -171,10 +169,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             height: 55,
                                             child: OutlineButton(
                                               onPressed: () {
+                                                debugPrint(
+                                                    "Quantity Inc==> ${widget.productData.quantityIncrement}");
                                                 setState(() {
                                                   _quantity += widget
                                                       .productData
                                                       .quantityIncrement;
+                                                  debugPrint(
+                                                      "Final quantity==> $_quantity");
                                                 });
                                               },
                                               child: Icon(Icons.add),
@@ -194,12 +196,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               onPressed: () {
                                                 setState(() {
                                                   if (_quantity ==
-                                                      widget.productData
-                                                          .quantityIncrement)
+                                                          widget.productData
+                                                              .quantityIncrement ||
+                                                      _quantity <
+                                                          widget.productData
+                                                              .quantityIncrement) {
                                                     return;
+                                                  }
+                                                  debugPrint(
+                                                      "Quantity==> $_quantity");
+                                                  debugPrint(
+                                                      "Quantity Inc==> ${widget.productData.quantityIncrement}");
                                                   _quantity -= widget
                                                       .productData
                                                       .quantityIncrement;
+                                                  debugPrint(
+                                                      "Final quantity==> $_quantity");
                                                 });
                                               },
                                               child: Icon(Icons.remove),
