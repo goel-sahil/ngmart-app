@@ -247,8 +247,8 @@ class Products {
 }
 
 class Pivot {
-  String bannerId;
-  String productId;
+  int bannerId;
+  int productId;
 
   Pivot({this.bannerId, this.productId});
 

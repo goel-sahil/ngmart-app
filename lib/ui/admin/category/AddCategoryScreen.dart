@@ -38,6 +38,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   FocusNode _categoryField = new FocusNode();
   AdminProvider provider;
   String catId = "";
+  String catIdEdit = "";
   final StreamController<bool> _loaderStreamController =
       new StreamController<bool>();
   final picker = ImagePicker();
@@ -52,9 +53,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         _categoryController.text = widget.dataCategory.category.title;
       }
       status = widget.dataCategory.status;
-      var list = widget.dataCategory.id.toString();
+      catIdEdit = widget.dataCategory.id.toString();
       catId = widget.dataCategory.categoryId.toString();
-      print("Cat id during edit==> ${widget.dataCategory.categoryId}");
+      print("catId==> ${widget.dataCategory.categoryId}");
+      print("catIdEdit==> ${widget.dataCategory.id}");
       setState(() {});
     }
     super.initState();
@@ -150,8 +152,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => SelectCategoryScreen(
-                                        catId:
-                                            widget.dataCategory.id.toString() ,
+                                        catId: catIdEdit,
                                         forUpdate: widget.fromCategoryScreen,
                                       )));
                           if (catModel != null && catModel.fromItem) {

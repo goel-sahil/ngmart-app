@@ -72,6 +72,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
     } else {
       _currentPageNumber = 1;
     }
+
     AdminProductRequest adminProductRequest = AdminProductRequest(search: text);
     var response = await provider.bannerProducts(
         context, _currentPageNumber, adminProductRequest);
@@ -129,6 +130,13 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
         appBar: AppBar(
           title: Text("Select Products"),
           centerTitle: true,
+          leading: InkWell(
+              onTap: () {
+                debugPrint(
+                    "Back btn Selected list ==> ${widget.selectedProductList}");
+                Navigator.pop(context, widget.selectedProductList);
+              },
+              child: Icon(Icons.arrow_back)),
           actions: <Widget>[
             InkWell(
               onTap: () {
@@ -139,89 +147,99 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
 //                  }
 //                }
 //                print("List size==> ${selectedProductList.length}");
+                widget.selectedProductList.clear();
+                debugPrint("Selected list ==> ${widget.selectedProductList}");
                 Navigator.pop(context, widget.selectedProductList);
               },
               child: Padding(
                 padding: const EdgeInsets.only(top: 18, right: 10),
-                child: Text("Done"),
+                child: Text("Clear"),
               ),
             )
           ],
         ),
-        body: Stack(
-          children: <Widget>[
-            RefreshIndicator(
-              key: _refreshIndicatorKey,
-              child: Container(
-                margin: new EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        width: getScreenSize(context: context).height,
-                        height: 50,
-                        child: new TextField(
-                          controller: _searchController,
-                          onChanged: (value) {
-                            _loadMore = false;
-                            _hitApi(text: value, fromSearch: true);
-                          },
-                          decoration: new InputDecoration(
-                              border: new OutlineInputBorder(
-                                  borderSide: new BorderSide(
-                                      color: AppColors.kPrimaryBlue)),
-                              hintText: 'Search for product',
-                              labelText: 'Search for product',
-                              prefixIcon: const Icon(
-                                Icons.search,
-                                color: AppColors.kPrimaryBlue,
-                              ),
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  _searchController.clear();
-                                  productList.clear();
-                                  setState(() {});
-                                  _currentPageNumber = 1;
-                                  _hitApi();
-                                },
-                                icon: Icon(Icons.clear),
-                              )),
+        body: WillPopScope(
+          onWillPop: () async {
+            Navigator.pop(context, widget.selectedProductList);
+            return true; // return true if the route to be popped
+          },
+          child: Stack(
+            children: <Widget>[
+              RefreshIndicator(
+                key: _refreshIndicatorKey,
+                child: Container(
+                  margin:
+                      new EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: getScreenSize(context: context).height,
+                          height: 50,
+                          child: new TextField(
+                            controller: _searchController,
+                            onChanged: (value) {
+                              _loadMore = false;
+                              _hitApi(text: value, fromSearch: true);
+                            },
+                            decoration: new InputDecoration(
+                                border: new OutlineInputBorder(
+                                    borderSide: new BorderSide(
+                                        color: AppColors.kPrimaryBlue)),
+                                hintText: 'Search for product',
+                                labelText: 'Search for product',
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: AppColors.kPrimaryBlue,
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    productList.clear();
+                                    setState(() {});
+                                    _currentPageNumber = 1;
+                                    _hitApi();
+                                  },
+                                  icon: Icon(Icons.clear),
+                                )),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemBuilder: (BuildContext context, int index) {
-                            return createCartListItem(
-                                index: index, productList: productList[index]);
-                          },
-                          itemCount: productList.length ?? 0,
-                          controller: scrollController,
-                          physics: AlwaysScrollableScrollPhysics(),
+                        Expanded(
+                          child: ListView.builder(
+                            itemBuilder: (BuildContext context, int index) {
+                              return createCartListItem(
+                                  index: index,
+                                  productList: productList[index]);
+                            },
+                            itemCount: productList.length ?? 0,
+                            controller: scrollController,
+                            physics: AlwaysScrollableScrollPhysics(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
+                onRefresh: () async {
+                  isPullToRefresh = true;
+                  _loadMore = false;
+                  await _hitApi();
+                },
               ),
-              onRefresh: () async {
-                isPullToRefresh = true;
-                _loadMore = false;
-                await _hitApi();
-              },
-            ),
-            new Center(
-              child: getHalfScreenProviderLoader(
-                status: provider.getLoading(),
-                context: context,
+              new Center(
+                child: getHalfScreenProviderLoader(
+                  status: provider.getLoading(),
+                  context: context,
+                ),
               ),
-            ),
-            (productList.length == 0) && (provider.getLoading() == false)
-                ? Center(
-                    child:
-                        getNoDataView(msg: "No Product found.", onRetry: null))
-                : Container()
-          ],
+              (productList.length == 0) && (provider.getLoading() == false)
+                  ? Center(
+                      child: getNoDataView(
+                          msg: "No Product found.", onRetry: null))
+                  : Container()
+            ],
+          ),
         ));
   }
 
