@@ -200,7 +200,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                               .quantityIncrement ||
                                                       _quantity <
                                                           widget.productData
-                                                              .quantityIncrement) {
+                                                              .quantityIncrement ||
+                                                      _quantity.toStringAsFixed(
+                                                              1) ==
+                                                          widget?.productData
+                                                              ?.quantity
+                                                              ?.toStringAsFixed(
+                                                                  1)) {
                                                     return;
                                                   }
                                                   debugPrint(

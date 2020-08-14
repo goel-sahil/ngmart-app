@@ -74,7 +74,8 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  Future<void> _hitUpdateQuantity({num quantity, int productId, bool fromAdd}) async {
+  Future<void> _hitUpdateQuantity(
+      {num quantity, int productId, bool fromAdd}) async {
     provider?.setLoading();
     var response = await provider.addToCart(context, quantity, productId);
     if (response is APIError) {
@@ -358,24 +359,28 @@ class _CartPageState extends State<CartPage> {
                                       print("_quantity==>$_quantity");
                                       print(
                                           "listData.product.quantityIncrement==>${listData.product.quantityIncrement}");
-                                      if (listData.quantity !=
+
+                                      if (_quantity ==
                                               listData
                                                   .product.quantityIncrement ||
-                                          _quantity == 0) {
-                                        _quantity -=
-                                            listData.product.quantityIncrement;
-                                        listData.quantity = (listData.quantity -
-                                            listData.product.quantityIncrement);
-                                        //hit APi
-                                        _hitUpdateQuantity(
-                                            quantity: listData.quantity,
-                                            productId: listData.productId);
-
-                                        print("=====NOt equals=====");
-                                      } else {
-                                        print("=====Inequals=====");
+                                          _quantity <
+                                              listData
+                                                  .product.quantityIncrement ||
+                                          _quantity.toStringAsFixed(1) ==
+                                              listData?.product?.quantity
+                                                  ?.toStringAsFixed(1)) {
                                         return;
                                       }
+
+                                      _quantity -=
+                                          listData.product.quantityIncrement;
+                                      listData.quantity = (listData.quantity -
+                                          listData.product.quantityIncrement);
+                                      //hit APi
+                                      _hitUpdateQuantity(
+                                          quantity: listData.quantity,
+                                          productId: listData.productId);
+
                                       setState(() {});
                                     },
                                     child: Icon(
