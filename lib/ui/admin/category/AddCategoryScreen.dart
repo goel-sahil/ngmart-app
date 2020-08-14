@@ -52,8 +52,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         _categoryController.text = widget.dataCategory.category.title;
       }
       status = widget.dataCategory.status;
+      var list = widget.dataCategory.id.toString();
       catId = widget.dataCategory.categoryId.toString();
-      print("Cat id during edit==> ${widget.dataCategory.id}");
+      print("Cat id during edit==> ${widget.dataCategory.categoryId}");
       setState(() {});
     }
     super.initState();
@@ -149,7 +150,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => SelectCategoryScreen(
-                                        catId: catId,
+                                        catId:
+                                            widget.dataCategory.id.toString() ,
                                         forUpdate: widget.fromCategoryScreen,
                                       )));
                           if (catModel != null && catModel.fromItem) {

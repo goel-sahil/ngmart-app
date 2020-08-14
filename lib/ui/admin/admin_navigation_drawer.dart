@@ -86,6 +86,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
     if (_isLoggedIn) {
       var infoData = jsonDecode(MemoryManagement.getUserInfo());
       userInfo = LoginResponse.fromJson(infoData);
+      userEmail=userInfo?.data?.user?.email??"";
     }
     drawerItems.add(DrawerItem("Brands", FontAwesomeIcons.meetup));
     drawerItems
@@ -458,7 +459,7 @@ class _AdminNavigationDrawerState extends State<AdminNavigationDrawer>
                   ),
                 ),
                 accountEmail:
-                    Text(_isLoggedIn ? userInfo?.data?.user?.email ?? "" : ""),
+                    Text(_isLoggedIn ? userEmail : ""),
                 currentAccountPicture: _isLoggedIn
                     ? CircleAvatar(
                         child: Text(
