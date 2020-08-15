@@ -31,7 +31,6 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
   int _currentPageNumber = 1;
   List<Products> productList = new List();
 
-//  List<Products> selectedProductList = new List();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   TextEditingController _searchController = new TextEditingController();
@@ -54,7 +53,8 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
         if (productList.length >= (PAGINATION_SIZE * _currentPageNumber) &&
             _loadMore) {
           isPullToRefresh = true;
-          _hitApi();
+          print("Search txt==> ${_searchController.text}");
+          _hitApi(text: _searchController.text.trim());
           showInSnackBar("Loading data...");
         }
       }
@@ -74,6 +74,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
     }
 
     AdminProductRequest adminProductRequest = AdminProductRequest(search: text);
+    print("Select Product==> ${adminProductRequest.toJson()}");
     var response = await provider.bannerProducts(
         context, _currentPageNumber, adminProductRequest);
     if (response is APIError) {
@@ -197,9 +198,10 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
                                   onPressed: () {
                                     _searchController.clear();
                                     productList.clear();
-                                    setState(() {});
                                     _currentPageNumber = 1;
+                                    _loadMore = false;
                                     _hitApi();
+                                    setState(() {});
                                   },
                                   icon: Icon(Icons.clear),
                                 )),
@@ -224,6 +226,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
                 onRefresh: () async {
                   isPullToRefresh = true;
                   _loadMore = false;
+                  _searchController.clear();
                   await _hitApi();
                 },
               ),
@@ -268,6 +271,6 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
 
   void showInSnackBar(String value) {
     _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+        .showSnackBar(new SnackBar(content: new Text(value),duration: Duration(milliseconds: 100),));
   }
 }

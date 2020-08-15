@@ -55,7 +55,8 @@ class _ProductScreenState extends State<ProductScreen> {
         if (productList.length >= (PAGINATION_SIZE * _currentPageNumber) &&
             _loadMore) {
           isPullToRefresh = true;
-          _hitApi();
+          debugPrint("Load more text==> ${_searchController.text}");
+          _hitApi(text: _searchController.text.trim());
           showInSnackBar("Loading data...");
         }
       }
@@ -74,6 +75,7 @@ class _ProductScreenState extends State<ProductScreen> {
       _currentPageNumber = 1;
     }
     AdminProductRequest adminProductRequest = AdminProductRequest(search: text);
+    debugPrint("Request==> ${adminProductRequest.toJson()}");
     var response = await provider.getProducts(
         context, _currentPageNumber, adminProductRequest);
     if (response is APIError) {
@@ -151,9 +153,10 @@ class _ProductScreenState extends State<ProductScreen> {
                                 onPressed: () {
                                   _searchController.clear();
                                   productList.clear();
-                                  setState(() {});
                                   _currentPageNumber = 1;
+                                  _loadMore = false;
                                   _hitApi();
+                                  setState(() {});
                                 },
                                 icon: Icon(Icons.clear),
                               )),
@@ -178,7 +181,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 isPullToRefresh = true;
                 _loadMore = false;
                 _searchController.clear();
-                await _hitApi();
+                _hitApi();
               },
             ),
             new Center(
@@ -317,6 +320,6 @@ class _ProductScreenState extends State<ProductScreen> {
 
   void showInSnackBar(String value) {
     _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+        .showSnackBar(new SnackBar(content: new Text(value),duration: Duration(milliseconds: 100),));
   }
 }

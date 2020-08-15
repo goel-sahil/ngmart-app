@@ -145,7 +145,7 @@ class APIHandler {
 
       print("url: ${url}");
       print("Request==>: ${json.encode(requestBody)}");
-      print("Response==>: ${response.data}");
+     // print("Response==>: ${response.data}");
       print("Status code ${response?.statusCode}");
 
       completer.complete(response.data);

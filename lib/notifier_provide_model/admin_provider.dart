@@ -303,8 +303,6 @@ class AdminProvider with ChangeNotifier {
       "Accept": "application/json",
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
-    print("Token==> ${MemoryManagement.getAccessToken()}");
-
     var response = await APIHandler.post(
         context: context,
         url: "${APIs.bannerProducts}?page=$currentPageNumber",
