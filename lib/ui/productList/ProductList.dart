@@ -245,7 +245,9 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: new Text(value),
+      duration: Duration(milliseconds: 100),
+    ));
   }
 }

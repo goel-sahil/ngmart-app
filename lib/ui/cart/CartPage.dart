@@ -284,8 +284,8 @@ class _CartPageState extends State<CartPage> {
           total = total + (data.quantity * data.pricePerUnit);
         }
 
-        print(
-            "${cartList[position].product.title}==> ${cartList[position].toJson()}");
+//        print(
+//            "${cartList[position].product.title}==> ${cartList[position].toJson()}");
 
         return createCartListItem(listData: cartList[position], pos: position);
       },
@@ -356,14 +356,11 @@ class _CartPageState extends State<CartPage> {
                                 children: <Widget>[
                                   InkWell(
                                     onTap: () {
-                                      print("_quantity==>$_quantity");
+                                      print("_quantity==>${listData.quantity}");
                                       print(
-                                          "listData.product.quantityIncrement==>${listData.product.quantityIncrement}");
+                                          "quantityIncrement==>${listData.product.quantityIncrement}");
 
-                                      if (_quantity ==
-                                              listData
-                                                  .product.quantityIncrement ||
-                                          _quantity <
+                                      if (listData.quantity <=
                                               listData
                                                   .product.quantityIncrement ||
                                           _quantity.toStringAsFixed(1) ==
