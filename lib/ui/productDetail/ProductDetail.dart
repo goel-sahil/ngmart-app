@@ -349,7 +349,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   onPressed: onTapped,
                   child: Hero(
                       transitionOnUserGestures: true,
-                      tag: food.title,
+                      tag: food.id,
                       child: Image.network(
                         food.imageUrl,
                         width: (imgWidth != null) ? imgWidth : 100,

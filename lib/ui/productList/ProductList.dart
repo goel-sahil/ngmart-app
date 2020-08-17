@@ -180,7 +180,7 @@ class _ProductScreenState extends State<ProductScreen> {
               children: <Widget>[
                 Hero(
                   transitionOnUserGestures: true,
-                  tag: productList?.title ?? "",
+                  tag: productList?.id ?? "",
                   child: Container(
                     margin:
                         EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),

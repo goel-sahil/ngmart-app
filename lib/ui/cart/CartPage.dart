@@ -357,15 +357,17 @@ class _CartPageState extends State<CartPage> {
                                   InkWell(
                                     onTap: () {
                                       print("_quantity==>${listData.quantity}");
+                                      print("_quantity toStringAsFixed==>${listData.quantity}");
                                       print(
                                           "quantityIncrement==>${listData.product.quantityIncrement}");
 
                                       if (listData.quantity <=
                                               listData
                                                   .product.quantityIncrement ||
-                                          _quantity.toStringAsFixed(1) ==
+                                          listData.quantity.toStringAsFixed(1) ==
                                               listData?.product?.quantity
                                                   ?.toStringAsFixed(1)) {
+                                        print("Returned==>");
                                         return;
                                       }
 

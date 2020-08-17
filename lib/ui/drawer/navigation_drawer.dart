@@ -115,8 +115,8 @@ class _NavigationDrawerState extends State<NavigationDrawer>
         showSearch = false;
         showNotification = false;
       } else if (index == 7) {
-        onLogoutSuccess(context: context);
         _pageController.jumpToPage(7);
+        onLogoutSuccess(context: context);
       }
     } else {
       if (index == 0) {

@@ -25,7 +25,6 @@ import 'package:ngmartflutter/model/product_request.dart';
 import 'package:ngmartflutter/model/product_response.dart';
 
 class DashboardProvider with ChangeNotifier {
-  List<CategoryData> categoryList = new List();
 
   var _isLoading = false;
 
@@ -44,10 +43,8 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      print("Response==> $response");
       CategoriesResponse categoriesResponse =
           new CategoriesResponse.fromJson(response);
-      categoryList.addAll(categoriesResponse.data);
       completer.complete(categoriesResponse);
       notifyListeners();
       return completer.future;
@@ -232,7 +229,6 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      print("Response==> $response");
       AddToCartResponse productResponse = new AddToCartResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
@@ -258,7 +254,6 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      print("Response==> $response");
       CommonResponse categoriesResponse = new CommonResponse.fromJson(response);
       completer.complete(categoriesResponse);
       notifyListeners();
@@ -283,7 +278,6 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      print("Response==> $response");
       OrderHistoryResponse productResponse =
           new OrderHistoryResponse.fromJson(response);
       completer.complete(productResponse);
@@ -311,7 +305,6 @@ class DashboardProvider with ChangeNotifier {
       return completer.future;
     } else {
       CommonResponse loginResponseData = new CommonResponse.fromJson(response);
-      print("response ${loginResponseData.toJson()}");
       completer.complete(loginResponseData);
       notifyListeners();
       return completer.future;
@@ -332,7 +325,6 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      print("Response==> $response");
       CmsResponse productResponse = new CmsResponse.fromJson(response);
       completer.complete(productResponse);
       notifyListeners();
@@ -347,8 +339,6 @@ class DashboardProvider with ChangeNotifier {
       "Accept": "application/json",
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
-    print("Token==> ${MemoryManagement.getAccessToken()}");
-
     var response = await APIHandler.get(
         context: context,
         url: "${APIs.notification}?page=$currentPageNumber",
@@ -359,7 +349,6 @@ class DashboardProvider with ChangeNotifier {
       completer.complete(response);
       return completer.future;
     } else {
-      print("Response==> $response");
       NotificationResponse productResponse =
           new NotificationResponse.fromJson(response);
       completer.complete(productResponse);
@@ -379,7 +368,6 @@ class DashboardProvider with ChangeNotifier {
         context: context,
         url: "${APIs.getNotifications}/$id",
         additionalHeaders: headers);
-    print("Notification==> ${APIs.getNotifications}");
     hideLoader();
     if (response is APIError) {
       completer.complete(response);
@@ -403,7 +391,6 @@ class DashboardProvider with ChangeNotifier {
         context: context,
         url: "${APIs.getNotifications}/$id",
         additionalHeaders: headers);
-    print("Notification==> ${APIs.getNotifications}");
     hideLoader();
     if (response is APIError) {
       completer.complete(response);
@@ -426,7 +413,6 @@ class DashboardProvider with ChangeNotifier {
         context: context,
         url: "${APIs.getNotifications}",
         additionalHeaders: headers);
-    print("Notification==> ${APIs.getNotifications}");
     hideLoader();
     if (response is APIError) {
       completer.complete(response);
@@ -494,7 +480,6 @@ class DashboardProvider with ChangeNotifier {
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
     var url = "${APIs.cancelOrder}/$id";
-    print("Url==> $url");
     var response = await APIHandler.put(
         context: context, url: url, additionalHeaders: headers);
 

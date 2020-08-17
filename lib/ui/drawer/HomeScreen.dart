@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ngmartflutter/Network/api_error.dart';
@@ -216,6 +216,12 @@ class _HomeScreenState extends State<HomeScreen>
         .showSnackBar(new SnackBar(content: new Text(value)));
   }
 
+  @override
+  void dispose() {
+   // provider.dispose();
+    super.dispose();
+  }
+
   Widget _getCarousel({bool enlargeCenterPage = false}) {
     return CarouselSlider.builder(
         itemCount: bannerList.length ?? 0,
@@ -285,4 +291,5 @@ Widget getNetworkImage(
     width: width,
     fit: BoxFit.fill,
   );
+
 }

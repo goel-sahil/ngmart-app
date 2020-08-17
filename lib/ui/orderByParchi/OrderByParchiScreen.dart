@@ -292,6 +292,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
         context: context,
         isDismissible: false,
         useRootNavigator: true,
+        enableDrag: false,
         builder: (builder) {
           return WillPopScope(
             onWillPop: _willPopCallback,

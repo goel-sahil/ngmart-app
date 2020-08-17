@@ -144,6 +144,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
     showModalBottomSheet(
         context: context,
         isDismissible: false,
+        enableDrag: false,
         builder: (builder) {
           return WillPopScope(
             onWillPop: _willPopCallback,
