@@ -34,8 +34,8 @@ const double LOAD_MORE_OFFSET = 1200;
 const int PAGINATION_SIZE = 10;
 
 //image size
-const double maxWidth = 400;
-const double maxHeight = 400;
+const double maxWidth = 600;
+const double maxHeight = 600;
 
 //provide paypal email
 const String PAYPALEMAIL="Please edit your profile and provide your valid PayPal email for payment process before posting the game. Please make sure don't provide any fake and hacked game accounts otherwise you will be banned.";

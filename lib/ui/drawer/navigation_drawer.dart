@@ -33,7 +33,6 @@ import 'package:ngmartflutter/ui/search/SearchPage.dart';
 import 'package:ngmartflutter/ui/settings/setting.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 
 import 'drawer_item.dart';
 import 'HomeScreen.dart';

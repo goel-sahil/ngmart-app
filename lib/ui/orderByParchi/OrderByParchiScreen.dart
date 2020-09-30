@@ -209,17 +209,20 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
 
   Future _getGalleryImage() async {
     var imageFileSelect = await ImagePicker.pickImage(
-        source: ImageSource.gallery, maxWidth: maxWidth, maxHeight: maxHeight);
+        source: ImageSource.gallery);
     _image = imageFileSelect;
     setState(() {});
   }
 
   Future _getCameraImage() async {
     var imageFileSelect = await ImagePicker.pickImage(
-        source: ImageSource.camera, maxWidth: maxWidth, maxHeight: maxHeight);
+        source: ImageSource.camera);
     _image = imageFileSelect;
     setState(() {});
   }
+
+
+
 
   Future<http.StreamedResponse> _hitAPi() async {
     _loaderStreamController.add(true); //show loader
