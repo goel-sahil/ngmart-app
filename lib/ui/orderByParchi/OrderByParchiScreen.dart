@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:ngmartflutter/Network/APIs.dart';
 import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
-import 'package:http/http.dart' as http;
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
@@ -43,7 +44,6 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
     }
     super.initState();
   }
-
 
   Future<bool> _willPopCallback() async {
     print("Popscope called==>");
@@ -209,20 +209,17 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
 
   Future _getGalleryImage() async {
     var imageFileSelect = await ImagePicker.pickImage(
-        source: ImageSource.gallery);
+        source: ImageSource.gallery, maxHeight: maxHeight, maxWidth: maxWidth);
     _image = imageFileSelect;
     setState(() {});
   }
 
   Future _getCameraImage() async {
     var imageFileSelect = await ImagePicker.pickImage(
-        source: ImageSource.camera);
+        source: ImageSource.camera, maxHeight: maxHeight, maxWidth: maxWidth);
     _image = imageFileSelect;
     setState(() {});
   }
-
-
-
 
   Future<http.StreamedResponse> _hitAPi() async {
     _loaderStreamController.add(true); //show loader
