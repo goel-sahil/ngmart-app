@@ -284,9 +284,10 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
       // A timeout occurred.
       _loaderStreamController.add(false); //show loader
       showInSnackBar("Time out error occurred");
-    }on SocketException catch (_) {
+    } on SocketException catch (_) {
+      _loaderStreamController.add(false); //show loader
       // Other exception
-      showInSnackBar("Something went wrong.");
+      showInSnackBar("Check your internet connection.");
     }
 
     return response;
