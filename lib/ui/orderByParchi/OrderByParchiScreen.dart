@@ -11,6 +11,7 @@ import 'package:ngmartflutter/helper/AppColors.dart';
 import 'package:ngmartflutter/helper/Const.dart';
 import 'package:ngmartflutter/helper/CustomTextStyle.dart';
 import 'package:ngmartflutter/helper/UniversalFunctions.dart';
+import 'package:ngmartflutter/helper/UniversalProperties.dart';
 import 'package:ngmartflutter/helper/memory_management.dart';
 import 'package:ngmartflutter/helper/styles.dart';
 import 'package:ngmartflutter/model/Login/LoginResponse.dart';
@@ -232,51 +233,58 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
       "Accept": "application/json",
       "Authorization": "Bearer ${MemoryManagement.getAccessToken()}"
     };
+    http.StreamedResponse response;
+    try {
+      http.MultipartRequest request =
+          new http.MultipartRequest("POST", url); //changed
 
-    http.MultipartRequest request =
-        new http.MultipartRequest("POST", url); //changed
+      request.headers.addAll(headers);
 
-    request.headers.addAll(headers);
+      if (_image != null) {
+        final fileName = _image.path;
 
-    if (_image != null) {
-      final fileName = _image.path;
+        var bytes = await _image.readAsBytes();
 
-      var bytes = await _image.readAsBytes();
+        request.fields['address_id'] =
+            userInfo.data.user.userAddresses.first.id.toString();
 
-      request.fields['address_id'] =
-          userInfo.data.user.userAddresses.first.id.toString();
+        request.files.add(new http.MultipartFile.fromBytes(
+          "image",
+          bytes,
+          filename: fileName,
+        ));
+      }
 
-      request.files.add(new http.MultipartFile.fromBytes(
-        "image",
-        bytes,
-        filename: fileName,
-      ));
-    }
-
-    http.StreamedResponse response = await request.send();
-    _loaderStreamController.add(false); //show loader
-    if (response.statusCode == 200) {
-      final respStr = await response.stream.bytesToString();
-      Map data = jsonDecode(respStr); // Parse data from JSON string
-      showThankYouBottomSheet();
-    } else {
-      final respStr = await response.stream.bytesToString();
-      Map data = jsonDecode(respStr); // Parse data from JSON string
-      showAlert(
-        context: context,
-        titleText: "Error",
-        message: data["message"],
-        actionCallbacks: {
-          "OK": () {
-            if (response.statusCode == 401) {
-              onLogoutSuccess(
-                context: context,
-              );
+      response = await request.send().timeout(timeoutDuration);
+      
+      _loaderStreamController.add(false); //show loader
+      if (response.statusCode == 200) {
+        final respStr = await response.stream.bytesToString();
+        Map data = jsonDecode(respStr); // Parse data from JSON string
+        showThankYouBottomSheet();
+      } else {
+        final respStr = await response.stream.bytesToString();
+        Map data = jsonDecode(respStr); // Parse data from JSON string
+        showAlert(
+          context: context,
+          titleText: "Error",
+          message: data["message"],
+          actionCallbacks: {
+            "OK": () {
+              if (response.statusCode == 401) {
+                onLogoutSuccess(
+                  context: context,
+                );
+              }
             }
-          }
-        },
-      );
+          },
+        );
+      }
+    } on TimeoutException catch (_) {
+      // A timeout occurred.
+      showInSnackBar("Time out error occurred");
     }
+
     return response;
   }
 
@@ -285,6 +293,11 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
       stream: _loaderStreamController.stream,
       context: context,
     );
+  }
+
+  void showInSnackBar(String value) {
+    _scaffoldKey.currentState
+        .showSnackBar(new SnackBar(content: new Text(value)));
   }
 
   void showThankYouBottomSheet() {
