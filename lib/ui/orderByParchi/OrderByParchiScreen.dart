@@ -256,7 +256,7 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
       }
 
       response = await request.send().timeout(timeoutDuration);
-      
+
       _loaderStreamController.add(false); //show loader
       if (response.statusCode == 200) {
         final respStr = await response.stream.bytesToString();
@@ -282,7 +282,11 @@ class _OrderByParchiScreenState extends State<OrderByParchiScreen> {
       }
     } on TimeoutException catch (_) {
       // A timeout occurred.
+      _loaderStreamController.add(false); //show loader
       showInSnackBar("Time out error occurred");
+    }on SocketException catch (_) {
+      // Other exception
+      showInSnackBar("Something went wrong.");
     }
 
     return response;
